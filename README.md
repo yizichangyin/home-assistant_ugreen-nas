@@ -1,12 +1,13 @@
 ## In short:
 
 
-- This integration allows you to read runtime-related data from a UGOS-based NAS directly into Home Assistant.
-- The main idea: keep UGOS completely untouched (no additional tools installed on the NAS, so updates remain hassle-free).
-- The process involves two steps:<br/>1) Obtain an individual token to authenticate your NAS queries (this is the tricky part).<br/>2) Configure Home Assistant for frequent data polling using the built-in RESTful integration (super simple).
-- For step 1, a shell script will guide you through a few straightforward questions and generate the token.
+- Below proceure allows you to read runtime-related data from a UGOS-based NAS directly into Home Assistant.
+- The main idea: keep UGOS completely untouched (no additional tools installed on the NAS, so no interference with future updates).
+- The process involves two steps:<br/>1) Obtain an individual token for authentication (this is rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard REST integration (simple).
+- For step 1, a shell script will take over the major steps and generate your token.
 
-**Important**: This is in a pre-alpha phase and still under development, currently optimized for the DXP-4800Plus.<br/>Larger models will require adjustments for additional volumes/disks, unit conversions/ roundings are not done properly yet, etc. Bottom line: This is a proof-of-concept for enthusiasts. Follow the steps at your own risk.
+**Important**: All this is still under development and currently optimized for my DXP 4800 Plus.<br/>Different models will require adjustments for volumes/disks; also unit conversions / rounding are not done properly yet, etc.
+Bottom line: At this stage, this is a proof-of-concept, currently meant for people who like to tinker.
 
 ## Introduction
 
@@ -14,7 +15,7 @@ When I switched from my trusty old 10-year old 2-Bay QNAP to the shiny new UGree
 
 The first issue was migrating my QNAP VMs to the UGreen NAS. After nearly 10 years of using that QNAP, I had built up quite a collection of virtual machines—including my entire Home Automation System with databases spanning the past decade. Initially, I couldn’t get these VMs to a functional state on the new system. After some trial-and-error (and a deeper dive into what was going wrong), I found a relatively simple solution. You can check out the details in [this](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) short post on UGreen’s Discord.
 
-The next hurdle was UGOS itself—it’s not exactly chatty when it comes to providing operational data about the NAS. As QNAP has it's own HA integration, I was used to views like this one:
+The next hurdle was UGOS itself — it’s not exactly chatty when it comes to providing operational data about the NAS. As QNAP has it's own HA integration, I was used to views like this one:
 
 ![image](https://github.com/user-attachments/assets/37f5f5d5-9998-4879-bdfa-8fa4d5590ef0)
 
