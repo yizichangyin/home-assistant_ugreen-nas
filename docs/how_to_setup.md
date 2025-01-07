@@ -93,5 +93,16 @@
   <summary>click to show/hide</summary>
   <br/>Finally, we are ready to create our REST sensors in HA.<br/><br/>
 
-_to be completed - if you want to work ahead now, see conf/ugreen_nas_rest.yaml_
+  - Go back to VS Code and create a file `conf/ugreen_nas_rest.yaml` (next to the `ugreen_nas_rest.yaml` we have created before).
+  - Copy/paste the code of this repository's `conf/ugreen_nas_rest.yaml` into it.
+  - Go back to your `configuration.yaml`and uncomment `rest:`![image](https://github.com/user-attachments/assets/e526fb32-03bc-40d5-9c52-4d67334a9620)
+  - Restart Home Assistant.
+  - Wait for a minute or two to let everything start properly, then choose **Developer Tools** --> **Actions** --> **Action:'RESTful: Reload'** and confirm.
+  - After another 5...10 seconds you should be set.
+  - Click **Developer Tools** --> **States** and filter for _ugreen_. All your NAS sensor names and data should appear.
+  - Make sure you are aware of the latest comments in the '[known problems and limitations](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) discussion here.
+  - You may need to adjust your sensors to your model / discs / pools, see discussion [here](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/6).
+
+  Congratulations, enjoy your selfmade UGreen HA Integration! :)
+  (... and let me know if you came across any difficulties, so I can improve this documentation ...) 
 </details>
