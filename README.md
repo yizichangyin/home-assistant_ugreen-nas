@@ -16,7 +16,7 @@ The first issue was migrating my QNAP VMs to the UGreen NAS. After nearly 10 yea
 
 The next hurdle was UGOS itself—it’s not exactly chatty when it comes to providing operational data about the NAS. As QNAP has it's own HA integration, I was used to views like this one:
 
-![image](https://github.com/user-attachments/assets/a7d0b14b-f056-4609-acbc-414baf8e3dd2)
+![image](https://github.com/user-attachments/assets/37f5f5d5-9998-4879-bdfa-8fa4d5590ef0)
 
 I soon found out that a similar card on the dashboard was rather impossible to do, and searching the Web for a ready-made HA solution or integration didn't get me any positives (but a lot of useful background information). So I had to start digging myself.
 
@@ -39,7 +39,7 @@ Before you get started, make sure to gather some important information that you�
 Since you already use this information when accessing your NAS through its Web Interface in a browser, it should be easy to find.
 Tip: The IP address and port number are displayed in your browser’s address bar (URL).
 
-![image](https://github.com/user-attachments/assets/43a8ca7e-cc14-4aff-8b0b-9379804f5b28)
+![image](https://github.com/user-attachments/assets/01f2415a-c07f-4730-8150-6131435e11f3)
 
 _Side note: While I initially explored this using a different approach, I will use the Visual Studio Code Server for this guide to make the steps easier to follow. If you haven’t installed it yet as an add-on, now is a good time to do so. Alternatively, you’ll need to manually execute the steps using an SSH shell and transfer files via an SMB connection to Home Assistant, or similar methods._
 
@@ -52,7 +52,8 @@ _Side note 2: All shell commands below can be copied and pasted directly from th
 - Inside the `scripts` directory, create a new file called `get_ugreen_token.sh`.
 - Copy the content of the `scripts/get_ugreen_token.sh` file from this repository into your newly created file.
 - Right-click the file name and select “Open in Integrated Terminal”.
-- In the terminal, run the following command to make the script executable: `chmod +x get_ugreen_token.sh`.<br/><br/> ![image](https://github.com/user-attachments/assets/160ee7f7-5eab-45a6-8db8-99e6a2fc9b5b)
+- In the terminal, run the following command to make the script executable: `chmod +x get_ugreen_token.sh`.<br/><br/> ![image](https://github.com/user-attachments/assets/3c4808fb-0aa5-4188-bc4d-96c56c79f3a5)
+
 
 The script is now ready to use.
 
@@ -64,7 +65,7 @@ The script is now ready to use.
 - Enter your password when prompted. You will now see the NAS command prompt (you’re working directly on the NAS).
 - Run the following command to list the certificate files: `sudo ls /var/cache/ugreen-rsa` (Note: For security reasons, you will be asked to re-enter your password).
 - The output will list two files, e.g., 1000.key and 1000.pub. The number in the file name (e.g., 1000) is the certificate number you need. Write this number down.
-- Log off from the NAS SSH session by typing: `exit`.<br/><br/>![image](https://github.com/user-attachments/assets/01d9a86c-76bf-4fc0-a554-9c015dc6dd4e)
+- Log off from the NAS SSH session by typing: `exit`.<br/><br/>![image](https://github.com/user-attachments/assets/194275a3-57d7-4f7e-9bee-f43b96ee219c)
 
 You now have the final piece of information required for token generation.
 
@@ -75,7 +76,8 @@ You now have the final piece of information required for token generation.
 - Run the shell script to generate the token: `./get_ugreen_token.sh` (the `./` at the beginning is important).
 - Follow the prompts displayed by the script. You’ll need to provide: The IP address of your NAS, the port number, the username and password, the certificate number retrieved in Step 2.<br/>Note: Password will be asked for again; ignore any _'Could not chdir'_ messages.
 - You will be presented with 3 results: (1) an encrypted password, (2) a static token, (3) a session token.
-- Select the static token (only this one we need) and copy it to you clipboard. Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).<br/><br/>![image](https://github.com/user-attachments/assets/64ee57b2-8720-43af-a453-22def10e91d7)
+- Select the static token (only this one we need) and copy it to you clipboard. Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).<br/><br/>![image](https://github.com/user-attachments/assets/e985f25f-0f16-4cfd-a552-08b50d444ef4)
+
 
 You now have a valid token that can be used to authenticate REST requests from Home Assistant.
 
@@ -97,10 +99,12 @@ homeassistant:
 ```
 
 
-- Create a `conf` directory for your configuration and add a file named `ugreen_nas_text_input.yaml` inside it:![image](https://github.com/user-attachments/assets/559ac374-7b92-487a-8e0a-6acd7fa4aa0e)
+- Create a `conf` directory for your configuration and add a file named `ugreen_nas_text_input.yaml` inside it:![image](https://github.com/user-attachments/assets/c133a6a0-a45f-4b7a-91d2-a81057ecff93)
+
 - Copy the content of the file `conf/ugreen_nas_text_input.yaml` from this repository into the newly created file.
 - Restart Home Assistant to apply the changes and create the entities.
-- Open **Developer Tools** → **States** in Home Assistant and filter for `ugreen`. For each filtered entity, set your local values, confirm each with 'Set state'.![image](https://github.com/user-attachments/assets/e04e4abe-c5a3-49c0-acba-9f2d375cdd7a)
+- Open **Developer Tools** → **States** in Home Assistant and filter for `ugreen`. For each filtered entity, set your local values, confirm each with 'Set state'.![image](https://github.com/user-attachments/assets/ba4a0f1c-cbb9-4433-8616-c7c266438e5f)
+
 
 You have now completed the basic configuration and initial setup.
 
@@ -114,4 +118,5 @@ You have now completed the basic configuration and initial setup.
 >
 >since then, some sensors are not reporting anymore. manual call in browser with the current token in the same URL gives positive JSON results / dict. (HUH? - to be evaluated - still a proof-of-concept)
 
-![image](https://github.com/user-attachments/assets/086f2108-7872-42f1-90ff-faec348ada39)
+![image](https://github.com/user-attachments/assets/72fdf1d3-abaa-4e91-90a6-af98c128836d)
+
