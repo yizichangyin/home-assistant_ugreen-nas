@@ -1,9 +1,8 @@
 ## In short:
 
-
 - Below proceure allows you to read runtime-related data from a UGOS-based NAS directly into Home Assistant.
-- The main idea: keep UGOS completely untouched (no additional tools installed on the NAS, so no interference with future updates).
-- The process involves two steps:<br/>1) Obtain an individual token for authentication (this is rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard REST integration (simple).
+- It keeps UGOS completely untouched (no additional tools installed on the NAS, so no interference with future updates).
+- The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard REST integration (simple).
 - For step 1, a shell script will take over the major steps and generate your token.
 
 **Important**: All this is still under development and currently optimized for my DXP 4800 Plus.<br/>Different models will require adjustments for volumes/disks; also unit conversions / rounding are not done properly yet, etc.
@@ -11,34 +10,32 @@ Bottom line: At this stage, this is a proof-of-concept, currently meant for peop
 
 ## Introduction
 
-When I switched from my trusty old 10-year old 2-Bay QNAP to the shiny new UGreen DXP-4800Plus, I ran into a couple of challenges.
+When I switched from my old QNAP to the new UGreen DXP, I ran into a couple of challenges.
 
-The first issue was migrating my QNAP VMs to the UGreen NAS. After nearly 10 years of using that QNAP, I had built up quite a collection of virtual machines—including my entire Home Automation System with databases spanning the past decade. Initially, I couldn’t get these VMs to a functional state on the new system. After some trial-and-error (and a deeper dive into what was going wrong), I found a relatively simple solution. You can check out the details in [this](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) short post on UGreen’s Discord.
+The first issue was migrating my VMs. After nearly 10 years of using that QNAP, I had built up a collection of virtual machines, including my entire Home Automation System with databases spanning the past decade. Initially, I couldn’t get these VMs to a functional state on the new system. After some trial-and-error (and a deeper dive into what was going wrong), I found a relatively simple solution. You can check out the details in [this](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) short post on UGreen’s Discord.
 
-The next hurdle was UGOS itself — it’s not exactly chatty when it comes to providing operational data about the NAS. As QNAP has it's own HA integration, I was used to views like this one:
+The next hurdle was UGOS itself — it’s not exactly chatty when it comes to providing operational data like CPU utilizaion, memory use etc. As QNAP has it's own HA integration, I was used to views like this one:
 
 ![image](https://github.com/user-attachments/assets/37f5f5d5-9998-4879-bdfa-8fa4d5590ef0)
 
-I soon found out that a similar card on the dashboard was rather impossible to do, and searching the Web for a ready-made HA solution or integration didn't get me any positives (but a lot of useful background information). So I had to start digging myself.
+Searching the Web for a ready-made HA solution or integration didn't get me any positives (but a lot of useful background information). So I had to start digging myself.
 
-The result can be found below. It is not what I would expect from a 'professional' end-user solution; it isn't even nice code. But it's working, and from my point of view a valid proof-of-concept.
+The result can be found below. It is not what I would expect from a 'professional' end-user solution; it isn't even nice code. But it's working.
 
 > If you come across any problems when following this guide, you are welcome to open a thread in the discussions section.
-> If you did the steps successfully, please also report back - people are interested to know that this doesn't work only once here on my desk.
-> If you like it - please leave a star. Thanks, good luck and enjoy. :)
+> If you did the steps successfully, please also report back.
 
 ## Preparations
 
-Before you get started, make sure to gather some important information that you’ll need later. Write it down somewhere safe—you’ll need it in the upcoming steps:
+Before you get started, make sure to gather some important information that you’ll need later. Write it down somewhere — you’ll need it in the upcoming steps:
 
 - The IP address of your NAS (four numbers, e.g., 192.168.178.9).
 - The port number your NAS uses for communication (usually 9999).
-- The username of an account with administrative privileges.
+- The username of a NAS account with administrative privileges.
 - The password for that user account.
-- A specific number that we’ll extract together in step 2 of this guide.
+- A specific number that we’ll extract in step 2 of this guide.
 
-Since you already use this information when accessing your NAS through its Web Interface in a browser, it should be easy to find.
-Tip: The IP address and port number are displayed in your browser’s address bar (URL).
+Since you already use most of this information when accessing your NAS through its Web Interface in a browser, it should be easy to find (e.g. the IP address and port number are displayed in your browser’s address bar):
 
 ![image](https://github.com/user-attachments/assets/01f2415a-c07f-4730-8150-6131435e11f3)
 
