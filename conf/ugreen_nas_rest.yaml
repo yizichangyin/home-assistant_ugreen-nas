@@ -1,1 +1,235 @@
 
+#
+#
+# NEEDS TO BE EVALUATED!!!!!! - adjust IP/port manually, please (token works)
+# 5 API calls in total, 2 started to fail since I started templating the URL to make it more universal
+#
+#
+
+
+  - resource_template: "http://192.168.178.9:9999/ugreen/v1/sysinfo/machine/common?token={{ states('input_text.ugreen_nas_conf_token') }}"
+    # >
+    # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
+    # /ugreen/v1/sysinfo/machine/common
+    # ?token={{states('input_text.ugreen_nas_conf_token')}}
+    scan_interval: 60
+    timeout: 15
+    sensor:
+      - name: "UGreen NAS Name"
+        value_template: "{{ value_json.data.common.nas_name }}"
+      - name: "UGreen NAS Owner"
+        value_template: "{{ value_json.data.common.nas_owner }}"
+      - name: "UGreen NAS Model"
+        value_template: "{{ value_json.data.common.model }}"
+      - name: "UGreen NAS Serial"
+        value_template: "{{ value_json.data.common.serial }}"
+      - name: "UGreen NAS MAC Address"
+        value_template: "{{ value_json.data.common.mac[0] }}"
+      - name: "UGreen NAS System Version"
+        value_template: "{{ value_json.data.common.system_version }}"
+      - name: "UGreen NAS Runtime"
+        value_template: "{{ value_json.data.common.run_time | int }}"
+        unit_of_measurement: "s"
+        icon: "mdi:clock-outline"
+      - name: "UGreen NAS Last Turn On"
+        value_template: "{{ value_json.data.common.last_turn_on_time }}"
+      - name: "UGreen NAS Repair Start Time"
+        value_template: "{{ value_json.data.common.repair_start_time }}"
+        icon: "mdi:clock-start"
+      - name: "UGreen NAS Repair End Time"
+        value_template: "{{ value_json.data.common.repair_end_time }}"
+        icon: "mdi:clock-end"
+      - name: "UGreen NAS CPU Model"
+        value_template: "{{ value_json.data.hardware.cpu[0].model }}"
+      - name: "UGreen NAS CPU Frequency"
+        value_template: "{{ value_json.data.hardware.cpu[0].ghz }}"
+        unit_of_measurement: "MHz"
+        icon: "mdi:speedometer"
+      - name: "UGreen NAS CPU Cores"
+        value_template: "{{ value_json.data.hardware.cpu[0].core }}"
+        unit_of_measurement: "Cores"
+      - name: "UGreen NAS CPU Threads"
+        value_template: "{{ value_json.data.hardware.cpu[0].thread }}"
+        unit_of_measurement: "Threads"
+      - name: "UGreen NAS CPU Temperature"
+        value_template: "{{ value_json.data.hardware.cpu[0].temperature }}"
+        unit_of_measurement: "°C"
+        device_class: temperature
+      - name: "UGreen NAS Memory Size"
+        value_template: "{{ (value_json.data.hardware.mem | map(attribute='size') | sum) / 1024 / 1024 / 1024 | round(0) }}"
+        unit_of_measurement: "GB"
+      - name: "UGreen NAS Memory Speed"
+        value_template: "{{ value_json.data.hardware.mem[0].mhz }}"
+        unit_of_measurement: "MHz"
+        icon: "mdi:memory"
+      - name: "UGreen NAS Memory Manufacturer"
+        value_template: "{{ value_json.data.hardware.mem[0].manufacturer }}"
+      - name: "UGreen NAS Memory Model"
+        value_template: "{{ value_json.data.hardware.mem[0].model }}"
+      - name: "UGreen NAS Network Interface Model"
+        value_template: "{{ value_json.data.hardware.net[0].model }}"
+        icon: "mdi:lan"
+      - name: "UGreen NAS Network IP"
+        value_template: "{{ value_json.data.hardware.net[0].ip }}"
+      - name: "UGreen NAS UPS Model"
+        value_template: "{{ value_json.data.hardware.ups[0].model }}"
+      - name: "UGreen NAS UPS Vendor"
+        value_template: "{{ value_json.data.hardware.ups[0].vendor }}"
+      - name: "UGreen NAS UPS Power Free"
+        value_template: "{{ value_json.data.hardware.ups[0].power_free }}"
+        unit_of_measurement: "%"
+      - name: "UGreen NAS USB Device"
+        value_template: "{{ value_json.data.hardware.usb[0].model }}"
+      - name: "UGreen NAS USB Vendor"
+        value_template: "{{ value_json.data.hardware.usb[0].vendor }}"
+        icon: "mdi:usb-port"
+      - name: "UGreen NAS USB Device Type"
+        value_template: "{{ value_json.data.hardware.usb[0].device_type }}"
+        icon: "mdi:usb-port"
+
+  - resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&token={{ states('input_text.ugreen_nas_conf_token') }}"
+    # >
+    # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
+    # /ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus
+    # ?token={{states('input_text.ugreen_nas_conf_token')}}
+    scan_interval: 60
+    timeout: 15
+    sensor:
+      - name: "UGreen NAS Device Name"
+        value_template: "{{ value_json.data.dev_name }}"
+      - name: "UGreen NAS Last Boot Date"
+        value_template: "{{ value_json.data.last_boot_date }}"
+      - name: "UGreen NAS Last Boot Time"
+        value_template: "{{ value_json.data.last_boot_time }}"
+        unit_of_measurement: "s"
+        icon: "mdi:clock-time-four"
+      - name: "UGreen NAS Status Message"
+        value_template: "{{ value_json.data.message }}"
+      - name: "UGreen NAS Server Status"
+        value_template: "{{ value_json.data.server_status }}"
+        icon: "mdi:server"
+      - name: "UGreen NAS Status Code"
+        value_template: "{{ value_json.data.status }}"
+      - name: "UGreen NAS Total Runtime"
+        value_template: "{{ value_json.data.total_run_time }}"
+        unit_of_measurement: "s"
+        icon: "mdi:clock-outline"
+      - name: "UGreen NAS Type"
+        value_template: "{{ value_json.data.type }}"
+
+  - resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring&token={{ states('input_text.ugreen_ugreen_nas_conf_token') }}"
+    # >
+    # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
+    # /ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring
+    # ?token={{states('input_text.ugreen_nas_conf_token')}}
+    scan_interval: 60
+    timeout: 15
+    sensor:
+      - name: "UGreen NAS CPU Usage"
+        value_template: "{{ value_json.data.cpu_usage_rate }}"
+        unit_of_measurement: "%"
+        device_class: power_factor
+      - name: "UGreen NAS Download Speed"
+        value_template: "{{ value_json.data.download_speed.value }}"
+        unit_of_measurement: "MB/s"
+        icon: "mdi:download"
+      - name: "UGreen NAS Upload Speed"
+        value_template: "{{ value_json.data.upload_speed.value }}"
+        unit_of_measurement: "MB/s"
+        icon: "mdi:upload"
+      - name: "UGreen NAS RAM Usage"
+        value_template: "{{ value_json.data.ram_usage_rate }}"
+        unit_of_measurement: "%"
+        icon: "mdi:memory"
+      - name: "UGreen NAS Server Status"
+        value_template: "{{ value_json.data.server_status }}"
+        icon: "mdi:server"
+      - name: "UGreen NAS Download Speed Raw"
+        value_template: "{{ value_json.data.download_speed.raw }}"
+        unit_of_measurement: "KB/s"
+      - name: "UGreen NAS Upload Speed Raw"
+        value_template: "{{ value_json.data.upload_speed.raw }}"
+        unit_of_measurement: "KB/s"
+
+  - resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring&token={{ states('input_text.input_text.ugreen_nas_conf_token') }}"
+    # >
+    # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
+    # /ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring
+    # ?token={{states('input_text.ugreen_nas_conf_token')}}
+    scan_interval: 60
+    timeout: 15
+    sensor:
+      - name: "UGreen NAS CPU Temperature"
+        value_template: "{{ value_json.data.cpu_temperature }}"
+        unit_of_measurement: "°C"
+        device_class: temperature
+      - name: "UGreen NAS Fan Speed"
+        value_template: "{{ value_json.data.fan_speed }}"
+        unit_of_measurement: "RPM"
+        icon: "mdi:fan"
+      - name: "UGreen NAS Fan Status"
+        value_template: "{{ value_json.data.fan_status }}"
+        icon: "mdi:fan-alert"
+      - name: "UGreen NAS Temperature Message"
+        value_template: "{{ value_json.data.message }}"
+        icon: "mdi:message-alert"
+      - name: "UGreen NAS Disk Temperatures"
+        value_template: >
+          {{ value_json.data.disk_list | map(attribute='temperature') | list }}
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Disk Status"
+        value_template: >
+          {{ value_json.data.disk_list | map(attribute='status') | list }}
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Disk Labels"
+        value_template: >
+          {{ value_json.data.disk_list | map(attribute='label') | list }}
+        icon: "mdi:label"
+
+  - resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace&token={{states('input_text.ugreen_nas_conf_token')}}"
+  # >
+  # "http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
+  # /ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace
+  # ?token={{states('input_text.ugreen_nas_conf_token')}}"
+
+    scan_interval: 60
+    timeout: 15
+    sensor:
+      - name: "UGreen NAS Storage Volume 1 Used"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).used / 1024 / 1024 / 1024 | round(0) }}
+        unit_of_measurement: "GB"
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Storage Volume 2 Used"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).used / 1024 / 1024 / 1024 | round(0) }}
+        unit_of_measurement: "GB"
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Storage Volume 1 Size"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).size / 1024 / 1024 / 1024 | round(0) }}
+        unit_of_measurement: "GB"
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Storage Volume 2 Size"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).size / 1024 / 1024 / 1024 | round(0) }}
+        unit_of_measurement: "GB"
+        icon: "mdi:harddisk"
+      - name: "UGreen NAS Storage Volume 1 Pool"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).pool_name }}
+      - name: "UGreen NAS Storage Volume 2 Pool"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).pool_name }}
+      - name: "UGreen NAS Storage Volume 1 Status"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).status }}
+      - name: "UGreen NAS Storage Volume 2 Status"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).status }}
+      - name: "UGreen NAS Storage Volume 1 Name"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).storage_name }}
+      - name: "UGreen NAS Storage Volume 2 Name"
+        value_template: >
+          {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).storage_name }}
