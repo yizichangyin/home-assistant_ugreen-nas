@@ -1,14 +1,14 @@
 ugreen_nas_conf_ip:
-  name: Config - UGreen NAS IP
+  name: UGreen NAS Config - IP
   min: 7
   max: 15
 
 ugreen_nas_conf_port:
-  name: Config - UGreen NAS Port
+  name: UGreen NAS Config - Port
   min: 1
   max: 5
 
 ugreen_nas_conf_token:
-  name: Config - UGreen NAS Token
+  name: UGreen NAS Config - Token
   min: 0
   max: 255
