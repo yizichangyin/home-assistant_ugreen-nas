@@ -22,7 +22,7 @@ For step 1, a dedicated shell script will take care of the complicated token gen
 
 ## The setup procedure
 
-Click [here](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup.md) to open the detailed step-by-step instructions.
+Click [here](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup.md) to open the detailed step-by-step instructions. Make sure to check on [Known problems and limitations](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) in the discussions section before proceeding with installation
 
 ## Final notes
 
