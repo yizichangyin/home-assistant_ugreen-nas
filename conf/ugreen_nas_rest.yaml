@@ -1,8 +1,10 @@
-- resource_template: "http://192.168.178.9:9999/ugreen/v1/sysinfo/machine/common?token={{states('input_text.ugreen_nas_conf_token')}}"
-  # >
-  # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
-  # /ugreen/v1/sysinfo/machine/common
-  # ?token={{states('input_text.ugreen_nas_conf_token')}}
+- # resource_template: "http://192.168.178.9:9999/ugreen/v1/sysinfo/machine/common?token={{states('input_text.ugreen_nas_conf_token')}}"
+  resource_template: >-
+    {{ 
+      'http://' + states('input_text.ugreen_nas_conf_ip') + ':' + states('input_text.ugreen_nas_conf_port') +
+      '/ugreen/v1/sysinfo/machine/common?' +
+      'token=' + states('input_text.ugreen_nas_conf_token')
+    }}
   scan_interval: 60
   timeout: 15
   sensor:
@@ -49,10 +51,10 @@
     - name: "UGreen NAS Memory Size"
       value_template: "{{ (value_json.data.hardware.mem | map(attribute='size') | sum) / 1024 / 1024 / 1024 | round(0) }}"
       unit_of_measurement: "GB"
-    - name: "UGreen NAS Memory Speed"
-      value_template: "{{ value_json.data.hardware.mem[0].mhz }}"
-      unit_of_measurement: "MHz"
-      icon: "mdi:memory"
+    #- name: "UGreen NAS Memory Speed"
+    #  value_template: "{{ value_json.data.hardware.mem[0].mhz }}"
+    #  unit_of_measurement: "MHz"
+    #  icon: "mdi:memory"
     - name: "UGreen NAS Memory Manufacturer"
       value_template: "{{ value_json.data.hardware.mem[0].manufacturer }}"
     - name: "UGreen NAS Memory Model"
@@ -66,9 +68,9 @@
       value_template: "{{ value_json.data.hardware.ups[0].model }}"
     - name: "UGreen NAS UPS Vendor"
       value_template: "{{ value_json.data.hardware.ups[0].vendor }}"
-    - name: "UGreen NAS UPS Power Free"
-      value_template: "{{ value_json.data.hardware.ups[0].power_free }}"
-      unit_of_measurement: "%"
+    # - name: "UGreen NAS UPS Power Free"
+    #   value_template: "{{ value_json.data.hardware.ups[0].power_free }}"
+    #   unit_of_measurement: "%"
     - name: "UGreen NAS USB Device"
       value_template: "{{ value_json.data.hardware.usb[0].model }}"
     - name: "UGreen NAS USB Vendor"
@@ -78,12 +80,13 @@
       value_template: "{{ value_json.data.hardware.usb[0].device_type }}"
       icon: "mdi:usb-port"
 
-- resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&token={{states('input_text.ugreen_nas_conf_token')}}"
-  # >
-  # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
-  # /ugreen/v1/desktop/components/data
-  # ?id=desktop.component.SystemStatus
-  # &token={{states('input_text.ugreen_nas_conf_token')}}
+- # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&token={{states('input_text.ugreen_nas_conf_token')}}"
+  resource_template: >-
+    {{
+      'http://' + states('input_text.ugreen_nas_conf_ip') + ':' + states('input_text.ugreen_nas_conf_port') +
+      '/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&' +
+      'token=' + states('input_text.ugreen_nas_conf_token')
+    }}
   scan_interval: 60
   timeout: 15
   sensor:
@@ -109,12 +112,13 @@
     - name: "UGreen NAS Type"
       value_template: "{{ value_json.data.type }}"
 
-- resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
-  # >
-  # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
-  # /ugreen/v1/desktop/components/data
-  # ?id=desktop.component.DeviceMonitoring
-  # &token={{states('input_text.ugreen_nas_conf_token')}}
+- # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
+  resource_template: >-
+    {{
+      'http://' + states('input_text.ugreen_nas_conf_ip') + ':' + states('input_text.ugreen_nas_conf_port') +
+      '/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring&' +
+      'token=' + states('input_text.ugreen_nas_conf_token')
+    }}
   scan_interval: 60
   timeout: 15
   sensor:
@@ -144,12 +148,13 @@
       value_template: "{{ value_json.data.upload_speed.raw }}"
       unit_of_measurement: "KB/s"
 
-- resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
-  # >
-  # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
-  # /ugreen/v1/desktop/components/data
-  # ?id=desktop.component.TemperatureMonitoring
-  # &token={{states('input_text.ugreen_nas_conf_token')}}
+- # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
+  resource_template: >-
+    {{
+      'http://' + states('input_text.ugreen_nas_conf_ip') + ':' + states('input_text.ugreen_nas_conf_port') +
+      '/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring&' +
+      'token=' + states('input_text.ugreen_nas_conf_token')
+    }}
   scan_interval: 60
   timeout: 15
   sensor:
@@ -180,13 +185,13 @@
         {{ value_json.data.disk_list | map(attribute='label') | list }}
       icon: "mdi:label"
 
-- resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace&token={{states('input_text.ugreen_nas_conf_token')}}"
-  # >
-  # http://{{states('input_text.ugreen_nas_conf_ip')}}:{{states('input_text.ugreen_nas_conf_port')}}
-  # /ugreen/v1/desktop/components/data
-  # ?id=desktop.component.StorageSpace
-  # &token={{states('input_text.ugreen_nas_conf_token')}}"
-
+- #resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace&token={{states('input_text.ugreen_nas_conf_token')}}"
+  resource_template: >-
+    {{
+      'http://' + states('input_text.ugreen_nas_conf_ip') + ':' + states('input_text.ugreen_nas_conf_port') +
+      '/ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace&' +
+      'token=' + states('input_text.ugreen_nas_conf_token')
+    }}
   scan_interval: 60
   timeout: 15
   sensor:
