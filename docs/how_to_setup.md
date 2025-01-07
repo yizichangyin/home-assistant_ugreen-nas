@@ -83,7 +83,7 @@
   - Create a `conf` directory for your configuration and add a file named `ugreen_nas_text_input.yaml` inside it:<br/><br/>![image](https://github.com/user-attachments/assets/c133a6a0-a45f-4b7a-91d2-a81057ecff93)
   - Copy the content of the file `conf/ugreen_nas_text_input.yaml` from this repository into the newly created file.
   - Restart Home Assistant to apply the changes and create the entities.
-  - Open **Developer Tools** → **States** in Home Assistant and filter for `ugreen`.<br/>For each filtered entity, set your local values, confirm each with 'Set state'.<br/><br/>![400592950-ba4a0f1c-cbb9-4433-8616-c7c266438e5f](https://github.com/user-attachments/assets/a0cac825-793a-4e65-9b3d-39b707c77c6d)
+  - Open **Developer Tools** → **States** in Home Assistant and filter for `ugreen`.<br/>For each filtered entity, set your local values, confirm each with 'Set state'.<br/><br/>![image](https://github.com/user-attachments/assets/c324dfaa-f522-4017-87f2-e5520817c890)
   
   We have now completed the basic configuration and initial setup.
 </details>
