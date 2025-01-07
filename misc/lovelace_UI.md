@@ -1,6 +1,6 @@
 ## NAS picture
 
-![image](https://github.com/user-attachments/assets/9b46ddb6-3854-4943-af14-e08ba20b9138)
+![image](https://github.com/user-attachments/assets/90760fd9-0b38-471c-aee4-b4581e53f0a8)
 
 ```yaml
 type: picture
@@ -10,7 +10,7 @@ image: /local/images/ugreen_dxp.png
 
 ## Volume occupied / free I
 
-![image](https://github.com/user-attachments/assets/881d55ed-7125-4ad9-a1f4-777acf9d4a89)
+![image](https://github.com/user-attachments/assets/4ad10ea5-c800-49b7-b46d-a2c090f5a022)
 
 ```yaml
 type: horizontal-stack
@@ -33,7 +33,7 @@ cards:
 
 ## Volume occupied / free II
 
-![image](https://github.com/user-attachments/assets/16f7680b-6f78-40c9-b191-1e6002b27b01)
+![image](https://github.com/user-attachments/assets/6584690e-68cf-4c5c-aecd-4c882100cab1)
 
 ```yaml
 type: horizontal-stack
@@ -64,7 +64,7 @@ cards:
 
 ## Status view
 
-![image](https://github.com/user-attachments/assets/f6b25bc0-be26-47c3-8296-bb0638e087eb)
+![image](https://github.com/user-attachments/assets/da2f4c7d-c07d-40b8-91f2-6a0823a9ead6)
 
 _Requires card-mod, mini-graph-card!_
 
