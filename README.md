@@ -5,7 +5,7 @@
 - The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 - For step 1, a shell script will take over the major steps and generate your token.
 
-**Important**: All this is still under development and currently optimized for my DXP 4800 Plus.<br/>Different models will require adjustments for volumes/disks; also unit conversions / rounding are not done properly yet, etc.
+**Important**: All this is still under development and currently optimized for my DXP 4800 Plus.<br/>Different models will require adjustments for volumes/disks; also unit conversions / rounding are not done properly yet, etc.<br/>
 Bottom line: At this stage, this is a proof-of-concept, currently meant for people who like to tinker.
 
 ## Introduction
