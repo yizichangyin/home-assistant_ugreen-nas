@@ -2,7 +2,7 @@
 
 - Below proceure allows you to read runtime-related data from a UGOS-based NAS directly into Home Assistant.
 - It keeps UGOS completely untouched (no additional tools installed on the NAS, so no interference with future updates).
-- The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard REST integration (simple).
+- The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 - For step 1, a shell script will take over the major steps and generate your token.
 
 **Important**: All this is still under development and currently optimized for my DXP 4800 Plus.<br/>Different models will require adjustments for volumes/disks; also unit conversions / rounding are not done properly yet, etc.
@@ -43,7 +43,7 @@ _Side note: While I initially explored this using a different approach, I will u
 
 _Side note 2: All shell commands below can be copied and pasted directly from this guide. After pasting a command, press <Enter> to execute it._
 
-## Step 1: Getting the Token Script Ready
+## Step 1: Getting the token gathering script ready
 > **Purpose:** Set up the shell script for token generation.
 
 - Open the Visual Studio Code Server, navigate to your file structure on the left, and create a directory named `scripts` (if it doesn’t already exist).
@@ -52,10 +52,9 @@ _Side note 2: All shell commands below can be copied and pasted directly from th
 - Right-click the file name and select “Open in Integrated Terminal”.
 - In the terminal, run the following command to make the script executable: `chmod +x get_ugreen_token.sh`.<br/><br/> ![image](https://github.com/user-attachments/assets/3c4808fb-0aa5-4188-bc4d-96c56c79f3a5)
 
-
 The script is now ready to use.
 
-## Step 2: Retrieving the Last Piece of Information for the Token
+## Step 2: Retrieving the last piece of information for token generation
 > **Purpose:** Locate the certificate number required for token generation.
 
 - Stay in the terminal window and type: `clear` - this gets us an empty, clean workbench.
@@ -67,7 +66,7 @@ The script is now ready to use.
 
 You now have the final piece of information required for token generation.
 
-## Step 3: Getting Your Token
+## Step 3: Getting your token
 > **Purpose:** Generate your authentication token for Home Assistant REST requests.
 
 - Stay in the terminal window, run `clear` again for a clean workbench.
@@ -79,7 +78,7 @@ You now have the final piece of information required for token generation.
 
 You now have a valid token that can be used to authenticate REST requests from Home Assistant.
 
-## Step 4: Creating Boot-Safe HA Config Entities for Your NAS
+## Step 4: Creating restart-safe config entities
 
 > **Purpose:** Ensure your token is easily accessible and quickly adjustable at any time without restarting HA.
 
@@ -106,15 +105,7 @@ homeassistant:
 
 You have now completed the basic configuration and initial setup.
 
-## Step 5: Create Your Entities / Sensors
-> **Purpose:** Finalize the setup procedure by defining the sensors to read data from the NAS.
+## Step 5: Create NAS entities
+> **Purpose:** Finalize the setup procedure by defining your sensors.
 
-
->to be completed by me tomorrow - see conf/ugreen_nas_rest.yaml.
->
->it used to work fine for 3 days until I switched today the REST URL from fixed IP/Port in YAML definition to templated input_text's ...
->
->since then, some sensors are not reporting anymore. manual call in browser with the current token in the same URL gives positive JSON results / dict. (HUH? - to be evaluated - still a proof-of-concept)
-
-![image](https://github.com/user-attachments/assets/72fdf1d3-abaa-4e91-90a6-af98c128836d)
-
+_to be completed - see conf/ugreen_nas_rest.yaml_
