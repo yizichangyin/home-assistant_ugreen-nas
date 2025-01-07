@@ -1,6 +1,6 @@
 ## In short:
 
-- Below proceure allows you to read runtime-related data from a UGOS-based NAS directly into Home Assistant.
+- Below procedure allows you to read runtime related data from a UGOS-based NAS directly into Home Assistant.
 - It keeps UGOS completely untouched (no additional tools installed on the NAS, so no interference with future updates).
 - The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 - For step 1, a shell script will take over the major steps and generate your token.
