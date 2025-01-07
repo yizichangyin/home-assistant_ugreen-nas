@@ -1,0 +1,5 @@
+homeassistant:
+  packages:
+    ugreen_nas:
+      # rest:            !include conf/ugreen_nas_rest.yaml
+      text_input:        !include conf/ugreen_nas_text_input.yaml
