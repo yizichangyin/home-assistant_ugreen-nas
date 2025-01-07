@@ -103,6 +103,6 @@
   - Make sure you are aware of the latest comments in the '[known problems and limitations](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) discussion here.
   - You may need to adjust your sensors to your model / discs / pools, see discussion [here](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/6).
 
-  Congratulations, enjoy your selfmade UGreen HA Integration! :)
-  (... and let me know if you came across any difficulties, so I can improve this documentation ...) 
+  Congratulations, enjoy your selfmade UGreen HA Integration! :)<br/>
+  _(... and let me know if you came across any difficulties, so I can improve this documentation ...)_
 </details>
