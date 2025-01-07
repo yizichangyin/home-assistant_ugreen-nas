@@ -22,8 +22,8 @@ Searching the Web for a ready-made HA solution or integration didn't get me any 
 
 The result can be found below. It is not what I would expect from a 'professional' end-user solution; it isn't even nice code. But it's working.
 
-> If you come across any problems when following this guide, you are welcome to open a thread in the discussions section.
-> If you did the steps successfully, please also report back.
+> If you come across any problems when following this guide, you are welcome to open a thread in the discussions section.<br/>
+> If you succeed, please also report back, it's always good to know if things are working.
 
 ## Preparations
 
