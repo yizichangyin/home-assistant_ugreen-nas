@@ -78,7 +78,7 @@
       packages:
         ugreen_nas:
           # rest:            !include conf/ugreen_nas_rest.yaml
-          text_input:        !include conf/ugreen_nas_text_input.yaml
+          input_text:        !include conf/ugreen_nas_text_input.yaml
     ```
   - Create a `conf` directory for your configuration and add a file named `ugreen_nas_text_input.yaml` inside it:<br/><br/>![image](https://github.com/user-attachments/assets/c133a6a0-a45f-4b7a-91d2-a81057ecff93)
   - Copy the content of the file `conf/ugreen_nas_text_input.yaml` from this repository into the newly created file.
