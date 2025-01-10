@@ -1,3 +1,7 @@
+$${\color{red}Please \space note: \space For \space the \space time\space being,\space the \space way \space of \space token \space generation \space in \space here \space seems \space incompatible \space to \space the \space latest \space 2FA \space amendment.}$$
+$${\color{red}Please \space switch \space off \space Two \space Factor \space Authentication \space before \space requesting \space the \space token.}$$
+$${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \space this \space issue!}$$
+
 ## Preparations
 <details>
   <summary>click to show/hide</summary>
