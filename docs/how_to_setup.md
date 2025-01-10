@@ -95,7 +95,7 @@
 
   - Go back to VS Code and create a file `conf/ugreen_nas_rest.yaml` (next to the `ugreen_nas_rest.yaml` we have created before).
   - Copy/paste the code of this repository's `conf/ugreen_nas_rest.yaml` into it.
-  - Go back to your `configuration.yaml`and uncomment `rest:`![image](https://github.com/user-attachments/assets/e526fb32-03bc-40d5-9c52-4d67334a9620)
+  - Go back to your `configuration.yaml`and uncomment `rest:`![image](https://github.com/user-attachments/assets/ec6ae8b9-b570-44cf-ba92-60d9fa4b77ac)
   - Restart Home Assistant.
   - Wait for a minute or two to let everything start properly, then choose **Developer Tools** --> **Actions** --> **Action:'RESTful: Reload'** and confirm.
   - After another 5...10 seconds you should be set.
