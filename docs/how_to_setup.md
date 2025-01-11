@@ -76,7 +76,7 @@ Revised version: Steps 1 - 3 can be skipped.
   
   - Open your web browser, log on to the Web GUI of the NAS with an administrative user.
   - Display the developer tools (most browsers: press F12).
-  - The following picture shows where to find the `static_token`key that we need in Google Chrome. There might be different menu titles if you are using another browser; in most of them you can use Ctrl-F to locate the key![image](https://github.com/user-attachments/assets/19582953-1790-4a2e-9242-34fc56d32d43)
+  - The following picture (screenshot of Google Chrome developer tools) shows where to find the `static_token`key that we need. There might be different menu titles if you are using another browser; in most of them you can use Ctrl-F to locate the key![image](https://github.com/user-attachments/assets/19582953-1790-4a2e-9242-34fc56d32d43)
   - Select and right-click the `static_token` key and choose 'copy' (or 'copy value', again depending on your browser) to copy the token to your clipboard.<br/>Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).
   
   We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
