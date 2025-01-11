@@ -1,6 +1,4 @@
-$${\color{red}Please \space note: \space For \space the \space time\space being,\space the \space way \space of \space token \space generation \space in \space here \space seems \space incompatible \space to \space the \space latest \space 2FA \space amendment.}$$
-$${\color{red}Please \space switch \space off \space Two \space Factor \space Authentication \space before \space requesting \space the \space token.}$$
-$${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \space this \space issue!}$$
+Revised version: Steps 1 - 3 can be skipped.
 
 ## Preparations
 <details>
@@ -9,20 +7,20 @@ $${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \s
   
   - The IP address of your NAS (four numbers, e.g., 192.168.178.9).
   - The port number your NAS uses for communication (usually 9999).
-  - The username of a NAS account with administrative privileges.
-  - The password for that user account.
-  - A specific number that we’ll extract in step 2 of this guide.
+  - ~~The username of a NAS account with administrative privileges.~~ (not needed any longer)
+  - ~~The password for that user account.~~ (not needed any longer)
+  - ~~A specific number that we’ll extract in step 2 of this guide.~~ (not needed any longer)
   
   Since you already use most of this information when accessing your NAS through its Web Interface in a browser, it should be easy to find (e.g. the IP address and port number are displayed in your browser’s address bar):
   
   ![image](https://github.com/user-attachments/assets/01f2415a-c07f-4730-8150-6131435e11f3)
   
-  _Side note: While I initially explored this using a different approach, I will use the Visual Studio Code Server for this guide to make the steps easier to follow. If you haven’t installed it yet as an add-on, now is a good time to do so. Alternatively, you’ll need to manually execute the steps using an SSH shell and transfer files via an SMB connection to Home Assistant, or similar methods._
+ ~~_Side note: While I initially explored this using a different approach, I will use the Visual Studio Code Server for this guide to make the steps easier to follow. If you haven’t installed it yet as an add-on, now is a good time to do so. Alternatively, you’ll need to manually execute the steps using an SSH shell and transfer files via an SMB connection to Home Assistant, or similar methods._~~
   
-  _Side note 2: All shell commands below can be copied and pasted directly from this guide. After pasting a command, press <Enter> to execute it._
+  ~~_Side note 2: All shell commands below can be copied and pasted directly from this guide. After pasting a command, press <Enter> to execute it._~~
 </details>
 
-## Step 1: Creating the token gathering script
+## ~~Step 1: Creating the token gathering script~~ (outdated)
 <details>
   <summary>click to show/hide</summary>
   <br/>This will create a shell script for token generation:<br/><br/>
@@ -38,7 +36,7 @@ $${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \s
   The script is now ready to use.<br/><br/>
 </details>
 
-## Step 2: Retrieving the certificate number
+## ~~Step 2: Retrieving the certificate number~~ (outdated)
 <details>
   <summary>click to show/hide</summary>
   <br/>This will provide you the certificate number, which is the final piece of information we need for token generation:<br/><br/>
@@ -55,7 +53,7 @@ $${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \s
   We now have the final piece of information on hand that we need for token generation.
 </details>
 
-## Step 3: Getting the REST token
+## ~~Step 3: Getting the REST token~~ (outdated)
 <details>
   <summary>click to show/hide</summary>
   <br/>Let's generate our token:<br/><br/>
@@ -67,6 +65,19 @@ $${\color{red}Thanks \space to \space @kloppy1984 \space for \space reporting \s
   - Select the static token (we need only this one) and copy it to your clipboard.<br/>Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).
   
   ![image](https://github.com/user-attachments/assets/e985f25f-0f16-4cfd-a552-08b50d444ef4)
+  
+  We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
+</details>
+
+## Steps 1-3 combined (the easier way to do it, no shell script needed)
+<details>
+  <summary>click to show/hide</summary>
+  <br/>Let's gain our token:<br/><br/>
+  
+  - Open your web browser, log on to the Web GUI of the NAS with an administrative user.
+  - Display the developer tools (most browsers: press F12).
+  - The following picture shows where to find the `static_token`key that we need in Google Chrome. There might be different menu titles if you are using another browser; in most of them you can use Ctrl-F to locate the key![image](https://github.com/user-attachments/assets/1c69259b-d33c-4870-a6a3-b912bf48ddbf)
+  - Select and right-click the `static_token` key and choose 'copy' (or 'copy value', again depending on your browser) to copy the token to your clipboard.<br/>Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).
   
   We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
 </details>
