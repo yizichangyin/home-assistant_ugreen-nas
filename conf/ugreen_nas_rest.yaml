@@ -197,39 +197,45 @@
   sensor:
     - name: "UGreen NAS Storage Volume 1 Used"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).used / 1024 / 1024 / 1024 | round(0) }}
+       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).used / (1024 * 1024 * 1024)) | round(1, 'ceil') }}
       unit_of_measurement: "GB"
       icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 2 Used"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).used / 1024 / 1024 / 1024 | round(0) }}
+       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).used / (1024 * 1024 * 1024)) | round(1, 'ceil') }}
       unit_of_measurement: "GB"
       icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 1 Size"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).size / 1024 / 1024 / 1024 | round(0) }}
+       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).size / (1024 * 1024 * 1024)) | round(1, 'floor') }}
       unit_of_measurement: "GB"
       icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 2 Size"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).size / 1024 / 1024 / 1024 | round(0) }}
+       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).size / (1024 * 1024 * 1024)) | round(1, 'floor') }}
       unit_of_measurement: "GB"
       icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 1 Pool"
       value_template: >
         {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).pool_name }}
+      icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 2 Pool"
       value_template: >
         {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).pool_name }}
+      icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 1 Status"
       value_template: >
         {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).status }}
-    - name: "UGreen NAS Storage Volume 2 Status"
-      value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).status }}
-    - name: "UGreen NAS Storage Volume 1 Name"
-      value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).storage_name }}
+      icon: "mdi:harddisk"
     - name: "UGreen NAS Storage Volume 2 Name"
       value_template: >
         {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).storage_name }}
+      icon: "mdi:harddisk"
+    - name: "UGreen NAS Storage Volume 2 Status"
+      value_template: >
+        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).status }}
+      icon: "mdi:harddisk"
+    - name: "UGreen NAS Storage Volume 1 Name"
+      value_template: >
+        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).storage_name }}
+      icon: "mdi:harddisk"
