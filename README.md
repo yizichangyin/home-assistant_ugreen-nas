@@ -30,5 +30,4 @@ Everything on this Repository is still under development. My current focus is th
 If you come across any problems, you are welcome to open a thread in the [discussions](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) section.<br/>
 If you succeed, please also report back. It's always good to know if things are working as intended.
 <br/><br/>
-![image](https://github.com/user-attachments/assets/a545c074-d802-4915-b757-10c107d19ebb)
-
+![gesamtübersicht-2](https://github.com/user-attachments/assets/b5adc821-fca0-4ed2-80d3-ba631748f5c8)
