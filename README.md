@@ -6,7 +6,7 @@ The process involves two steps:<br/>1) Obtain an individual token for authentica
 
 ~~For step 1, a dedicated shell script will take care of the complicated token generation process. You only need to input some general parameters like NAS IP or user name.~~
 
-I found out how to find the token from a NAS GUI browser session, so it is now way easier to get. So, the entire setup procedure shouldn't take you more than 10 minutes, if you know your way around in HA.
+I found out how to find the token in a NAS GUI browser session, making it way easier to obtain. So, the entire setup procedure shouldn't take you more than 10 minutes now, if you know your way around in HA.
 
 ## The story behind
 
