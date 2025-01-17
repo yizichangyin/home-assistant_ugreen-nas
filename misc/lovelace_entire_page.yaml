@@ -1,0 +1,253 @@
+  # raw YAML copy of entire page nas shown in screenshot
+  # this page requires auto-entities card, mini-graph card and card-mod (install through HACS)
+  - type: sections
+    cards: []
+    max_columns: 3
+    title: NAS
+    path: nas
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: NAS
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.ugreen_nas_model
+              - type: entity
+                entity: sensor.ugreen_nas_system_version
+          - type: picture
+            image: /local/images/ugreen_dxp.png
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.ugreen_nas_cpu_usage
+                needle: false
+                min: 0
+                max: 100
+                name: CPU
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: transparent;
+                      overflow-y: auto;
+                    }
+              - type: gauge
+                entity: sensor.ugreen_nas_ram_usage
+                needle: false
+                min: 0
+                max: 100
+                name: RAM
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: transparent;
+                      overflow-y: auto;
+                    }
+          - type: entities
+            entities:
+              - entity: sensor.ugreen_nas_status_message
+                name: Gesamtstatus
+              - entity: sensor.ugreen_nas_temperature_message
+                name: Temperatur
+            show_header_toggle: true
+            state_color: false
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  overflow-y: auto;
+                }
+      - type: grid
+        cards:
+          - type: heading
+            heading: NAS
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.ugreen_nas_cpu_model
+              - type: entity
+                entity: sensor.ugreen_nas_cpu_cores
+              - type: entity
+                entity: sensor.ugreen_nas_cpu_threads
+              - type: entity
+                entity: sensor.ugreen_nas_cpu_frequency
+              - type: entity
+                entity: sensor.ugreen_nas_ram_total
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                hours_to_show: 24
+                points_per_hour: 2
+                animate: true
+                hour24: true
+                height: 150
+                entities:
+                  - sensor.ugreen_nas_cpu_usage
+                icon: mdi:chip
+                decimals: 0
+                state_adaptive_color: true
+                show_state: true
+                name: CPU Load
+                line_color: '#00ff26'
+                line_width: 7
+                color_thresholds:
+                  - value: 20
+                    color: '#00ff26'
+                  - value: 50
+                    color: '#ddff00'
+                  - value: 60
+                    color: '#ff8c00'
+                  - value: 80
+                    color: '#ff5900'
+                  - value: 90
+                    color: '#ff0000'
+                show:
+                  extrema: true
+                  name_adaptive_color: true
+                  icon_adaptive_color: true
+                card_mod:
+                  style: |
+                    ha-card { 
+                      background: transparent;
+                    }  
+              - type: custom:mini-graph-card
+                hours_to_show: 24
+                points_per_hour: 2
+                animate: true
+                hour24: true
+                height: 150
+                entities:
+                  - sensor.ugreen_nas_cpu_temperature
+                state_adaptive_color: true
+                show_state: true
+                name: CPU Temp
+                line_color: '#00ff26'
+                line_width: 7
+                color_thresholds:
+                  - value: 20
+                    color: '#00ff26'
+                  - value: 50
+                    color: '#ddff00'
+                  - value: 60
+                    color: '#ff8c00'
+                  - value: 80
+                    color: '#ff5900'
+                  - value: 90
+                    color: '#ff0000'
+                show:
+                  extrema: true
+                  name_adaptive_color: true
+                  icon_adaptive_color: true
+                card_mod:
+                  style: |
+                    ha-card { 
+                      background: transparent;
+                    }  
+              - name: RAM Load
+                type: custom:mini-graph-card
+                hours_to_show: 24
+                points_per_hour: 2
+                animate: true
+                hour24: true
+                height: 150
+                entities:
+                  - sensor.ugreen_nas_ram_usage
+                decimals: 0
+                icon: mdi:memory
+                state_adaptive_color: true
+                show_state: true
+                line_color: '#00ff26'
+                line_width: 7
+                color_thresholds:
+                  - value: 20
+                    color: '#00ff26'
+                  - value: 50
+                    color: '#ddff00'
+                  - value: 60
+                    color: '#ff8c00'
+                  - value: 80
+                    color: '#ff5900'
+                  - value: 90
+                    color: '#ff0000'
+                show:
+                  extrema: true
+                  name_adaptive_color: true
+                  icon_adaptive_color: true
+                card_mod:
+                  style: |
+                    ha-card { 
+                      background: transparent;
+                    }  
+          - type: horizontal-stack
+            cards:
+              - name: Vol1 (500GB) - VMs, dBs
+                type: gauge
+                entity: sensor.ugreen_nas_volume1_used_gb
+                needle: true
+                min: 0
+                max: 440
+                unit: GB
+                severity:
+                  green: 0
+                  yellow: 330
+                  red: 400
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: transparent;
+                      overflow-y: auto;
+                    }
+              - name: Vol2 (4TB) - Data
+                type: gauge
+                entity: sensor.ugreen_nas_volume2_used_gb
+                needle: true
+                min: 0
+                max: 3710
+                unit: GB
+                severity:
+                  green: 0
+                  yellow: 2780
+                  red: 3340
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: transparent;
+                      overflow-y: auto;
+                    }
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: All UGreen NAS Entities (~60)
+              card_mod:
+                style: |
+                  ha-card {
+                    max-height: 560px;
+                    min-height: 560px;
+                    background: transparent;
+                    overflow-y: auto;
+                  }
+                  .card-content { 
+                    /**background: transparent;**/
+                    /**overflow-y: auto;**/
+                    --ha-card-border-radius: 0px; 
+                    --ha-card-border-width: 0px;
+                    --card-mod-icon-color: white;
+                  }
+            filter:
+              include:
+                - entity_id: sensor.ugreen_nas_*
+                  options: sensor
+              exclude: []
+            grid_options:
+              columns: full
+              rows: 1
+            show_empty: true
+            style:
+              height: 200px
+            sort:
+              method: entity_id
+        column_span: 2
+
