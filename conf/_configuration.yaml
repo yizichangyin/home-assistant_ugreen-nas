@@ -1,3 +1,9 @@
+logger:
+  default: warning
+  logs:
+    homeassistant.components.rest: critical
+    homeassistant.components.sensor: error
+
 homeassistant:
   packages:
     ugreen_nas:
