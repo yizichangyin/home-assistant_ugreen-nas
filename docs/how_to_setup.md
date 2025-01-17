@@ -20,7 +20,7 @@ Revised version: Steps 1 - 3 can be skipped.
   ~~_Side note 2: All shell commands below can be copied and pasted directly from this guide. After pasting a command, press <Enter> to execute it._~~
 </details>
 
-## ~~Step 1: Creating the token gathering script~~ (outdated)
+## ~~Step 1: Creating the token gathering script~~ (obsolete, use browser)
 <details>
   <summary>click to show/hide</summary>
   <br/>This will create a shell script for token generation:<br/><br/>
@@ -36,7 +36,7 @@ Revised version: Steps 1 - 3 can be skipped.
   The script is now ready to use.<br/><br/>
 </details>
 
-## ~~Step 2: Retrieving the certificate number~~ (outdated)
+## ~~Step 2: Retrieving the certificate number~~ (obsolete, use browser)
 <details>
   <summary>click to show/hide</summary>
   <br/>This will provide you the certificate number, which is the final piece of information we need for token generation:<br/><br/>
@@ -53,7 +53,7 @@ Revised version: Steps 1 - 3 can be skipped.
   We now have the final piece of information on hand that we need for token generation.
 </details>
 
-## ~~Step 3: Getting the REST token~~ (outdated)
+## ~~Step 3: Getting the REST token~~ (obsolete, use browser)
 <details>
   <summary>click to show/hide</summary>
   <br/>Let's generate our token:<br/><br/>
@@ -89,10 +89,17 @@ Revised version: Steps 1 - 3 can be skipped.
   
   - Open `configuration.yaml` and add a new package under the `homeassistant` key. Leave the `rest` section commented out for now; we’ll handle that in the next step. As always, pay attention to proper indentation:<br/><br/>
     ```yaml
+    logger:
+      default: warning
+      logs:
+        homeassistant.components.rest: critical
+        homeassistant.components.sensor: error
+    
     homeassistant:
       packages:
         ugreen_nas:
           # rest:            !include conf/ugreen_nas_rest.yaml
+          # template:        !include conf/ugreen_nas_template_sensors.yaml
           input_text:        !include conf/ugreen_nas_input_text.yaml
     ```
   - Create a `conf` directory for your configuration and add a file named `ugreen_nas_input_text.yaml` inside it:<br/><br/>![image](https://github.com/user-attachments/assets/c133a6a0-a45f-4b7a-91d2-a81057ecff93)
@@ -110,13 +117,27 @@ Revised version: Steps 1 - 3 can be skipped.
 
   - Go back to VS Code and create a file `conf/ugreen_nas_rest.yaml` (next to the `ugreen_nas_rest.yaml` we have created before).
   - Copy/paste the code of this repository's `conf/ugreen_nas_rest.yaml` into it.
-  - Go back to your `configuration.yaml`and uncomment `rest:`![image](https://github.com/user-attachments/assets/8714d257-00af-41c5-b28a-98b726e2028e)
+  - Create another file `conf/ugreen_nas_template_sensors.yaml` and copy it's contents from this repo, too.
+  - Go back to your `configuration.yaml`and uncomment `rest:` and `template`![image](https://github.com/user-attachments/assets/8714d257-00af-41c5-b28a-98b726e2028e)
   - Restart Home Assistant.
   - Wait for a minute or two to let everything start properly, then choose **Developer Tools** --> **Actions** --> **Action:'RESTful: Reload'** and confirm.
   - After another 5...10 seconds you should be set.
   - Click **Developer Tools** --> **States** and filter for _ugreen_. All your NAS sensor names and data should appear.
   - Make sure you are aware of the latest comments in the '[known problems and limitations](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) discussion here.
   - You may need to adjust your sensors to your model / discs / pools, see discussion [here](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/6).
+
+  _(... and let me know if you came across any difficulties, so I can improve this documentation ...)_
+</details>
+
+## Step 6: Making adjustments to your specific model or number of disks / volumes / fans etc
+<details>
+  <summary>click to show/hide</summary>
+  <br/>Please make sure to check `homeassistant.log` for any errors. To adjust the default entities and sensors, you can comment / uncomment / add / remove entities in the following files:<br/><br/>
+
+  - `conf/ugreen_nas_rest.yaml` for your REST requests ('raw data')
+  - `conf/ugreen_nas_template_sensors.yaml` for your calculations and unit conversions.
+
+  In both cases, no full restart is required. You can use the `Reload YAML` quickstart method to reload both REST and Template Sensors.
 
   Congratulations, enjoy your selfmade UGreen HA Integration! :)<br/>
   _(... and let me know if you came across any difficulties, so I can improve this documentation ...)_

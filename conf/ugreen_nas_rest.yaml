@@ -1,3 +1,14 @@
+#
+# This is made for a DXP 4800+ with 2 RAID Volumes. You may need to comment / uncomment
+# text blocks in case you have a different model or RAID configuration (see below).
+#
+# Commenting text blocks in VS Code: select block, Ctrl-k, Ctrl-c
+# Uncommenting text blocks in VS Code: select block, Ctrl-k, Ctrl-u
+#
+# Please report back to me in case you find any errors or if I didn't foresee
+# all possible configurations: https://github.com/Tom-Bom-badil/ugreen_nas
+
+
 - # resource_template: "http://192.168.178.9:9999/ugreen/v1/sysinfo/machine/common?token={{states('input_text.ugreen_nas_conf_token')}}"
   resource_template: >-
     {{ 
@@ -8,77 +19,319 @@
   scan_interval: 60
   timeout: 15
   sensor:
+
+    # obsolete from V.1; moved all calculations into template sensors file
+    #- name: "UGreen NAS RAM Size raw"
+    #  unique_id: "UGreen_NAS_Memory_Size_raw"
+    #  unit_of_measurement: "B"
+    #  icon: "mdi:memory"
+    #  value_template: >
+    #    {{ (value_json.data.hardware.mem | map(attribute='size') | sum) }}
+
     - name: "UGreen NAS Name"
-      value_template: "{{ value_json.data.common.nas_name }}"
+      unique_id: "UGreen_NAS_Name"
+      icon: "mdi:nas"
+      value_template: >
+        {{ value_json.data.common.nas_name }}
+
     - name: "UGreen NAS Owner"
-      value_template: "{{ value_json.data.common.nas_owner }}"
+      unique_id: "UGreen_NAS_Owner"
+      icon: "mdi:account"
+      value_template: >
+        {{ value_json.data.common.nas_owner }}
+
     - name: "UGreen NAS Model"
-      value_template: "{{ value_json.data.common.model }}"
+      unique_id: "UGreen_NAS_Model"
+      icon: "mdi:nas"
+      value_template: >
+        {{ value_json.data.common.model }}
+
     - name: "UGreen NAS Serial"
-      value_template: "{{ value_json.data.common.serial }}"
-    - name: "UGreen NAS MAC Address"
-      value_template: "{{ value_json.data.common.mac[0] }}"
+      unique_id: "UGreen_NAS_Serial"
+      icon: "mdi:focus-field"
+      value_template: >
+        {{ value_json.data.common.serial }}
+
     - name: "UGreen NAS System Version"
-      value_template: "{{ value_json.data.common.system_version }}"
-    - name: "UGreen NAS Runtime"
-      value_template: "{{ value_json.data.common.run_time | int }}"
+      unique_id: "UGreen_NAS_System_Version"
+      icon: "mdi:numeric"
+      value_template: >
+        {{ value_json.data.common.system_version }}
+
+    - name: "UGreen NAS CPU Model"
+      unique_id: "UGreen_NAS_CPU_Model"
+      icon: "mdi:chip"
+      value_template: >
+        {{ value_json.data.hardware.cpu[0].model }}
+
+    - name: "UGreen NAS CPU Frequency"
+      unique_id: "UGreen_NAS_CPU_Frequency"
+      unit_of_measurement: "MHz"
+      icon: "mdi:chip"
+      value_template: >
+        {{ value_json.data.hardware.cpu[0].ghz }}
+
+    - name: "UGreen NAS CPU Cores"
+      unique_id: "UGreen_NAS_CPU_Cores"
+      unit_of_measurement: "Cores"
+      icon: "mdi:chip"
+      value_template: >
+        {{ value_json.data.hardware.cpu[0].core }}
+
+    - name: "UGreen NAS CPU Threads"
+      unique_id: "UGreen_NAS_CPU_Threads"
+      unit_of_measurement: "Threads"
+      icon: "mdi:chip"
+      value_template: >
+        {{ value_json.data.hardware.cpu[0].thread }}
+
+    - name: "UGreen NAS RAM1 Manufacturer"
+      unique_id: "UGreen_NAS_RAM1_Manufacturer"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[0].manufacturer }}
+
+    - name: "UGreen NAS RAM1 Model"
+      unique_id: "UGreen_NAS_RAM1_Model"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[0].model }}
+
+    - name: "UGreen NAS RAM1 Size (raw)"
+      unique_id: "UGreen_NAS_RAM1_Size_r"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[0].size }}
+
+    - name: "UGreen NAS RAM1 Speed"
+      unique_id: "UGreen_NAS_RAM1_Speed"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[0].mhz }}
+
+    - name: "UGreen NAS RAM2 Manufacturer"
+      unique_id: "UGreen_NAS_RAM2_Manufacturer"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[1].manufacturer if value_json.data.hardware.mem | length > 1 else "None" }}
+
+    - name: "UGreen NAS RAM2 Model"
+      unique_id: "UGreen_NAS_RAM2_Model"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[1].model if value_json.data.hardware.mem | length > 1 else "None" }}
+
+    - name: "UGreen NAS RAM2 Size (raw)"
+      unique_id: "UGreen_NAS_RAM2_Size_r"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[1].size if value_json.data.hardware.mem | length > 1 else "None" }}
+
+    - name: "UGreen NAS RAM2 Speed"
+      unique_id: "UGreen_NAS_RAM2_Speed"
+      icon: "mdi:memory"
+      value_template: >
+        {{ value_json.data.hardware.mem[1].mhz if value_json.data.hardware.mem | length > 1 else "None" }}
+
+    - name: "UGreen NAS NIC1 MAC"
+      unique_id: "UGreen_NAS_NIC1_MAC"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[0].mac if value_json.data.hardware.net | length > 0 else "None" }}
+
+    - name: "UGreen NAS NIC1 Mode"
+      unique_id: "UGreen_NAS_NIC1_Mode"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[0].model if value_json.data.hardware.net | length > 0 else "None" }}
+
+    - name: "UGreen NAS NIC1 IP"
+      unique_id: "UGreen_NAS_NIC1_IP"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[0].ip if value_json.data.hardware.net | length > 0 else "None" }}
+
+    - name: "UGreen NAS NIC2 MAC"
+      unique_id: "UGreen_NAS_NIC2_MAC"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[1].mac if value_json.data.hardware.net | length > 1 else "None" }}
+
+    - name: "UGreen NAS NIC2 Mode"
+      unique_id: "UGreen_NAS_NIC2_Mode"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[1].model if value_json.data.hardware.net | length > 1 else "None" }}
+
+    - name: "UGreen NAS NIC2 IP"
+      unique_id: "UGreen_NAS_NIC2_IP"
+      icon: "mdi:lan"
+      value_template: >
+        {{ value_json.data.hardware.net[1].ip if value_json.data.hardware.net | length > 1 else "None" }}
+      
+    - name: "UGreen NAS Last Turn On"
+      unique_id: "UGreen_NAS_Last_Turn_On"
+      icon: "mdi:calendar"
+      value_template: >
+        {{ value_json.data.common.last_turn_on_time }}
+
+    - name: "UGreen NAS Runtime (raw)"
+      unique_id: "UGreen_NAS_Runtime_r"
       unit_of_measurement: "s"
       icon: "mdi:clock-outline"
-    - name: "UGreen NAS Last Turn On"
-      value_template: "{{ value_json.data.common.last_turn_on_time }}"
+      value_template: >
+        {{ value_json.data.common.run_time | int }}
+
     - name: "UGreen NAS Repair Start Time"
-      value_template: "{{ value_json.data.common.repair_start_time }}"
+      unique_id: "UGreen_NAS_Repair_Start_Time"
       icon: "mdi:clock-start"
+      value_template: >
+        {{ value_json.data.common.repair_start_time }}
+
     - name: "UGreen NAS Repair End Time"
-      value_template: "{{ value_json.data.common.repair_end_time }}"
+      unique_id: "UGreen_NAS_Repair_End_Time"
       icon: "mdi:clock-end"
-    - name: "UGreen NAS CPU Model"
-      value_template: "{{ value_json.data.hardware.cpu[0].model }}"
-    - name: "UGreen NAS CPU Frequency"
-      value_template: "{{ value_json.data.hardware.cpu[0].ghz }}"
-      unit_of_measurement: "MHz"
-      icon: "mdi:speedometer"
-    - name: "UGreen NAS CPU Cores"
-      value_template: "{{ value_json.data.hardware.cpu[0].core }}"
-      unit_of_measurement: "Cores"
-    - name: "UGreen NAS CPU Threads"
-      value_template: "{{ value_json.data.hardware.cpu[0].thread }}"
-      unit_of_measurement: "Threads"
+      value_template: >
+        {{ value_json.data.common.repair_end_time }}
+
     - name: "UGreen NAS CPU Temperature"
-      value_template: "{{ value_json.data.hardware.cpu[0].temperature }}"
+      unique_id: "UGreen_NAS_CPU_Temperature"
+      icon: "mdi:thermometer"
       unit_of_measurement: "°C"
       device_class: temperature
-    - name: "UGreen NAS Memory Size"
-      value_template: "{{ (value_json.data.hardware.mem | map(attribute='size') | sum) / 1024 / 1024 / 1024 | round(0) }}"
-      unit_of_measurement: "GB"
-    #- name: "UGreen NAS Memory Speed"
-    #  value_template: "{{ value_json.data.hardware.mem[0].mhz }}"
-    #  unit_of_measurement: "MHz"
-    #  icon: "mdi:memory"
-    - name: "UGreen NAS Memory Manufacturer"
-      value_template: "{{ value_json.data.hardware.mem[0].manufacturer }}"
-    - name: "UGreen NAS Memory Model"
-      value_template: "{{ value_json.data.hardware.mem[0].model }}"
-    - name: "UGreen NAS Network Interface Model"
-      value_template: "{{ value_json.data.hardware.net[0].model }}"
-      icon: "mdi:lan"
-    - name: "UGreen NAS Network IP"
-      value_template: "{{ value_json.data.hardware.net[0].ip }}"
+      value_template: >
+        {{ value_json.data.hardware.cpu[0].temperature }}
+
     - name: "UGreen NAS UPS Model"
-      value_template: "{{ value_json.data.hardware.ups[0].model }}"
+      unique_id: "UGreen_NAS_UPS_Model"
+      icon: "mdi:power-plug-battery"
+      value_template: >
+        {{ value_json.data.hardware.ups[0].model if value_json.data.hardware.ups | length > 0 else "None" }}
+
     - name: "UGreen NAS UPS Vendor"
-      value_template: "{{ value_json.data.hardware.ups[0].vendor }}"
-    # - name: "UGreen NAS UPS Power Free"
-    #   value_template: "{{ value_json.data.hardware.ups[0].power_free }}"
-    #   unit_of_measurement: "%"
-    - name: "UGreen NAS USB Device"
-      value_template: "{{ value_json.data.hardware.usb[0].model }}"
-    - name: "UGreen NAS USB Vendor"
-      value_template: "{{ value_json.data.hardware.usb[0].vendor }}"
+      unique_id: "UGreen_NAS_UPS_Vendor"
+      icon: "mdi:power-plug-battery"
+      value_template: >
+        {{ value_json.data.hardware.ups[0].vendor if value_json.data.hardware.ups | length > 0 else "None" }}
+
+    - name: "UGreen NAS UPS Power Remaining"
+      unique_id: "UGreen_NAS_UPS_Power_Remaining"
+      icon: "mdi:power-plug-battery"
+      value_template: >
+        {{ value_json.data.hardware.ups[0].power_free if value_json.data.hardware.ups | length > 0 else "None" }}
+
+    - name: "UGreen NAS USB1 Device"
+      unique_id: "UGreen_NAS_USB1_Device"
       icon: "mdi:usb-port"
-    - name: "UGreen NAS USB Device Type"
-      value_template: "{{ value_json.data.hardware.usb[0].device_type }}"
+      value_template: >
+        {{ value_json.data.hardware.usb[0].model if value_json.data.hardware.usb | length > 0 else "None" }}
+
+    - name: "UGreen NAS USB1 Vendor"
+      unique_id: "UGreen_NAS_USB1_Vendor"
       icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[0].vendor if value_json.data.hardware.usb | length > 0 else "None" }}
+
+    - name: "UGreen NAS USB1 Device Type"
+      unique_id: "UGreen_NAS_USB1_Device_Type"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[0].device_type if value_json.data.hardware.usb | length > 0 else "None" }}
+
+    - name: "UGreen NAS USB2 Device"
+      unique_id: "UGreen_NAS_USB2_Device"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[1].model if value_json.data.hardware.usb | length > 1 else "None" }}
+
+    - name: "UGreen NAS USB2 Vendor"
+      unique_id: "UGreen_NAS_USB2_Vendor"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[1].vendor if value_json.data.hardware.usb | length > 1 else "None" }}
+
+    - name: "UGreen NAS USB2 Device Type"
+      unique_id: "UGreen_NAS_USB2_Device_Type"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[1].device_type if value_json.data.hardware.usb | length > 1 else "None" }}
+
+    - name: "UGreen NAS USB3 Device"
+      unique_id: "UGreen_NAS_USB3_Device"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[2].model if value_json.data.hardware.usb | length > 2 else "None" }}
+
+    - name: "UGreen NAS USB3 Vendor"
+      unique_id: "UGreen_NAS_USB3_Vendor"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[2].vendor if value_json.data.hardware.usb | length > 2 else "None" }}
+
+    - name: "UGreen NAS USB3 Device Type"
+      unique_id: "UGreen_NAS_USB3_Device_Type"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[2].device_type if value_json.data.hardware.usb | length > 2 else "None" }}
+
+    - name: "UGreen NAS USB4 Device"
+      unique_id: "UGreen_NAS_USB4_Device"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[3].model if value_json.data.hardware.usb | length > 3 else "None" }}
+
+    - name: "UGreen NAS USB4 Vendor"
+      unique_id: "UGreen_NAS_USB4_Vendor"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[3].vendor if value_json.data.hardware.usb | length > 3 else "None" }}
+
+    - name: "UGreen NAS USB4 Device Type"
+      unique_id: "UGreen_NAS_USB4_Device_Type"
+      icon: "mdi:usb-port"
+      value_template: >
+        {{ value_json.data.hardware.usb[3].device_type if value_json.data.hardware.usb | length > 3 else "None" }}
+
+    ########
+    # above is for DXP4800+ with 4 USB ports; uncomment below for larger models with more USB's
+    ########
+
+    # - name: "UGreen NAS USB5 Device"
+    #   unique_id: "UGreen_NAS_USB5_Device"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[4].model if value_json.data.hardware.usb | length > 4 else "None" }}
+
+    # - name: "UGreen NAS USB5 Vendor"
+    #   unique_id: "UGreen_NAS_USB5_Vendor"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[4].vendor if value_json.data.hardware.usb | length > 4 else "None" }}
+
+    # - name: "UGreen NAS USB5 Device Type"
+    #   unique_id: "UGreen_NAS_USB5_Device_Type"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[4].device_type if value_json.data.hardware.usb | length > 4 else "None" }}
+
+    # - name: "UGreen NAS USB6 Device"
+    #   unique_id: "UGreen_NAS_USB6_Device"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[5].model if value_json.data.hardware.usb | length > 5 else "None" }}
+
+    # - name: "UGreen NAS USB6 Vendor"
+    #   unique_id: "UGreen_NAS_USB6_Vendor"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[5].vendor if value_json.data.hardware.usb | length > 5 else "None" }}
+
+    # - name: "UGreen NAS USB6 Device Type"
+    #   unique_id: "UGreen_NAS_USB6_Device_Type"
+    #   icon: "mdi:usb-port"
+    #   value_template: >
+    #     {{ value_json.data.hardware.usb[5].device_type if value_json.data.hardware.usb | length > 5 else "None" }}
+
 
 - # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&token={{states('input_text.ugreen_nas_conf_token')}}"
   resource_template: >-
@@ -90,27 +343,48 @@
   scan_interval: 60
   timeout: 15
   sensor:
-    - name: "UGreen NAS Device Name"
-      value_template: "{{ value_json.data.dev_name }}"
+
+    # ~~ redundant; already given in SystemInfo ~~
+    #- name: "UGreen NAS Device Name"
+    #  value_template: "{{ value_json.data.dev_name }}"
+    #
+    #- name: "UGreen NAS Total Runtime (raw)"
+    #  unique_id: "UGreen_NAS_Total_Runtime_r"
+    #  unit_of_measurement: "s"
+    #  icon: "mdi:clock-outline"
+    #  value_template: "{{ value_json.data.total_run_time }}"
+
     - name: "UGreen NAS Last Boot Date"
+      unique_id: "UGreen_NAS_Last_Boot_Date"
+      icon: "mdi:calendar"
       value_template: "{{ value_json.data.last_boot_date }}"
-    - name: "UGreen NAS Last Boot Time"
-      value_template: "{{ value_json.data.last_boot_time }}"
+
+    - name: "UGreen NAS Last Boot Time (raw)"
+      unique_id: "UGreen_NAS_Last_Boot_Time_r"
       unit_of_measurement: "s"
       icon: "mdi:clock-time-four"
+      value_template: "{{ value_json.data.last_boot_time }}"
+
     - name: "UGreen NAS Status Message"
+      unique_id: "UGreen_NAS_Status_Message"
+      icon: "mdi:message"
       value_template: "{{ value_json.data.message }}"
+
     - name: "UGreen NAS Server Status"
+      unique_id: "UGreen_NAS_Server_Status"
+      icon: "mdi:numeric-0-box-multiple-outline"
       value_template: "{{ value_json.data.server_status }}"
-      icon: "mdi:server"
+
     - name: "UGreen NAS Status Code"
+      unique_id: "UGreen_NAS_Status_Code"
+      icon: "mdi:numeric-0-box-multiple-outline"
       value_template: "{{ value_json.data.status }}"
-    - name: "UGreen NAS Total Runtime"
-      value_template: "{{ value_json.data.total_run_time }}"
-      unit_of_measurement: "s"
-      icon: "mdi:clock-outline"
+
     - name: "UGreen NAS Type"
+      unique_id: "UGreen_NAS_Type"
+      icon: "mdi:nas"
       value_template: "{{ value_json.data.type }}"
+
 
 - # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
   resource_template: >-
@@ -122,31 +396,48 @@
   scan_interval: 60
   timeout: 15
   sensor:
+
+    # ~~ redundant; already given in SystemStatus ~~
+    #- name: "UGreen NAS Server Status"
+    #  value_template: "{{ value_json.data.server_status }}"
+    #  icon: "mdi:server"
+
     - name: "UGreen NAS CPU Usage"
-      value_template: "{{ value_json.data.cpu_usage_rate }}"
+      unique_id: "UGreen_NAS_CPU_Usage"
       unit_of_measurement: "%"
       device_class: power_factor
-    - name: "UGreen NAS Download Speed"
-      value_template: "{{ value_json.data.download_speed.value }}"
-      unit_of_measurement: "MB/s"
-      icon: "mdi:download"
-    - name: "UGreen NAS Upload Speed"
-      value_template: "{{ value_json.data.upload_speed.value }}"
-      unit_of_measurement: "MB/s"
-      icon: "mdi:upload"
+      value_template: "{{ value_json.data.cpu_usage_rate }}"
+
     - name: "UGreen NAS RAM Usage"
-      value_template: "{{ value_json.data.ram_usage_rate }}"
+      unique_id: "UGreen_NAS_RAM_Usage"
       unit_of_measurement: "%"
       icon: "mdi:memory"
-    - name: "UGreen NAS Server Status"
-      value_template: "{{ value_json.data.server_status }}"
-      icon: "mdi:server"
-    - name: "UGreen NAS Download Speed Raw"
+      value_template: "{{ value_json.data.ram_usage_rate }}"
+
+    - name: "UGreen NAS Download Speed (raw)"
+      unique_id: "UGreen_NAS_Download_Speed_r"
+      unit_of_measurement: "KB/s"
+      icon: "mdi:download"
       value_template: "{{ value_json.data.download_speed.raw }}"
+
+    - name: "UGreen NAS Download Speed"
+      unique_id: "UGreen_NAS_Download_Speed"
+      unit_of_measurement: "MB/s"
+      icon: "mdi:download"
+      value_template: "{{ value_json.data.download_speed.value }}"
+
+    - name: "UGreen NAS Upload Speed (raw)"
+      unique_id: "UGreen_NAS_Upload_Speed_r"
       unit_of_measurement: "KB/s"
-    - name: "UGreen NAS Upload Speed Raw"
+      icon: "mdi:upload"
       value_template: "{{ value_json.data.upload_speed.raw }}"
-      unit_of_measurement: "KB/s"
+
+    - name: "UGreen NAS Upload Speed"
+      unique_id: "UGreen_NAS_Upload_Speed"
+      unit_of_measurement: "MB/s"
+      icon: "mdi:upload"
+      value_template: "{{ value_json.data.upload_speed.value }}"
+
 
 - # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring&token={{states('input_text.ugreen_nas_conf_token')}}"
   resource_template: >-
@@ -158,32 +449,337 @@
   scan_interval: 60
   timeout: 15
   sensor:
-    - name: "UGreen NAS CPU Temperature"
-      value_template: "{{ value_json.data.cpu_temperature }}"
-      unit_of_measurement: "°C"
-      device_class: temperature
-    - name: "UGreen NAS Fan Speed"
-      value_template: "{{ value_json.data.fan_speed }}"
+
+    # ~~ redundant; already given in SystemStatus ~~
+    # - name: "UGreen NAS Server Status"
+    #   unique_id: "UGreen_NAS_Server_Status"
+    #   icon: "mdi:server"
+    #   value_template: >
+    #     {{ value_json.data.server_status if value_json.data.server_status is not none else "None" }}
+
+    # ~~ redundant; already given in SysInfo ~~
+    #- name: "UGreen NAS CPU Temperature"
+    #  value_template: "{{ value_json.data.cpu_temperature }}"
+    #  unit_of_measurement: "°C"
+    #  device_class: temperature
+
+    - name: "UGreen NAS Status"
+      unique_id: "UGreen_NAS_Status"
+      icon: "mdi:alert-circle"
+      value_template: >
+        {{ value_json.data.status if value_json.data.status is not none else "None" }}
+
+    - name: "UGreen NAS CPU Status"
+      unique_id: "UGreen_NAS_CPU_Status"
+      icon: "mdi:cpu-64-bit"
+      value_template: >
+        {{ value_json.data.cpu_status if value_json.data.cpu_status is not none else "None" }}
+
+    - name: "UGreen NAS Chassis Fan Speed"
+      unique_id: "UGreen_NAS_Chassis_FAN_Speed"
       unit_of_measurement: "RPM"
       icon: "mdi:fan"
-    - name: "UGreen NAS Fan Status"
+      value_template: "{{ value_json.data.fan_speed }}"
+
+    - name: "UGreen NAS Chassis Fan Status"
+      unique_id: "UGreen_NAS_Chassis_FAN_Status"
+      icon: "mdi:fan"
       value_template: "{{ value_json.data.fan_status }}"
-      icon: "mdi:fan-alert"
+
+    ########
+    # above is for DXP4800+ with 1 fan; uncomment below for larger models with 2 fans
+    ########
+
+    # - name: "UGreen NAS Chassis Fan2 Speed"
+    #   unique_id: "UGreen_NAS_Chassis_FAN2_Speed"
+    #   unit_of_measurement: "RPM"
+    #   icon: "mdi:fan"
+    #   value_template: >
+    #     {{ value_json.data.fan_list[1].speed if value_json.data.fan_list | length > 1 else "None" }}
+
+    # - name: "UGreen NAS Chassis Fan2 Status"
+    #   unique_id: "UGreen_NAS_Chassis_FAN2_Status"
+    #   icon: "mdi:fan-alert"
+    #   value_template: >
+    #     {{ value_json.data.fan_list[1].status if value_json.data.fan_list | length > 1 else "None" }}
+
     - name: "UGreen NAS Temperature Message"
-      value_template: "{{ value_json.data.message }}"
+      unique_id: "UGreen_NAS_Temperature_Message"
       icon: "mdi:message-alert"
+      value_template: "{{ value_json.data.message }}"
+
     - name: "UGreen NAS Disk Temperatures"
+      unique_id: "UGreen_NAS_Disk_Temperatures"
+      icon: "mdi:harddisk"
       value_template: >
         {{ value_json.data.disk_list | map(attribute='temperature') | list }}
-      icon: "mdi:harddisk"
+
     - name: "UGreen NAS Disk Status"
+      unique_id: "UGreen_NAS_Disk_Status"
+      icon: "mdi:harddisk"
       value_template: >
         {{ value_json.data.disk_list | map(attribute='status') | list }}
-      icon: "mdi:harddisk"
+
     - name: "UGreen NAS Disk Labels"
+      unique_id: "UGreen_NAS_Disk_Labels"
+      icon: "mdi:label"
       value_template: >
         {{ value_json.data.disk_list | map(attribute='label') | list }}
+
+    - name: "UGreen NAS Disk 1 Label"
+      unique_id: "UGreen_NAS_Disk_1_Label"
       icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[0].label if value_json.data.disk_list | length > 0 else "None" }}
+
+    - name: "UGreen NAS Disk 1 Temperature"
+      unique_id: "UGreen_NAS_Disk_1_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[0].temperature if value_json.data.disk_list | length > 0 else 0 }}
+
+    - name: "UGreen NAS Disk 1 Status"
+      unique_id: "UGreen_NAS_Disk_1_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[0].status if value_json.data.disk_list | length > 0 else "None" }}
+
+    - name: "UGreen NAS Disk 1 Sleep State"
+      unique_id: "UGreen_NAS_Disk_1_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[0].is_sleep if value_json.data.disk_list | length > 0 else "None" }}
+
+    - name: "UGreen NAS Disk 2 Label"
+      unique_id: "UGreen_NAS_Disk_2_Label"
+      icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[1].label if value_json.data.disk_list | length > 1 else "None" }}
+
+    - name: "UGreen NAS Disk 2 Temperature"
+      unique_id: "UGreen_NAS_Disk_2_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[1].temperature if value_json.data.disk_list | length > 1 else 0 }}
+
+    - name: "UGreen NAS Disk 2 Status"
+      unique_id: "UGreen_NAS_Disk_2_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[1].status if value_json.data.disk_list | length > 1 else "None" }}
+
+    - name: "UGreen NAS Disk 2 Sleep State"
+      unique_id: "UGreen_NAS_Disk_2_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[1].is_sleep if value_json.data.disk_list | length > 1 else "None" }}
+
+    - name: "UGreen NAS Disk 3 Label"
+      unique_id: "UGreen_NAS_Disk_3_Label"
+      icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[2].label if value_json.data.disk_list | length > 2 else "None" }}
+
+    - name: "UGreen NAS Disk 3 Temperature"
+      unique_id: "UGreen_NAS_Disk_3_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[2].temperature if value_json.data.disk_list | length > 2 else 0 }}
+
+    - name: "UGreen NAS Disk 3 Status"
+      unique_id: "UGreen_NAS_Disk_3_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[2].status if value_json.data.disk_list | length > 2 else "None" }}
+
+    - name: "UGreen NAS Disk 3 Sleep State"
+      unique_id: "UGreen_NAS_Disk_3_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[2].is_sleep if value_json.data.disk_list | length > 2 else "None" }}
+
+    - name: "UGreen NAS Disk 4 Label"
+      unique_id: "UGreen_NAS_Disk_4_Label"
+      icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[3].label if value_json.data.disk_list | length > 3 else "None" }}
+
+    - name: "UGreen NAS Disk 4 Temperature"
+      unique_id: "UGreen_NAS_Disk_4_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[3].temperature if value_json.data.disk_list | length > 3 else 0 }}
+
+    - name: "UGreen NAS Disk 4 Status"
+      unique_id: "UGreen_NAS_Disk_4_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[3].status if value_json.data.disk_list | length > 3 else "None" }}
+
+    - name: "UGreen NAS Disk 4 Sleep State"
+      unique_id: "UGreen_NAS_Disk_4_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[3].is_sleep if value_json.data.disk_list | length > 3 else "None" }}
+
+    - name: "UGreen NAS Disk 5 Label"
+      unique_id: "UGreen_NAS_Disk_5_Label"
+      icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[4].label if value_json.data.disk_list | length > 4 else "None" }}
+
+    - name: "UGreen NAS Disk 5 Temperature"
+      unique_id: "UGreen_NAS_Disk_5_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[4].temperature if value_json.data.disk_list | length > 4 else 0 }}
+
+    - name: "UGreen NAS Disk 5 Status"
+      unique_id: "UGreen_NAS_Disk_5_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[4].status if value_json.data.disk_list | length > 4 else "None" }}
+
+    - name: "UGreen NAS Disk 5 Sleep State"
+      unique_id: "UGreen_NAS_Disk_5_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[4].is_sleep if value_json.data.disk_list | length > 4 else "None" }}
+
+    - name: "UGreen NAS Disk 6 Label"
+      unique_id: "UGreen_NAS_Disk_6_Label"
+      icon: "mdi:label"
+      value_template: >
+        {{ value_json.data.disk_list[5].label if value_json.data.disk_list | length > 5 else "None" }}
+
+    - name: "UGreen NAS Disk 6 Temperature"
+      unique_id: "UGreen_NAS_Disk_6_Temperature"
+      unit_of_measurement: "°C"
+      icon: "mdi:thermometer"
+      value_template: >
+        {{ value_json.data.disk_list[5].temperature if value_json.data.disk_list | length > 5 else 0 }}
+
+    - name: "UGreen NAS Disk 6 Status"
+      unique_id: "UGreen_NAS_Disk_6_Status"
+      icon: "mdi:harddisk"
+      value_template: >
+        {{ value_json.data.disk_list[5].status if value_json.data.disk_list | length > 5 else "None" }}
+
+    - name: "UGreen NAS Disk 6 Sleep State"
+      unique_id: "UGreen_NAS_Disk_6_Sleep"
+      icon: "mdi:sleep"
+      value_template: >
+        {{ value_json.data.disk_list[5].is_sleep if value_json.data.disk_list | length > 5 else "None" }}
+
+    ########    
+    # above is for DXP4800+ (4-bay) - uncomment below for larger models with more disks
+    ########
+
+    # - name: "UGreen NAS Disk 7 Label"
+    #   unique_id: "UGreen_NAS_Disk_7_Label"
+    #   icon: "mdi:label"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[6].label if value_json.data.disk_list | length > 6 else "None" }}
+
+    # - name: "UGreen NAS Disk 7 Temperature"
+    #   unique_id: "UGreen_NAS_Disk_7_Temperature"
+    #   unit_of_measurement: "°C"
+    #   icon: "mdi:thermometer"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[6].temperature if value_json.data.disk_list | length > 6 else 0 }}
+
+    # - name: "UGreen NAS Disk 7 Status"
+    #   unique_id: "UGreen_NAS_Disk_7_Status"
+    #   icon: "mdi:harddisk"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[6].status if value_json.data.disk_list | length > 6 else "None" }}
+
+    # - name: "UGreen NAS Disk 7 Sleep State"
+    #   unique_id: "UGreen_NAS_Disk_7_Sleep"
+    #   icon: "mdi:sleep"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[6].is_sleep if value_json.data.disk_list | length > 6 else "None" }}
+
+    # - name: "UGreen NAS Disk 8 Label"
+    #   unique_id: "UGreen_NAS_Disk_8_Label"
+    #   icon: "mdi:label"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[7].label if value_json.data.disk_list | length > 7 else "None" }}
+
+    # - name: "UGreen NAS Disk 8 Temperature"
+    #   unique_id: "UGreen_NAS_Disk_8_Temperature"
+    #   unit_of_measurement: "°C"
+    #   icon: "mdi:thermometer"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[7].temperature if value_json.data.disk_list | length > 7 else 0 }}
+
+    # - name: "UGreen NAS Disk 8 Status"
+    #   unique_id: "UGreen_NAS_Disk_8_Status"
+    #   icon: "mdi:harddisk"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[7].status if value_json.data.disk_list | length > 7 else "None" }}
+
+    # - name: "UGreen NAS Disk 8 Sleep State"
+    #   unique_id: "UGreen_NAS_Disk_8_Sleep"
+    #   icon: "mdi:sleep"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[7].is_sleep if value_json.data.disk_list | length > 7 else "None" }}
+
+    # - name: "UGreen NAS Disk 9 Label"
+    #   unique_id: "UGreen_NAS_Disk_9_Label"
+    #   icon: "mdi:label"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[8].label if value_json.data.disk_list | length > 8 else "None" }}
+
+    # - name: "UGreen NAS Disk 9 Temperature"
+    #   unique_id: "UGreen_NAS_Disk_9_Temperature"
+    #   unit_of_measurement: "°C"
+    #   icon: "mdi:thermometer"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[8].temperature if value_json.data.disk_list | length > 8 else 0 }}
+
+    # - name: "UGreen NAS Disk 9 Status"
+    #   unique_id: "UGreen_NAS_Disk_9_Status"
+    #   icon: "mdi:harddisk"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[8].status if value_json.data.disk_list | length > 8 else "None" }}
+
+    # - name: "UGreen NAS Disk 9 Sleep State"
+    #   unique_id: "UGreen_NAS_Disk_9_Sleep"
+    #   icon: "mdi:sleep"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[8].is_sleep if value_json.data.disk_list | length > 8 else "None" }}
+
+    # - name: "UGreen NAS Disk 10 Label"
+    #   unique_id: "UGreen_NAS_Disk_10_Label"
+    #   icon: "mdi:label"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[9].label if value_json.data.disk_list | length > 9 else "None" }}
+
+    # - name: "UGreen NAS Disk 10 Temperature"
+    #   unique_id: "UGreen_NAS_Disk_10_Temperature"
+    #   unit_of_measurement: "°C"
+    #   icon: "mdi:thermometer"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[9].temperature if value_json.data.disk_list | length > 9 else 0 }}
+
+    # - name: "UGreen NAS Disk 10 Status"
+    #   unique_id: "UGreen_NAS_Disk_10_Status"
+    #   icon: "mdi:harddisk"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[9].status if value_json.data.disk_list | length > 9 else "None" }}
+
+    # - name: "UGreen NAS Disk 10 Sleep State"
+    #   unique_id: "UGreen_NAS_Disk_10_Sleep"
+    #   icon: "mdi:sleep"
+    #   value_template: >
+    #     {{ value_json.data.disk_list[9].is_sleep if value_json.data.disk_list | length > 9 else "None" }}
+
 
 - #resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.StorageSpace&token={{states('input_text.ugreen_nas_conf_token')}}"
   resource_template: >-
@@ -195,47 +791,174 @@
   scan_interval: 60
   timeout: 15
   sensor:
-    - name: "UGreen NAS Storage Volume 1 Used"
-      value_template: >
-       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).used / (1024 * 1024 * 1024)) | round(1, 'ceil') }}
-      unit_of_measurement: "GB"
+
+    # redundant; already given in SysInfo
+    # - name: "UGreen NAS Server Status"
+    #   unique_id: "UGreen_NAS_Server_Status"
+    #   icon: "mdi:server"
+    #   value_template: "{{ value_json.data.server_status }}"
+
+    - name: "UGreen NAS Storage Names"
+      unique_id: "UGreen_NAS_Storage_Names"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 2 Used"
       value_template: >
-       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).used / (1024 * 1024 * 1024)) | round(1, 'ceil') }}
-      unit_of_measurement: "GB"
+        {{ value_json.data.storage_list | map(attribute='storage_name') | list }}
+
+    - name: "UGreen NAS Storage Statuses"
+      unique_id: "UGreen_NAS_Storage_Statuses"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 1 Size"
       value_template: >
-       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).size / (1024 * 1024 * 1024)) | round(1, 'floor') }}
-      unit_of_measurement: "GB"
+        {{ value_json.data.storage_list | map(attribute='status') | list }}
+
+    - name: "UGreen NAS Storage Volume Names"
+      unique_id: "UGreen_NAS_Storage_Volume_Names"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 2 Size"
       value_template: >
-       {{ ((value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).size / (1024 * 1024 * 1024)) | round(1, 'floor') }}
-      unit_of_measurement: "GB"
-      icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 1 Pool"
+        {{ value_json.data.storage_list | map(attribute='name') | list }}
+
+    - name: "UGreen NAS Storage Pool Names"
+      unique_id: "UGreen_NAS_Storage_Pool_Names"
+      icon: "mdi:database"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).pool_name }}
+        {{ value_json.data.storage_list | map(attribute='pool_name') | list }}
+
+    - name: "UGreen NAS Storage Sizes (raw)"
+      unique_id: "UGreen_NAS_Storage_Sizes_r"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 2 Pool"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).pool_name }}
+        {{ value_json.data.storage_list | map(attribute='size') | list }}
+
+    - name: "UGreen NAS Storage Used (raw)"
+      unique_id: "UGreen_NAS_Storage_Used_r"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 1 Status"
       value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).status }}
+        {{ value_json.data.storage_list | map(attribute='used') | list }}
+
+    - name: "UGreen NAS Volume1 Name"
+      unique_id: "UGreen_NAS_Volume_1_Name"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 2 Name"
-      value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).storage_name }}
+      value_template: "{{ value_json.data.storage_list[0].storage_name if value_json.data.storage_list | length > 0 else 'None' }}"
+
+    - name: "UGreen NAS Volume1 Pool Name"
+      unique_id: "UGreen_NAS_Volume1_Pool_Name"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 2 Status"
-      value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume2') | first).status }}
+      value_template: "{{ value_json.data.storage_list[0].pool_name if value_json.data.storage_list | length > 0 else 'None' }}"
+
+    - name: "UGreen NAS Volume1 Status"
+      unique_id: "UGreen_NAS_Volume1_Status"
       icon: "mdi:harddisk"
-    - name: "UGreen NAS Storage Volume 1 Name"
-      value_template: >
-        {{ (value_json.data.storage_list | selectattr('name', 'eq', 'volume1') | first).storage_name }}
+      value_template: "{{ value_json.data.storage_list[0].status if value_json.data.storage_list | length > 0 else 'None' }}"
+
+    - name: "UGreen NAS Volume1 Size (raw)"
+      unique_id: "UGreen_NAS_Volume1_Size_r"
+      unit_of_measurement: "B"
       icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[0].size if value_json.data.storage_list | length > 0 else 0 }}"
+
+    - name: "UGreen NAS Volume1 Used (raw)"
+      unique_id: "UGreen_NAS_Volume1_Used_r"
+      unit_of_measurement: "B"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[0].used if value_json.data.storage_list | length > 0 else 0 }}"
+
+    - name: "UGreen NAS Volume2 Name"
+      unique_id: "UGreen_NAS_Volume2_Name"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[1].storage_name if value_json.data.storage_list | length > 1 else 'None' }}"
+
+    - name: "UGreen NAS Volume2 Pool Name"
+      unique_id: "UGreen_NAS_Volume2_Pool_Name"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[1].pool_name if value_json.data.storage_list | length > 1 else 'None' }}"
+
+    - name: "UGreen NAS Volume2 Status"
+      unique_id: "UGreen_NAS_Volume2_Status"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[1].status if value_json.data.storage_list | length > 1 else 'None' }}"
+
+    - name: "UGreen NAS Volume2 Size (raw)"
+      unique_id: "UGreen_NAS_Volume2_Size_r"
+      unit_of_measurement: "B"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[1].size if value_json.data.storage_list | length > 1 else 0 }}"
+
+    - name: "UGreen NAS Volume2 Used (raw)"
+      unique_id: "UGreen_NAS_Volume2_Used_r"
+      unit_of_measurement: "B"
+      icon: "mdi:harddisk"
+      value_template: "{{ value_json.data.storage_list[1].used if value_json.data.storage_list | length > 1 else 0 }}"
+
+    ########
+    # above is for DXP4800+ with 2 volumes/RAIDs; uncomment below if you have more
+    ########
+
+    # - name: "UGreen NAS Volume3 Name"
+    #   unique_id: "UGreen_NAS_Volume3_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[2].storage_name if value_json.data.storage_list | length > 2 else 'None' }}"
+
+    # - name: "UGreen NAS Volume3 Pool Name"
+    #   unique_id: "UGreen_NAS_Volume3_Pool_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[2].pool_name if value_json.data.storage_list | length > 2 else 'None' }}"
+
+    # - name: "UGreen NAS Volume3 Status"
+    #   unique_id: "UGreen_NAS_Volume3_Status"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[2].status if value_json.data.storage_list | length > 2 else 'None' }}"
+
+    # - name: "UGreen NAS Volume3 Size (raw)"
+    #   unique_id: "UGreen_NAS_Volume3_Size_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[2].size if value_json.data.storage_list | length > 2 else 0 }}"
+
+    # - name: "UGreen NAS Volume3 Used (raw)"
+    #   unique_id: "UGreen_NAS_Volume3_Used_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[2].used if value_json.data.storage_list | length > 2 else 0 }}"
+
+    # - name: "UGreen NAS Volume4 Name"
+    #   unique_id: "UGreen_NAS_Volume4_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[3].storage_name if value_json.data.storage_list | length > 3 else 'None' }}"
+
+    # - name: "UGreen NAS Volume4 Pool Name"
+    #   unique_id: "UGreen_NAS_Volume4_Pool_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[3].pool_name if value_json.data.storage_list | length > 3 else 'None' }}"
+
+    # - name: "UGreen NAS Volume4 Size (raw)"
+    #   unique_id: "UGreen_NAS_Volume4_Size_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[3].size if value_json.data.storage_list | length > 3 else 0 }}"
+
+    # - name: "UGreen NAS Volume4 Used (raw)"
+    #   unique_id: "UGreen_NAS_Volume4_Used_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[4].used if value_json.data.storage_list | length > 3 else 0 }}"
+
+    # - name: "UGreen NAS Volume5 Name"
+    #   unique_id: "UGreen_NAS_Volume5_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[4].storage_name if value_json.data.storage_list | length > 4 else 'None' }}"
+
+    # - name: "UGreen NAS Volume5 Pool Name"
+    #   unique_id: "UGreen_NAS_Volume5_Pool_Name"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[4].pool_name if value_json.data.storage_list | length > 4 else 'None' }}"
+
+    # - name: "UGreen NAS Volume5 Size (raw)"
+    #   unique_id: "UGreen_NAS_Volume5_Size_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[4].size if value_json.data.storage_list | length > 4 else 0 }}"
+
+    # - name: "UGreen NAS Volume5 Used (raw)"
+    #   unique_id: "UGreen_NAS_Volume5_Used_r"
+    #   unit_of_measurement: "B"
+    #   icon: "mdi:harddisk"
+    #   value_template: "{{ value_json.data.storage_list[4].used if value_json.data.storage_list | length > 4 else 0 }}"

@@ -6,7 +6,7 @@ The process involves two steps:<br/>1) Obtain an individual token for authentica
 
 ~~For step 1, a dedicated shell script will take care of the complicated token generation process. You only need to input some general parameters like NAS IP or user name.~~
 
-I found out how to find the token in a NAS GUI browser session, making it way easier to obtain. So, the entire setup procedure shouldn't take you more than 10 minutes now, if you know your way around in HA.
+There is a new way by gathering the token in a normal NAS GUI browser session, making it way easier to obtain. So, the entire setup procedure shouldn't take you more than 10 minutes now, if you know your way around in Home Assistant.
 
 ## The story behind
 
@@ -28,9 +28,9 @@ Click [here](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_s
 
 ## Final notes
 
-Everything on this Repository is still under development. My current focus is the DXP 4800 Plus. Different models will require adjustments to volumes/disk readings. Also, unit conversions + rounding are not done properly yet, some data are displayed in weird formats. I will solve all this step-by-step, e.g. by adjusting the current templates, or by adding new template sensors (your pull requests are appreciated!).<br/><br/>
-If you come across any problems, you are welcome to open a thread in the [discussions](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) section.<br/>
-If you succeed, please also report back. It's always good to know if things are working as intended.
+Everything on this Repository is still under development. My current focus is the DXP 4800 Plus. Different models will require adjustments to volumes/disk readings. ~~Also, unit conversions + rounding are not done properly yet, some data are displayed in weird formats. I will solve all this step-by-step, e.g. by adjusting the current templates, or by adding new template sensors~~ (your pull requests are appreciated!).<br/><br/>
+If you come across any problems, you are welcome to open a new thread in the [discussions](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) section.<br/>
+If you succeed, please also report back. It's always good to know if things are working out as intended. Thanks. :)
 <br/><br/>
 ![image](https://github.com/user-attachments/assets/2f3053ac-35a0-42af-af59-087d0ec2134a)
 
