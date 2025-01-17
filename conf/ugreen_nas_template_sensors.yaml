@@ -1,0 +1,310 @@
+  - sensor:
+
+    - name: "Ugreen NAS RAM1 Size"
+      unique_id: "UGreen_NAS_RAM1_Size"
+      unit_of_measurement: "GB"
+      icon: "mdi:memory"
+      state: >
+        {{
+          (states('sensor.ugreen_nas_ram1_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0)
+        }}
+
+    - name: "Ugreen NAS RAM2 Size"
+      unique_id: "UGreen_NAS_RAM2_Size"
+      unit_of_measurement: "GB"
+      icon: "mdi:memory"
+      state: >
+        {{
+          (states('sensor.ugreen_nas_ram2_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0)
+        }}
+
+    - name: "Ugreen NAS RAM Total (raw)"
+      unique_id: "UGreen_NAS_RAM_Total_r"
+      unit_of_measurement: "B"
+      icon: "mdi:memory"
+      state: >
+        {{  
+          states('sensor.ugreen_nas_ram1_size_raw') | int(0) +
+          states('sensor.ugreen_nas_ram2_size_raw') | int(0)
+        }}
+
+    - name: "Ugreen NAS RAM Total"
+      unique_id: "UGreen_NAS_RAM_Total"
+      unit_of_measurement: "GB"
+      icon: "mdi:memory"
+      state: >
+        {{
+          (states('sensor.ugreen_nas_ram_total_raw') | float(0) / 1024 / 1024 / 1024) | int(0)
+        }}
+
+    - name: "Ugreen NAS Runtime"
+      unique_id: "UGreen_NAS_Runtime"
+      icon: "mdi:memory"
+      state: >
+        {{
+          states('sensor.ugreen_nas_runtime_raw')|int(0)|timestamp_custom('%-dd, %H:%M')
+        }}
+
+    ### volume1
+
+    - name: "UGreen NAS Volume1 Size (GB)"
+      unique_id: "UGreen_NAS_Volume1_Size_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0) }}
+
+    - name: "UGreen NAS Volume1 Size (TB)"
+      unique_id: "UGreen_NAS_Volume1_Size_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_size_raw') | float(0) / 1024 / 1024 / 1024 / 1024) | round(1) }}
+
+    - name: "UGreen NAS Volume1 Used (GB)"
+      unique_id: "UGreen_NAS_Volume1_Used_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_used_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    - name: "UGreen NAS Volume1 Used (TB)"
+      unique_id: "UGreen_NAS_Volume1_Used_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_used_gb') | float(0) / 1024) | round(1) }}
+
+    - name: "UGreen NAS Volume1 Free (raw)"
+      icon: "mdi:harddisk"
+      state: >
+        {{
+          states('sensor.ugreen_nas_volume1_size_raw') | int(0) -
+          states('sensor.ugreen_nas_volume1_used_raw') | int(0)
+        }}
+
+    - name: "UGreen NAS Volume1 Free (GB)"
+      unique_id: "UGreen_NAS_Volume1_Free_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_free_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    - name: "UGreen NAS Volume1 Free (TB)"
+      unique_id: "UGreen_NAS_Volume1_Free_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume1_free_raw') | float(0) / 1024 / 1024 / 1024 /1024) | round(1) }}
+
+    ### volume2
+
+    - name: "UGreen NAS Volume2 Size (GB)"
+      unique_id: "UGreen_NAS_Volume2_Size_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0) }}
+
+    - name: "UGreen NAS Volume2 Size (TB)"
+      unique_id: "UGreen_NAS_Volume2_Size_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_size_raw') | float(0) / 1024 / 1024 / 1024 / 1024) | round(1) }}
+
+    - name: "UGreen NAS Volume2 Used (GB)"
+      unique_id: "UGreen_NAS_Volume2_Used_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_used_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    - name: "UGreen NAS Volume2 Used (TB)"
+      unique_id: "UGreen_NAS_Volume2_Used_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_used_gb') | float(0) / 1024) | round(1) }}
+
+    - name: "UGreen NAS Volume2 Free (raw)"
+      icon: "mdi:harddisk"
+      state: >
+        {{
+          states('sensor.ugreen_nas_volume2_size_raw') | int(0) -
+          states('sensor.ugreen_nas_volume2_used_raw') | int(0)
+        }}
+
+    - name: "UGreen NAS Volume2 Free (GB)"
+      unique_id: "UGreen_NAS_Volume2_Free_GB"
+      unit_of_measurement: "GB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_free_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    - name: "UGreen NAS Volume2 Free (TB)"
+      unique_id: "UGreen_NAS_Volume2_Free_TB"
+      unit_of_measurement: "TB"
+      icon: "mdi:harddisk"
+      state: >
+        {{ (states('sensor.ugreen_nas_volume2_free_raw') | float(0) / 1024 / 1024 / 1024 /1024) | round(1) }}
+
+    ########
+    # above is for DXP4800+ with 2 volumes/RAIDs; uncomment below if you have more
+    ########
+
+    ### volume3
+
+    # - name: "UGreen NAS Volume3 Size (GB)"
+    #   unique_id: "UGreen_NAS_Volume3_Size_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0) }}
+
+    # - name: "UGreen NAS Volume3 Size (TB)"
+    #   unique_id: "UGreen_NAS_Volume3_Size_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_size_raw') | float(0) / 1024 / 1024 / 1024 / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume3 Used (GB)"
+    #   unique_id: "UGreen_NAS_Volume3_Used_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_used_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume3 Used (TB)"
+    #   unique_id: "UGreen_NAS_Volume3_Used_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_used_gb') | float(0) / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume3 Free (raw)"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{
+    #       states('sensor.ugreen_nas_volume3_size_raw') | int(0) -
+    #       states('sensor.ugreen_nas_volume3_used_raw') | int(0)
+    #     }}
+
+    # - name: "UGreen NAS Volume3 Free (GB)"
+    #   unique_id: "UGreen_NAS_Volume3_Free_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_free_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume3 Free (TB)"
+    #   unique_id: "UGreen_NAS_Volume3_Free_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume3_free_raw') | float(0) / 1024 / 1024 / 1024 /1024) | round(1) }}
+
+    ### volume4
+
+    # - name: "UGreen NAS Volume4 Size (GB)"
+    #   unique_id: "UGreen_NAS_Volume4_Size_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0) }}
+
+    # - name: "UGreen NAS Volume4 Size (TB)"
+    #   unique_id: "UGreen_NAS_Volume4_Size_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_size_raw') | float(0) / 1024 / 1024 / 1024 / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume4 Used (GB)"
+    #   unique_id: "UGreen_NAS_Volume4_Used_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_used_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume4 Used (TB)"
+    #   unique_id: "UGreen_NAS_Volume4_Used_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_used_gb') | float(0) / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume4 Free (raw)"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{
+    #       states('sensor.ugreen_nas_volume4_size_raw') | int(0) -
+    #       states('sensor.ugreen_nas_volume4_used_raw') | int(0)
+    #     }}
+
+    # - name: "UGreen NAS Volume4 Free (GB)"
+    #   unique_id: "UGreen_NAS_Volume4_Free_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_free_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume4 Free (TB)"
+    #   unique_id: "UGreen_NAS_Volume4_Free_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume4_free_raw') | float(0) / 1024 / 1024 / 1024 /1024) | round(1) }}
+
+    ### volume5
+
+    # - name: "UGreen NAS Volume5 Size (GB)"
+    #   unique_id: "UGreen_NAS_Volume5_Size_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_size_raw') | float(0) / 1024 / 1024 / 1024) | int(0) }}
+
+    # - name: "UGreen NAS Volume5 Size (TB)"
+    #   unique_id: "UGreen_NAS_Volume5_Size_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_size_raw') | float(0) / 1024 / 1024 / 1024 / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume5 Used (GB)"
+    #   unique_id: "UGreen_NAS_Volume5_Used_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_used_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume5 Used (TB)"
+    #   unique_id: "UGreen_NAS_Volume5_Used_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_used_gb') | float(0) / 1024) | round(1) }}
+
+    # - name: "UGreen NAS Volume5 Free (raw)"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{
+    #       states('sensor.ugreen_nas_volume5_size_raw') | int(0) -
+    #       states('sensor.ugreen_nas_volume5_used_raw') | int(0)
+    #     }}
+
+    # - name: "UGreen NAS Volume5 Free (GB)"
+    #   unique_id: "UGreen_NAS_Volume5_Free_GB"
+    #   unit_of_measurement: "GB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_free_raw') | float(0) / 1024 / 1024 / 1024) | round(0) | int(0) }}
+
+    # - name: "UGreen NAS Volume5 Free (TB)"
+    #   unique_id: "UGreen_NAS_Volume5_Free_TB"
+    #   unit_of_measurement: "TB"
+    #   icon: "mdi:harddisk"
+    #   state: >
+    #     {{ (states('sensor.ugreen_nas_volume5_free_raw') | float(0) / 1024 / 1024 / 1024 /1024) | round(1) }}
