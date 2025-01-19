@@ -7,5 +7,6 @@ logger:
 homeassistant:
   packages:
     ugreen_nas:
-      # rest:            !include conf/ugreen_nas_rest.yaml
+      # rest:            !include conf/ugreen_nas_rest.yaml              # uncomment at the end of setup procedure
+      # template:        !include conf/ugreen_nas_template_sensors.yaml  # uncomment at the end of setup procedure
       input_text:        !include conf/ugreen_nas_input_text.yaml
