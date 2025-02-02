@@ -41,9 +41,11 @@
       unique_id: "UGreen_NAS_Runtime"
       icon: "mdi:memory"
       state: >
-        {{
-          states('sensor.ugreen_nas_runtime_raw')|int(0)|timestamp_custom('%-dd, %H:%M')
-        }}
+        {% set seconds = states('sensor.ugreen_nas_runtime_raw')|int(0) %}
+        {% set days = seconds // 86400 %}
+        {% set hours = (seconds % 86400) // 3600 %}
+        {% set minutes = (seconds % 3600) // 60 %}
+        {{ days }}d, {{ '%02d' % hours }}:{{ '%02d' % minutes }}
 
     ### volume1
 
