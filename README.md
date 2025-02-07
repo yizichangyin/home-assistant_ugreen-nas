@@ -9,6 +9,10 @@
 
 The setup procedure shown in this repository enables Home Assistant to read data from a UGOS-based UGreen NAS. It keeps UGOS completely untouched - no additional tools will be installed on the NAS; we will just use what is already there.
 
+<br/><br/>
+![image](https://github.com/user-attachments/assets/2f3053ac-35a0-42af-af59-087d0ec2134a)
+<br/><br/>
+
 The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part; reworked to make it more easy).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 
 ~~For step 1, a dedicated shell script will take care of the complicated token generation process. You only need to input some general parameters like NAS IP or user name.~~
@@ -38,6 +42,3 @@ Click [here](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_s
 Everything on this Repository is still under development. My current focus is the DXP 4800 Plus. Different models will require adjustments to volumes/disk readings. ~~Also, unit conversions + rounding are not done properly yet, some data are displayed in weird formats. I will solve all this step-by-step, e.g. by adjusting the current templates, or by adding new template sensors~~ (your pull requests are appreciated!).<br/><br/>
 If you come across any problems, you are welcome to open a new thread in the [discussions](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) section.<br/>
 If you succeed, please also report back. It's always good to know if things are working out as intended. Thanks. :)
-<br/><br/>
-![image](https://github.com/user-attachments/assets/2f3053ac-35a0-42af-af59-087d0ec2134a)
-
