@@ -1,3 +1,10 @@
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-%2341BDF5.svg)](https://www.home-assistant.io)
+[![Custom integration](https://img.shields.io/badge/custom%20integration-%2341BDF5.svg)](https://www.home-assistant.io/getting-started/concepts-terminology)
+[![HACS](https://img.shields.io/badge/HACS%20listing-not%20needed-red.svg)](https://github.com/hacs)
+[![HACS](https://img.shields.io/badge/HACS%20install-not%20needed-red.svg)](https://github.com/hacs)
+[![Version](https://img.shields.io/badge/Version-v2025.01.1-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/releases)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Tom-Bom-badil/home-assistant_helios-vallox/graphs/commit-activity)
+
 ## In short
 
 The setup procedure shown in this repository enables Home Assistant to read data from a UGOS-based UGreen NAS. It keeps UGOS completely untouched - no additional tools will be installed on the NAS; we will just use what is already there.
