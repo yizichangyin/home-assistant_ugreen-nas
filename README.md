@@ -9,9 +9,7 @@
 
 The setup procedure shown in this repository enables Home Assistant to read data from a UGOS-based UGreen NAS. It keeps UGOS completely untouched - no additional tools will be installed on the NAS; we will just use what is already there.
 
-<br/><br/>
 ![image](https://github.com/user-attachments/assets/2f3053ac-35a0-42af-af59-087d0ec2134a)
-<br/><br/>
 
 The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part; reworked to make it more easy).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 
