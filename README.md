@@ -37,6 +37,8 @@ Click [here](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_s
 
 ## Final notes
 
-Everything on this Repository is still under development. My current focus is the DXP 4800 Plus. Different models will require adjustments to volumes/disk readings. ~~Also, unit conversions + rounding are not done properly yet, some data are displayed in weird formats. I will solve all this step-by-step, e.g. by adjusting the current templates, or by adding new template sensors~~ (your pull requests are appreciated!).<br/><br/>
+When tinkering out these instructions, my focus was on my DXP 4800+. Different models might require adjustments to volumes / disks / readings / sensors / templates; I tried to include as many optional and additional components as I could foresee (particularly in the sensor templates) - but for sure there are some I have overlooked.
+<br/><br/>
 If you come across any problems, you are welcome to open a new thread in the [discussions](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) section.<br/>
-If you succeed, please also report back. It's always good to know if things are working out as intended. Thanks. :)
+If you succeed, please also report back. It's always good to know if things are working out as intended.
+If you find any options that can be included in addition to what is already there - your pull requests / reports are always welcome. Thanks. :)
