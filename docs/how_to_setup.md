@@ -62,13 +62,11 @@ Revised version: Steps 1 - 3 can be skipped.
   - Run the shell script to generate the token: `./get_ugreen_token.sh` (the `./` at the beginning is important!).
   - Follow the prompts - you’ll need to provide:<br/>IP address the NAS, port number, username and password, certificate number retrieved in Step 2.<br/>Note: For security reasons, it will ask for the password again after entering the data.
   - You will be presented with 3 results:<br/>(1) an encrypted password, (2) a static token, (3) a session token.
-  - Select the static token (we need only this one) and copy it to your clipboard.<br/>Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).
+  - Select the static token (we need only this one) and copy it to your clipboard. Make sure it is staying there until the end of the next step (safe way is to temporarily paste it somewhere).<br/>**Update 04/2025: After firmware 1.3, the `static token` is not working any longer. As a workaround, please use the `api_token` instead.**
   
   ![image](https://github.com/user-attachments/assets/e985f25f-0f16-4cfd-a552-08b50d444ef4)
   
-  **Update 04/2025: After firmware 1.3, the `static token` is not working any longer. As a workaround, please use the `api_token` instead.**
-  
-  We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
+    We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
 </details>
 
 ## Steps 1-3 combined (the easier way to do it, no shell script needed)
