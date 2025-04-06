@@ -66,6 +66,8 @@ Revised version: Steps 1 - 3 can be skipped.
   
   ![image](https://github.com/user-attachments/assets/e985f25f-0f16-4cfd-a552-08b50d444ef4)
   
+  **Update 04/2025: After firmware 1.3, the `static token` is not working any longer. As a workaround, please use the `api_token` instead.**
+  
   We now have a valid token that can be used to authenticate REST requests from Home Assistant towards the NAS.
 </details>
 
