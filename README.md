@@ -13,9 +13,7 @@ The setup procedure shown in this repository enables Home Assistant to read data
 
 The process involves two steps:<br/>1) Obtain an individual token for authentication (the rather complicated part; reworked to make it more easy).<br/>2) Configure Home Assistant for frequent data polling by utilizing the standard HA REST integration (simple).
 
-~~For step 1, a dedicated shell script will take care of the complicated token generation process. You only need to input some general parameters like NAS IP or user name.~~
-
-There is a new way by gathering the token in a normal NAS GUI browser session, making it way easier to obtain. So, the entire setup procedure shouldn't take you more than 10 minutes now, if you know your way around in Home Assistant.
+The entire setup procedure shouldn't take you more than 10 minutes if you are familiar with Home Assistant's basic concepts.
 
 ## The story behind
 
