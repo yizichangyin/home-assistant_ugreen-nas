@@ -115,7 +115,7 @@ Revised version: Steps 1 - 3 can be skipped.
   <summary>click to show/hide</summary>
   <br/>Finally, we are ready to create our REST sensors in HA.<br/><br/>
 
-  - Go back to VS Code and create a file `conf/ugreen_nas_rest.yaml` (next to the `ugreen_nas_rest.yaml` we have created before).
+  - Go back to VS Code and create a file `conf/ugreen_nas_rest.yaml` (next to the `ugreen_nas_input_text.yaml` we have created before).
   - Copy/paste the code of this repository's `conf/ugreen_nas_rest.yaml` into it.
   - Create another file `conf/ugreen_nas_template_sensors.yaml` and copy it's contents from this repo, too.
   - Go back to your `configuration.yaml`and uncomment `rest:` and `template`![image](https://github.com/user-attachments/assets/8714d257-00af-41c5-b28a-98b726e2028e)
