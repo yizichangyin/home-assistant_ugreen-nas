@@ -224,73 +224,73 @@
       unique_id: "UGreen_NAS_USB1_Device"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[0].model if value_json.data.hardware.usb | length > 0 else "None" }}
+        {{ value_json.data.hardware.usb[0].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 0 else "None" }}
 
     - name: "UGreen NAS USB1 Vendor"
       unique_id: "UGreen_NAS_USB1_Vendor"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[0].vendor if value_json.data.hardware.usb | length > 0 else "None" }}
+        {{ value_json.data.hardware.usb[0].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 0 else "None" }}
 
     - name: "UGreen NAS USB1 Device Type"
       unique_id: "UGreen_NAS_USB1_Device_Type"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[0].device_type if value_json.data.hardware.usb | length > 0 else "None" }}
+        {{ value_json.data.hardware.usb[0].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 0 else "None" }}
 
     - name: "UGreen NAS USB2 Device"
       unique_id: "UGreen_NAS_USB2_Device"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[1].model if value_json.data.hardware.usb | length > 1 else "None" }}
+        {{ value_json.data.hardware.usb[1].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 1 else "None" }}
 
     - name: "UGreen NAS USB2 Vendor"
       unique_id: "UGreen_NAS_USB2_Vendor"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[1].vendor if value_json.data.hardware.usb | length > 1 else "None" }}
+        {{ value_json.data.hardware.usb[1].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 1 else "None" }}
 
     - name: "UGreen NAS USB2 Device Type"
       unique_id: "UGreen_NAS_USB2_Device_Type"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[1].device_type if value_json.data.hardware.usb | length > 1 else "None" }}
+        {{ value_json.data.hardware.usb[1].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 1 else "None" }}
 
     - name: "UGreen NAS USB3 Device"
       unique_id: "UGreen_NAS_USB3_Device"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[2].model if value_json.data.hardware.usb | length > 2 else "None" }}
+        {{ value_json.data.hardware.usb[2].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 2 else "None" }}
 
     - name: "UGreen NAS USB3 Vendor"
       unique_id: "UGreen_NAS_USB3_Vendor"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[2].vendor if value_json.data.hardware.usb | length > 2 else "None" }}
+        {{ value_json.data.hardware.usb[2].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 2 else "None" }}
 
     - name: "UGreen NAS USB3 Device Type"
       unique_id: "UGreen_NAS_USB3_Device_Type"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[2].device_type if value_json.data.hardware.usb | length > 2 else "None" }}
+        {{ value_json.data.hardware.usb[2].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 2 else "None" }}
 
     - name: "UGreen NAS USB4 Device"
       unique_id: "UGreen_NAS_USB4_Device"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[3].model if value_json.data.hardware.usb | length > 3 else "None" }}
+        {{ value_json.data.hardware.usb[3].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 3 else "None" }}
 
     - name: "UGreen NAS USB4 Vendor"
       unique_id: "UGreen_NAS_USB4_Vendor"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[3].vendor if value_json.data.hardware.usb | length > 3 else "None" }}
+        {{ value_json.data.hardware.usb[3].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 3 else "None" }}
 
     - name: "UGreen NAS USB4 Device Type"
       unique_id: "UGreen_NAS_USB4_Device_Type"
       icon: "mdi:usb-port"
       value_template: >
-        {{ value_json.data.hardware.usb[3].device_type if value_json.data.hardware.usb | length > 3 else "None" }}
+        {{ value_json.data.hardware.usb[3].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 3 else "None" }}
 
     ########
     # above is for DXP4800+ with 4 USB ports; uncomment below for larger models with more USB's
@@ -300,37 +300,38 @@
     #   unique_id: "UGreen_NAS_USB5_Device"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[4].model if value_json.data.hardware.usb | length > 4 else "None" }}
+    #     {{ value_json.data.hardware.usb[4].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 4 else "None" }}
 
     # - name: "UGreen NAS USB5 Vendor"
     #   unique_id: "UGreen_NAS_USB5_Vendor"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[4].vendor if value_json.data.hardware.usb | length > 4 else "None" }}
+    #     {{ value_json.data.hardware.usb[4].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 4 else "None" }}
 
     # - name: "UGreen NAS USB5 Device Type"
     #   unique_id: "UGreen_NAS_USB5_Device_Type"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[4].device_type if value_json.data.hardware.usb | length > 4 else "None" }}
+    #     {{ value_json.data.hardware.usb[4].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 4 else "None" }}
 
     # - name: "UGreen NAS USB6 Device"
     #   unique_id: "UGreen_NAS_USB6_Device"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[5].model if value_json.data.hardware.usb | length > 5 else "None" }}
+    #     {{ value_json.data.hardware.usb[5].model if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 5 else "None" }}
 
     # - name: "UGreen NAS USB6 Vendor"
     #   unique_id: "UGreen_NAS_USB6_Vendor"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[5].vendor if value_json.data.hardware.usb | length > 5 else "None" }}
+    #     {{ value_json.data.hardware.usb[5].vendor if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 5 else "None" }}
 
     # - name: "UGreen NAS USB6 Device Type"
     #   unique_id: "UGreen_NAS_USB6_Device_Type"
     #   icon: "mdi:usb-port"
     #   value_template: >
-    #     {{ value_json.data.hardware.usb[5].device_type if value_json.data.hardware.usb | length > 5 else "None" }}
+    #     {{ value_json.data.hardware.usb[5].device_type if value_json.data.hardware.usb is defined and value_json.data.hardware.usb is not none and value_json.data.hardware.usb | length > 5 else "None" }}
+
 
 
 - # resource_template: "http://192.168.178.9:9999/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus&token={{states('input_text.ugreen_nas_conf_token')}}"
