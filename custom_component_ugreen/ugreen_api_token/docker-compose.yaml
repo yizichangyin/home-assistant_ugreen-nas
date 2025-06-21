@@ -1,0 +1,12 @@
+services:
+  token-api:
+    build: .
+    container_name: token-api
+    ports:
+      - "4115:4115"
+    environment:
+      API_SCHEME: "https"
+      API_HOST: "192.168.178.21"
+      API_PORT: "9443"
+      API_VERIFY: "false"
+    restart: unless-stopped
