@@ -1,0 +1,13 @@
+{
+  "domain": "ugreen_nas",
+  "name": "UGREEN NAS",
+  "version": "0.8.0",
+  "documentation": "https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas",
+  "issue_tracker": "https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@Tom-Bom-badil", "@dobby5"],
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "integration_type": "device"
+}
