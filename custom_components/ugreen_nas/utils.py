@@ -2,7 +2,7 @@ from typing import Optional, Tuple, Any
 from datetime import datetime
 from decimal import Decimal
 
-from .api import UgreenSensorAPIEndpoint
+from .api import UgreenEntity
 
 
 def format_bytes(size_bytes: Optional[float]) -> Optional[Tuple[float, str]]:
@@ -90,32 +90,48 @@ def format_status_code(raw: Any, status_map: dict[int, str]) -> str:
         return f"Invalid value: {raw}"
 
 
-def format_sensor_value(raw: Any, endpoint: UgreenSensorAPIEndpoint) -> Any:
+def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
     """Format a raw value based on the endpoint definition."""
     try:
-        if endpoint.unit in ("MB", "GB", "TB"):
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("MB", "GB", "TB"):
             return format_gb_value(raw)
 
-        if "Timestamp" in endpoint.name:
+        if isinstance(endpoint.description.name, str) and "Timestamp" in endpoint.description.name:
             return format_timestamp(raw)
 
-        if "server_status" in endpoint.key:
+        if "server_status" in endpoint.description.key:
             return format_status_code(raw, {
                 2: "Normal",
             })
 
-        if "status" in endpoint.key:
+        if "disk" in endpoint.description.key and "status" in endpoint.description.key:
+            return format_status_code(raw, {
+                1: "Normal",
+            })
+            
+        if "status" in endpoint.description.key:
+            return format_status_code(raw, {
+                0: "Normal",
+            })
+            
+        if "disk" in endpoint.description.key and not "interface" in endpoint.description.key and "type" in endpoint.description.key:
+            return format_status_code(raw, {
+                1: "HDD",
+                2: "SSD",
+            })
+            
+        if "volume" in endpoint.description.key and "health" in endpoint.description.key:
             return format_status_code(raw, {
                 0: "Normal",
             })
 
-        if endpoint.unit == "%":
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "%":
             return format_percentage(raw)
 
-        if endpoint.unit == "°C":
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "°C":
             return format_temperature(raw)
 
-        if endpoint.unit in ("MB/s", "KB/s", "GB/s"):
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("MB/s", "KB/s", "GB/s"):
             return format_speed(raw)
 
         if isinstance(raw, (int, float, Decimal)):

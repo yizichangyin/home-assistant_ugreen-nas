@@ -11,7 +11,7 @@ from homeassistant.helpers.device_registry import async_get as async_get_device_
 from .const import DOMAIN, PLATFORMS
 from .api import UGREEN_STATIC_BUTTON_ENDPOINTS, UgreenApiClient, UGREEN_STATIC_SENSOR_ENDPOINTS
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)        
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info("[UGREEN NAS] Setting up config entry: %s", entry.entry_id)
@@ -48,15 +48,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             else:
                 _LOGGER.debug("[UGREEN NAS] No dynamic storage entities found.")
 
-            # Speichern der kombinierten Sensor-Endpoints (statisch + dynamisch)
             hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
             _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
 
             for endpoint in all_sensor_endpoints:
-                _LOGGER.debug("[UGREEN NAS] Querying endpoint: %s", endpoint.endpoint)
-                response = await api.get(session, endpoint.endpoint)
+                endpoint_str = getattr(endpoint, "endpoint", str(endpoint))
+                _LOGGER.debug("[UGREEN NAS] Querying endpoint: %s", endpoint_str)
+                response = await api.get(session, endpoint_str)
                 try:
-                    parts = endpoint.path.split(".")
+                    if hasattr(endpoint, "path"):
+                        parts = endpoint.path.split(".")
+                    else:
+                        _LOGGER.warning("[UGREEN NAS] Endpoint %s does not have a 'path' attribute, skipping.", getattr(endpoint, "key", str(endpoint)))
+                        data[getattr(endpoint, "key", str(endpoint))] = None
+                        continue
+
                     value: Any = response
                     for part in parts:
                         if "[" in part and "]" in part:
@@ -79,10 +85,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                                 value = value_dict.get(part)
                             else:
                                 value = None
-                    data[endpoint.key] = value
+                    data[endpoint.description.key] = value
                 except Exception as e:
-                    _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", endpoint.key, e)
-                    data[endpoint.key] = None
+                    _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", endpoint.description.key, e)
+                    data[endpoint.description.key] = None
 
             return data
 
@@ -113,6 +119,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sys_info = await api.get(session, "/ugreen/v1/sysinfo/machine/common")
 
         model = sys_info.get("data", {}).get("common", {}).get("model", "Unknown Model")
+        hass.data[DOMAIN][entry.entry_id]["nas_model"] = model
         version = sys_info.get("data", {}).get("common", {}).get("system_version", "Unknown Version")
         name = sys_info.get("data", {}).get("common", {}).get("nas_name", "UGREEN NAS")
 

@@ -28,7 +28,7 @@ async def get_token(username: str = Query(...), password: str = Query(...)):
     else:
         raise HTTPException(
             status_code=401,
-            content={
+            content={ # type: ignore
                 "code": 401,
                 "msg": "Token refresh failed",
             }

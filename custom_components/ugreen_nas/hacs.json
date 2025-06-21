@@ -1,6 +1,6 @@
 {
   "name": "UGreen NAS Integration",
   "content_in_root": false,
-  "homeassistant": "2025.05.3",
+  "homeassistant": "2025.6.1",
   "render_readme": true
 }
