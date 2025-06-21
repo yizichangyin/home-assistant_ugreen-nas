@@ -7,8 +7,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .api import UgreenButtonAPIEndpoint, UgreenApiClient
-from .device_info import build_device_info
+from .api import UgreenApiClient, UgreenEntity
+from .device_info import build_device_info        
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up UGREEN NAS buttons based on a config entry."""
     coordinator: DataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    endpoints: list[UgreenButtonAPIEndpoint] = hass.data[DOMAIN][entry.entry_id]["button_endpoints"]
+    endpoints: list[UgreenEntity] = hass.data[DOMAIN][entry.entry_id]["button_endpoints"]
     api = hass.data[DOMAIN][entry.entry_id]["api"]
     entities = [
         UgreenNasButton(entry.entry_id, coordinator, api, endpoint)
@@ -28,18 +28,18 @@ async def async_setup_entry(
 
     async_add_entities(entities)
 
-class UgreenNasButton(CoordinatorEntity, ButtonEntity):
+class UgreenNasButton(CoordinatorEntity, ButtonEntity): # type: ignore
     """Representation of a UGREEN NAS button."""
-    def __init__(self, entry_id: str, coordinator: DataUpdateCoordinator, api: UgreenApiClient, endpoint: UgreenButtonAPIEndpoint) -> None:
+    def __init__(self, entry_id: str, coordinator: DataUpdateCoordinator, api: UgreenApiClient, endpoint: UgreenEntity) -> None:
         super().__init__(coordinator)
         self._entry_id = entry_id
         self._endpoint = endpoint
-        self._key = endpoint.key
+        self._key = endpoint.description.key
         self._api = api
 
-        self._attr_name = f"UGREEN NAS {endpoint.name}"
+        self._attr_name = f"UGREEN NAS {endpoint.description.name}"
         self._attr_unique_id = f"{entry_id}_{self._key}"
-        self._attr_icon = endpoint.icon or "mdi:server"
+        self._attr_icon = endpoint.description.icon or "mdi:server"
         self._attr_device_info = build_device_info(self._key)
 
     async def async_press(self) -> None:
@@ -48,9 +48,9 @@ class UgreenNasButton(CoordinatorEntity, ButtonEntity):
             async with aiohttp.ClientSession() as session:
                 await self._api.authenticate(session)
 
-                method = self._endpoint.request_method.upper()
+                method = str(self._endpoint.request_method or "GET").upper()
                 path = self._endpoint.path
-
+        
                 if method == "POST":
                     await self._api.post(session, path)
                 elif method == "GET":

@@ -1,8 +1,9 @@
+from dataclasses import dataclass
 import logging
 import aiohttp
 import async_timeout
-from dataclasses import dataclass
-from typing import Literal, Optional, List, Any
+from typing import List, Any
+from homeassistant.components.sensor import EntityDescription
 from homeassistant.const import (
     PERCENTAGE,
     REVOLUTIONS_PER_MINUTE,
@@ -14,65 +15,317 @@ from homeassistant.const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-    
+
 @dataclass
-class UgreenSensorAPIEndpoint:
-    key: str
-    name: str
+class UgreenEntity:
+    description: EntityDescription
     endpoint: str
     path: str
-    unit: Optional[str] = None
-    icon: Optional[str] = None
-    
-@dataclass
-class UgreenButtonAPIEndpoint:
-    key: str
-    name: str
-    request_method: Literal["GET", "POST"]
-    path: str
-    icon: Optional[str] = None
+    request_method: str = "GET"
 
-UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenSensorAPIEndpoint] = [
+UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     # Hardware Info
-    UgreenSensorAPIEndpoint("cpu_model", "CPU Model", "/ugreen/v1/sysinfo/machine/common", "data.hardware.cpu[0].model", None, "mdi:chip"),
-    UgreenSensorAPIEndpoint("cpu_ghz", "CPU Frequency", "/ugreen/v1/sysinfo/machine/common", "data.hardware.cpu[0].ghz", UnitOfFrequency.MEGAHERTZ, "mdi:speedometer"),
-    UgreenSensorAPIEndpoint("cpu_core", "CPU Cores", "/ugreen/v1/sysinfo/machine/common", "data.hardware.cpu[0].core", None, "mdi:chip"),
-    UgreenSensorAPIEndpoint("cpu_thread", "CPU Threads", "/ugreen/v1/sysinfo/machine/common", "data.hardware.cpu[0].thread", None, "mdi:chip"),
-    UgreenSensorAPIEndpoint("ram_manufacturer", "RAM Manufacturer", "/ugreen/v1/sysinfo/machine/common", "data.hardware.mem[0].manufacturer", None, "mdi:memory"),
-    UgreenSensorAPIEndpoint("ram_model", "RAM Model", "/ugreen/v1/sysinfo/machine/common", "data.hardware.mem[0].model", None, "mdi:memory"),
-    UgreenSensorAPIEndpoint("ram_size", "RAM Size", "/ugreen/v1/sysinfo/machine/common", "data.hardware.mem[0].size", UnitOfInformation.GIGABYTES, "mdi:memory"),
-    UgreenSensorAPIEndpoint("ram_mhz", "RAM Speed", "/ugreen/v1/sysinfo/machine/common", "data.hardware.mem[0].mhz", None, "mdi:speedometer"),
+  UgreenEntity(
+        description=EntityDescription(
+            key="cpu_model",
+            name="CPU Model",
+            icon="mdi:chip",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.cpu[0].model",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="cpu_ghz",
+            name="CPU Frequency",
+            icon="mdi:speedometer",
+            unit_of_measurement=UnitOfFrequency.MEGAHERTZ,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.cpu[0].ghz",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="cpu_core",
+            name="CPU Cores",
+            icon="mdi:chip",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.cpu[0].core",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="cpu_thread",
+            name="CPU Threads",
+            icon="mdi:chip",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.cpu[0].thread",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_manufacturer",
+            name="RAM Manufacturer",
+            icon="mdi:memory",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.mem[0].manufacturer",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_model",
+            name="RAM Model",
+            icon="mdi:memory",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.mem[0].model",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_size",
+            name="RAM Size",
+            icon="mdi:memory",
+            unit_of_measurement=UnitOfInformation.GIGABYTES,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.mem[0].size",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_mhz",
+            name="RAM Speed",
+            icon="mdi:speedometer",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.mem[0].mhz",
+    ),
 
     # Device Monitoring
-    UgreenSensorAPIEndpoint("cpu_usage", "CPU Usage", "/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring", "data.cpu_usage_rate", PERCENTAGE, "mdi:chip"),
-    UgreenSensorAPIEndpoint("ram_usage", "RAM Usage", "/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring", "data.ram_usage_rate", PERCENTAGE, "mdi:memory"),
-    UgreenSensorAPIEndpoint("upload_speed", "Upload Speed", "/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring", "data.upload_speed.value", UnitOfDataRate.MEGABITS_PER_SECOND, "mdi:upload"),
-    UgreenSensorAPIEndpoint("download_speed", "Download Speed", "/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring", "data.download_speed.value", UnitOfDataRate.MEGABITS_PER_SECOND, "mdi:download"),
+     UgreenEntity(
+        description=EntityDescription(
+            key="cpu_usage",
+            name="CPU Usage",
+            icon="mdi:chip",
+            unit_of_measurement=PERCENTAGE,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
+        path="data.cpu_usage_rate",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_usage",
+            name="RAM Usage",
+            icon="mdi:memory",
+            unit_of_measurement=PERCENTAGE,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
+        path="data.ram_usage_rate",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="upload_speed",
+            name="Upload Speed",
+            icon="mdi:upload",
+            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
+        path="data.upload_speed.value",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="download_speed",
+            name="Download Speed",
+            icon="mdi:download",
+            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
+        path="data.download_speed.value",
+    ),
 
     # System Status
-    UgreenSensorAPIEndpoint("last_boot_date", "Last Boot", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.last_boot_date", None, "mdi:calendar"),
-    UgreenSensorAPIEndpoint("last_boot_time", "Last Boot Timestamp", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.last_boot_time", None, "mdi:clock"),
-    UgreenSensorAPIEndpoint("message", "System Message", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.message", None, "mdi:message"),
-    UgreenSensorAPIEndpoint("server_status", "Server Status", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.server_status", None, "mdi:server"),
-    UgreenSensorAPIEndpoint("status", "System Status Code", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.status", None, "mdi:information"),
-    UgreenSensorAPIEndpoint("total_run_time", "Total Runtime", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.total_run_time", UnitOfTime.SECONDS, "mdi:timer-outline"),
-    UgreenSensorAPIEndpoint("device_name", "Device Name", "/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus", "data.dev_name", None, "mdi:nas"),
+        UgreenEntity(
+        description=EntityDescription(
+            key="last_boot_date",
+            name="Last Boot",
+            icon="mdi:calendar",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.last_boot_date",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="last_boot_time",
+            name="Last Boot Timestamp",
+            icon="mdi:clock",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.last_boot_time",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="message",
+            name="System Message",
+            icon="mdi:message",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.message",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="server_status",
+            name="Server Status",
+            icon="mdi:server",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.server_status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="status",
+            name="System Status Code",
+            icon="mdi:information",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="total_run_time",
+            name="Total Runtime",
+            icon="mdi:timer-outline",
+            unit_of_measurement=UnitOfTime.SECONDS,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.total_run_time",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="device_name",
+            name="Device Name",
+            icon="mdi:nas",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.dev_name",
+    ),
 
     # Temperature Monitoring
-    UgreenSensorAPIEndpoint("cpu_temperature", "CPU Temperature", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.cpu_temperature", UnitOfTemperature.CELSIUS, "mdi:thermometer"),
-    UgreenSensorAPIEndpoint("cpu_status", "CPU Temperature Status", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.cpu_status", None, "mdi:alert"),
-    UgreenSensorAPIEndpoint("fan_speed", "Main Fan Speed", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.fan_speed", REVOLUTIONS_PER_MINUTE, "mdi:fan"),
-    UgreenSensorAPIEndpoint("fan_status", "Fan Status", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.fan_status", None, "mdi:fan-alert"),
-    UgreenSensorAPIEndpoint("temperature_message", "Temperature Message", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.message", None, "mdi:message-alert"),
-    UgreenSensorAPIEndpoint("temperature_status", "Temperature Status Code", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.status", None, "mdi:information"),
-    UgreenSensorAPIEndpoint("fan1_speed", "Fan 1 Speed", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.fan_list[0].speed", REVOLUTIONS_PER_MINUTE, "mdi:fan"),
-    UgreenSensorAPIEndpoint("fan2_speed", "Fan 2 Speed", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", "data.fan_list[1].speed", REVOLUTIONS_PER_MINUTE, "mdi:fan"),
+     UgreenEntity(
+        description=EntityDescription(
+            key="cpu_temperature",
+            name="CPU Temperature",
+            icon="mdi:thermometer",
+            unit_of_measurement=UnitOfTemperature.CELSIUS,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.cpu_temperature",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="cpu_status",
+            name="CPU Temperature Status",
+            icon="mdi:alert",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.cpu_status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="fan_speed",
+            name="Main Fan Speed",
+            icon="mdi:fan",
+            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.fan_speed",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="fan_status",
+            name="Fan Status",
+            icon="mdi:fan-alert",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.fan_status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="temperature_message",
+            name="Temperature Message",
+            icon="mdi:message-alert",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.message",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="temperature_status",
+            name="Temperature Status Code",
+            icon="mdi:information",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="fan1_speed",
+            name="Fan 1 Speed",
+            icon="mdi:fan",
+            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.fan_list[0].speed",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="fan2_speed",
+            name="Fan 2 Speed",
+            icon="mdi:fan",
+            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+        path="data.fan_list[1].speed",
+    ),
+
 ]
 
-UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenButtonAPIEndpoint] = [
+UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
     # System Actions
-    UgreenButtonAPIEndpoint("shutdown", "Shutdown", "POST", "/ugreen/v1/desktop/shutdown", "mdi:power"),
-    UgreenButtonAPIEndpoint("reboot", "Reboot", "POST", "/ugreen/v1/desktop/reboot", "mdi:restart")
+    UgreenEntity(
+        description=EntityDescription(
+            key="shutdown",
+            name="Shutdown",
+            icon="mdi:power",
+        ),
+        endpoint="/ugreen/v1/desktop/shutdown",
+        path="",
+        request_method="POST",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="reboot",
+            name="Reboot",
+            icon="mdi:restart",
+        ),
+        endpoint="/ugreen/v1/desktop/reboot",
+        path="",
+        request_method="POST",
+    ),
 ]
 
 class UgreenApiClient:
@@ -177,7 +430,7 @@ class UgreenApiClient:
             _LOGGER.error("[UGREEN NAS] POST request to %s failed: %s", endpoint, e)
             return {}
 
-    async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenSensorAPIEndpoint]:
+    async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic storage entities (unchanged logic)."""
         endpoint = "/ugreen/v1/storage/pool/list"
         _LOGGER.debug("[UGREEN NAS] Fetching dynamic storage entities from %s", endpoint)
@@ -192,7 +445,7 @@ class UgreenApiClient:
             _LOGGER.warning("[UGREEN NAS] 'result' field is missing or empty in response from %s", endpoint)
             return []
 
-        entities: List[UgreenSensorAPIEndpoint] = []
+        entities: List[UgreenEntity] = []
 
         try:
             for pool_index, pool in enumerate(results):
@@ -201,30 +454,245 @@ class UgreenApiClient:
                 _LOGGER.debug("[UGREEN NAS] Processing pool entity: %s", prefix_pool_key)
 
                 entities.extend([
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_name", f"{prefix_pool_name} Name", endpoint, f"data.result[{pool_index}].name", None, "mdi:chip"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_label", f"{prefix_pool_name} Label", endpoint, f"data.result[{pool_index}].label", None, "mdi:label"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_level", f"{prefix_pool_name} Level", endpoint, f"data.result[{pool_index}].level", None, "mdi:format-list-bulleted-type"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_status", f"{prefix_pool_name} Status", endpoint, f"data.result[{pool_index}].status", None, "mdi:check-circle-outline"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_total", f"{prefix_pool_name} Total Size", endpoint, f"data.result[{pool_index}].total", UnitOfInformation.GIGABYTES, "mdi:database"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_used", f"{prefix_pool_name} Used Size", endpoint, f"data.result[{pool_index}].used", UnitOfInformation.GIGABYTES, "mdi:database-check"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_free", f"{prefix_pool_name} Free Size", endpoint, f"data.result[{pool_index}].free", UnitOfInformation.GIGABYTES, "mdi:database-remove"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_available", f"{prefix_pool_name} Available Size", endpoint, f"data.result[{pool_index}].available", UnitOfInformation.GIGABYTES, "mdi:database-plus"),
-                    UgreenSensorAPIEndpoint(f"{prefix_pool_key}_disk_count", f"{prefix_pool_name} Disk Count", endpoint, f"data.result[{pool_index}].total_disk_num", None, "mdi:harddisk"),
+                    UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_name",
+                                name=f"{prefix_pool_name} Name",
+                                icon="mdi:chip",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].name",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_label",
+                                name=f"{prefix_pool_name} Label",
+                                icon="mdi:label",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].label",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_level",
+                                name=f"{prefix_pool_name} Level",
+                                icon="mdi:format-list-bulleted-type",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].level",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_status",
+                                name=f"{prefix_pool_name} Status",
+                                icon="mdi:check-circle-outline",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].status",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_total",
+                                name=f"{prefix_pool_name} Total Size",
+                                icon="mdi:database",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].total",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_used",
+                                name=f"{prefix_pool_name} Used Size",
+                                icon="mdi:database-check",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].used",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_free",
+                                name=f"{prefix_pool_name} Free Size",
+                                icon="mdi:database-remove",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].free",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_available",
+                                name=f"{prefix_pool_name} Available Size",
+                                icon="mdi:database-plus",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].available",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_pool_key}_disk_count",
+                                name=f"{prefix_pool_name} Disk Count",
+                                icon="mdi:harddisk",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].total_disk_num",
+                        ),
                 ])
 
                 for disk_index, _ in enumerate(pool.get("disks", [])):
                     prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
-                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"                    
+                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
+                    endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
                     _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
 
                     entities.extend([
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_name", f"{prefix_disk_name} Name", endpoint, f"data.result[{pool_index}].disks[{disk_index}].name", None, "mdi:identifier"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_label", f"{prefix_disk_name} Label", endpoint, f"data.result[{pool_index}].disks[{disk_index}].label", None, "mdi:label"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_size", f"{prefix_disk_name} Size", endpoint, f"data.result[{pool_index}].disks[{disk_index}].size", UnitOfInformation.GIGABYTES, "mdi:database"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_status", f"{prefix_disk_name} Status", endpoint, f"data.result[{pool_index}].disks[{disk_index}].status", None, "mdi:check-circle-outline"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_slot", f"{prefix_disk_name} Slot", endpoint, f"data.result[{pool_index}].disks[{disk_index}].slot", None, "mdi:server-network"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_type", f"{prefix_disk_name} Type", endpoint, f"data.result[{pool_index}].disks[{disk_index}].disk_type", None, "mdi:harddisk"),
-                        UgreenSensorAPIEndpoint(f"{prefix_disk_key}_temperature", f"{prefix_disk_name} Temperature", "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring", f"data.disk_list[{disk_index}].temperature", UnitOfTemperature.CELSIUS, "mdi:thermometer"),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_model",
+                                name=f"{prefix_disk_name} Model",
+                                icon="mdi:chip",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].model",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_serial",
+                                name=f"{prefix_disk_name} Serial Number",
+                                icon="mdi:identifier",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].serial",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_size",
+                                name=f"{prefix_disk_name} Size",
+                                icon="mdi:database",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].size",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_name",
+                                name=f"{prefix_disk_name} Name",
+                                icon="mdi:harddisk",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].name",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_dev_name",
+                                name=f"{prefix_disk_name} Device Name",
+                                icon="mdi:console",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].dev_name",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_slot",
+                                name=f"{prefix_disk_name} Slot",
+                                icon="mdi:server-network",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].slot",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_type",
+                                name=f"{prefix_disk_name} Type",
+                                icon="mdi:harddisk",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].type",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_interface_type",
+                                name=f"{prefix_disk_name} Interface Type",
+                                icon="mdi:ethernet",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].interface_type",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_label",
+                                name=f"{prefix_disk_name} Label",
+                                icon="mdi:label",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].label",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_used_for",
+                                name=f"{prefix_disk_name} Used For",
+                                icon="mdi:database-marker",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].used_for",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_status",
+                                name=f"{prefix_disk_name} Status",
+                                icon="mdi:check-circle-outline",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].status",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_temperature",
+                                name=f"{prefix_disk_name} Temperature",
+                                icon="mdi:thermometer",
+                                unit_of_measurement=UnitOfTemperature.CELSIUS,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.disk_list[{disk_index}].temperature",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_power_on_hours",
+                                name=f"{prefix_disk_name} Power-On Hours",
+                                icon="mdi:clock-outline",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].power_on_hours",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_disk_key}_brand",
+                                name=f"{prefix_disk_name} Brand",
+                                icon="mdi:tag",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint_disk,
+                            path=f"data.result[{disk_index}].brand",
+                        ),
                     ])
 
                 for volume_index, _ in enumerate(pool.get("volumes", [])):
@@ -233,16 +701,106 @@ class UgreenApiClient:
                     _LOGGER.debug("[UGREEN NAS] Processing volume entity: %s", prefix_volume_key)
 
                     entities.extend([
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_name", f"{prefix_volume_name} Name", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].name", None, "mdi:label"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_label",f"{prefix_volume_name} Label", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].label", None, "mdi:label-outline"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_poolname", f"{prefix_volume_name} Pool Name", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].poolname", None, "mdi:database"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_total", f"{prefix_volume_name} Total Size", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].total", UnitOfInformation.GIGABYTES, "mdi:database"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_used", f"{prefix_volume_name} Used Size", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].used", UnitOfInformation.GIGABYTES, "mdi:database-check"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_available", f"{prefix_volume_name} Available Size", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].available", UnitOfInformation.GIGABYTES, "mdi:database-plus"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_hascache", f"{prefix_volume_name} Has Cache", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].hascache", None, "mdi:cached"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_filesystem", f"{prefix_volume_name} Filesystem", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].filesystem", None, "mdi:file-cog"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_health", f"{prefix_volume_name} Health", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].health", None, "mdi:heart-pulse"),
-                        UgreenSensorAPIEndpoint(f"{prefix_volume_key}_status", f"{prefix_volume_name} Status", endpoint, f"data.result[{pool_index}].volumes[{volume_index}].status", None, "mdi:checkbox-marked-circle-outline"),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_name",
+                                name=f"{prefix_volume_name} Name",
+                                icon="mdi:label",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].name",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_label",
+                                name=f"{prefix_volume_name} Label",
+                                icon="mdi:label-outline",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].label",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_poolname",
+                                name=f"{prefix_volume_name} Pool Name",
+                                icon="mdi:database",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].poolname",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_total",
+                                name=f"{prefix_volume_name} Total Size",
+                                icon="mdi:database",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].total",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_used",
+                                name=f"{prefix_volume_name} Used Size",
+                                icon="mdi:database-check",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].used",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_available",
+                                name=f"{prefix_volume_name} Available Size",
+                                icon="mdi:database-plus",
+                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].available",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_hascache",
+                                name=f"{prefix_volume_name} Has Cache",
+                                icon="mdi:cached",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].hascache",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_filesystem",
+                                name=f"{prefix_volume_name} Filesystem",
+                                icon="mdi:file-cog",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].filesystem",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_health",
+                                name=f"{prefix_volume_name} Health",
+                                icon="mdi:heart-pulse",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].health",
+                        ),
+                        UgreenEntity(
+                            description=EntityDescription(
+                                key=f"{prefix_volume_key}_status",
+                                name=f"{prefix_volume_name} Status",
+                                icon="mdi:checkbox-marked-circle-outline",
+                                unit_of_measurement=None,
+                            ),
+                            endpoint=endpoint,
+                            path=f"data.result[{pool_index}].volumes[{volume_index}].status",
+                        ),
                     ])
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] Error while building dynamic storage entities: %s", e)
