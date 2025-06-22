@@ -1,6 +1,6 @@
 services:
   token-api:
-    build: .
+    image: ghcr.io/tom-bom-badil/ugreen-api-token:latest
     container_name: ugreen-api-token
     ports:
       - "4115:4115"

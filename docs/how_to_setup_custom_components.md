@@ -16,31 +16,19 @@ Development is active, and the API is undocumented.
 
 ---
 
-## 🔧 Installing the Integration (Custom Component)
+## 🔧 Installing
 
-### 1. Prepare the Files
+### 1. Adding and installing the Integration (Custom Component)
 
-1. Download the repository as a ZIP:  
-   👉 [Download Code](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/archive/refs/heads/main.zip)
-
-2. Extract the ZIP file.
-
-3. Navigate to:
-   ```
-   home-assistant_ugreen-nas/custom_component_ugreen/custom_components/ugreen_nas
-   ```
-
-4. Copy the entire `ugreen_nas` folder to:
-   ```
-   /config/custom_components/
-   ```
-
-   If `custom_components` does not exist, you can create this folder yourself.
-
-### 2. Restart Home Assistant
-
-- Restart Home Assistant via the UI:  
-  **Settings → System → Controls → Restart**
+1. In Home Assistant, open **HACS** from the sidebar.
+2. Click the **three dots (⋯)** in the top-right corner and choose  
+   **“Custom repositories”**.
+3. Click **“Add”**.
+4. Enter the following details:
+   - **Repository URL:**  
+     `https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas`
+   - **Category:** `Integration`
+5. Confirm with **Add**.
 
 ---
 
@@ -48,7 +36,7 @@ Development is active, and the API is undocumented.
 
 To allow Home Assistant to receive a valid authentication token, a small local token server must be running:
 
-### Steps:
+### Steps
 
 1. Log into your UGREEN NAS.
 
@@ -56,23 +44,23 @@ To allow Home Assistant to receive a valid authentication token, a small local t
 
 3. Create a new project, e.g., `ugreen-access-token`.
 
-4. Open the **Compose Editor** and paste the content of the file  
-   `home-assistant_ugreen-nas/custom_component_ugreen/ugreen_api_token/docker-compose.yaml`.
+4. Open the **Compose Editor** and paste the content of this file  
+
+   [Docker compose](https://raw.githubusercontent.com/Tom-Bom-badil/home-assistant_ugreen-nas/refs/heads/main/docker/ugreen_api_token/docker-compose.yaml)
 
 5. Add your credentials under `environment` and make further changes if necessary:
+
    ```yaml
    environment:
-     - USERNAME=your_nas_username
-     - PASSWORD=your_nas_password
+     - UGREEN_NAS_API_SCHEME: "https"
+     - UGREEN_NAS_API_PORT: "9443"
+     - UGREEN_NAS_API_VERIFY_SSL: "false"
    ```
 
-6. Click **Deploy** and start Docker (the container will not start successfully – this is expected).
-
-7. Now copy the remaining files from `ugreen_api_token` into the appropriate Docker folder on your NAS.
-
-8. Manually start the project in Docker.
+6. Click **Deploy** and start Docker
 
 ✅ If everything works, you should see the following in the **Logs tab**:
+
 ```
 Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 ```
@@ -86,7 +74,6 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 2. Search for **UGREEN NAS**
 
 3. Enter your connection details:
-   - IP address of your NAS
    - API port (default: `9443`)
    - Token port (default: `4115`)
    - Username & password
@@ -95,7 +82,7 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 > As mentioned, your data stays on the NAS and is only retrieved by Home Assistant via an HTTP request.
 
  Example token call:  
-> `http://<NAS-IP>:4115/token?username=your_username&password=your_password`
+> `http://<NAS-IP>:<NAS-API-PORT>/token?username=your_username&password=your_password`
 
 4. Click **Submit** – done!
 
@@ -133,6 +120,6 @@ Help us improve this integration!
 
 ---
 
-## ❤️ Thank You & Have Fun!
+## ❤️ Thank You & Have Fun
 
 > Plugin Version: v0.8.0
