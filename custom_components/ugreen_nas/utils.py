@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, Union
 from datetime import datetime
 from decimal import Decimal
 
@@ -6,6 +6,7 @@ from .api import UgreenEntity
 
 
 def format_bytes(size_bytes: Optional[float]) -> Optional[Tuple[float, str]]:
+    """Format bytes into a human-readable format."""
     try:
         if size_bytes is None:
             return None
@@ -20,6 +21,7 @@ def format_bytes(size_bytes: Optional[float]) -> Optional[Tuple[float, str]]:
 
 
 def format_duration(seconds: float) -> str:
+    """Format seconds into a human-readable duration."""
     try:
         seconds = float(seconds)
         if seconds < 60:
@@ -35,6 +37,7 @@ def format_duration(seconds: float) -> str:
 
 
 def format_gb_value(raw: Any) -> Decimal:
+    """Format a raw value in GB to a Decimal representation."""
     if raw is None:
         return Decimal(0)
     try:
@@ -47,6 +50,7 @@ def format_gb_value(raw: Any) -> Decimal:
 
 
 def format_temperature(raw: Any) -> Decimal:
+    """Format a raw temperature value to a Decimal representation."""
     if raw is None:
         return Decimal(0)
     try:
@@ -56,6 +60,7 @@ def format_temperature(raw: Any) -> Decimal:
 
 
 def format_percentage(raw: Any) -> Decimal:
+    """Format a raw percentage value to a Decimal representation."""
     if raw is None:
         return Decimal(0)
     try:
@@ -65,6 +70,7 @@ def format_percentage(raw: Any) -> Decimal:
 
 
 def format_speed(raw: Any) -> Decimal:
+    """Format a raw speed value to a Decimal representation."""
     if raw is None:
         return Decimal(0)
     try:
@@ -74,6 +80,7 @@ def format_speed(raw: Any) -> Decimal:
 
 
 def format_timestamp(raw: Any) -> str:
+    """Format a raw timestamp value to a human-readable string."""
     if raw is None:
         return "N/A"
     try:
@@ -84,11 +91,29 @@ def format_timestamp(raw: Any) -> str:
 
 
 def format_status_code(raw: Any, status_map: dict[int, str]) -> str:
+    """Format a raw status code to a human-readable string."""
     try:
         return status_map.get(int(raw), f"Unknown status: {raw}")
     except (ValueError, TypeError):
         return f"Invalid value: {raw}"
 
+def convert_string_to_number(value: Union[str, int, float, Decimal], decimal_places: int) -> Union[int, float, Decimal, str]:
+    """Convert a string to a number (int, float, or Decimal) if possible."""
+    if isinstance(value, str):
+        value = value.strip().replace(",", ".")
+        if not value:
+            return value 
+        try:
+            if '.' in value:
+                return round(float(value), decimal_places)
+            else:
+                return int(value)
+        except ValueError:
+            try:
+                return round(Decimal(value), decimal_places)
+            except Exception:
+                return str(value) 
+    return str(value)  
 
 def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
     """Format a raw value based on the endpoint definition."""
@@ -133,11 +158,8 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("MB/s", "KB/s", "GB/s"):
             return format_speed(raw)
-
-        if isinstance(raw, (int, float, Decimal)):
-            return round(float(raw), 2)
-
-        return str(raw)
+        
+        return convert_string_to_number(raw, endpoint.decimal_places)
 
     except Exception:
         return Decimal(0)

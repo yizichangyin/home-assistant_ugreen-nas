@@ -46,15 +46,15 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity): # type: ignore
         self._attr_icon = endpoint.description.icon
         self._attr_native_unit_of_measurement = endpoint.description.unit_of_measurement
 
-        base_device_info = build_device_info(self._key)
+        base_device_info = build_device_info(self._key, nas_model)
 
         if "disk" in self._key and "brand" in self._key:
-            base_device_info["manufacturer"] = str(self.coordinator.data.get(self._key) or "UGREEN")
+            base_device_info["manufacturer"] = str(self.coordinator.data.get(self._key))
             
         if "disk" in self._key and "model" in self._key:
             base_device_info["model"] = str(self.coordinator.data.get(self._key))
         
-        self._attr_device_info = build_device_info(self._key, nas_model)
+        self._attr_device_info = base_device_info
 
     @property
     def native_value(self) -> StateType | date | datetime | Decimal: # type: ignore
