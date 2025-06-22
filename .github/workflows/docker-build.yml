@@ -33,4 +33,5 @@ jobs:
           context: ./docker/ugreen_api_token
           file: ./docker/ugreen_api_token/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/ugreen-api-token:latest
+          # tags: ghcr.io/${{ github.repository_owner }}/ugreen-api-token:latest
+          tags: ghcr.io/tom-bom-badil/ugreen-api-token:latest
