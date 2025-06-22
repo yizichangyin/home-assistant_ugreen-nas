@@ -1,18 +1,18 @@
 import json
 import logging
 import os
+import socket
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
-_LOGGER = logging.getLogger(__name__)
-
+_LOGGER = logging.getLogger(__name__)      
 class TokenRefresher:
     def __init__(self, username: str, password: str):
         self._username = username
         self._password = password
-        self._scheme = os.environ.get("API_SCHEME", "https")
-        self._host = os.environ.get("API_HOST", "localhost")
-        self._port = int(os.environ.get("API_PORT","port"))
-        self._verify = os.environ.get("API_VERIFY", "true").lower() == "true"
+        self._scheme = os.environ.get("UGREEN_NAS_API_SCHEME", "https")
+        self._host = socket.gethostbyname("host.docker.internal")
+        self._port = int(os.environ.get("UGREEN_NAS_API_PORT","port"))
+        self._verify = os.environ.get("UGREEN_NAS_API_VERIFY_SSL", "true").lower() == "true"
         self._token = None
 
     @property
@@ -36,7 +36,8 @@ class TokenRefresher:
             if not await page.is_checked(checkbox_selector):
                 await page.check(checkbox_selector)
 
-            await page.click('button[type="button"]:has-text("Anmelden")')
+            await page.wait_for_selector('.login-public-button button[type="button"]:not([disabled])')
+            await page.click('.login-public-button button[type="button"]')
 
             try:
                 await page.wait_for_selector('div.dashboard', timeout=5000)

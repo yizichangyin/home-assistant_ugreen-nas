@@ -5,8 +5,9 @@ services:
     ports:
       - "4115:4115"
     environment:
-      API_SCHEME: "https"
-      API_HOST: "192.168.xxx.xx"
-      API_PORT: "9443"
-      API_VERIFY: "false"
+      UGREEN_NAS_API_SCHEME: "https"
+      UGREEN_NAS_API_PORT: "9443"
+      UGREEN_NAS_API_VERIFY_SSL: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
