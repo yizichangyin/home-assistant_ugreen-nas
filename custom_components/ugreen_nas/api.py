@@ -3,7 +3,7 @@ import logging
 import aiohttp
 import async_timeout
 from typing import List, Any
-from homeassistant.components.sensor import EntityDescription
+from homeassistant.helpers.entity import EntityDescription
 from homeassistant.const import (
     PERCENTAGE,
     REVOLUTIONS_PER_MINUTE,
@@ -22,6 +22,7 @@ class UgreenEntity:
     endpoint: str
     path: str
     request_method: str = "GET"
+    decimal_places: int = 2
 
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     # Hardware Info
@@ -44,6 +45,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].ghz",
+        decimal_places=0
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -54,6 +56,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].core",
+        decimal_places=0
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -64,6 +67,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].thread",
+        decimal_places=0
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -627,7 +631,7 @@ class UgreenApiClient:
                             description=EntityDescription(
                                 key=f"{prefix_disk_key}_interface_type",
                                 name=f"{prefix_disk_name} Interface Type",
-                                icon="mdi:ethernet",
+                                icon="mdi:harddisk",
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
@@ -671,7 +675,7 @@ class UgreenApiClient:
                                 unit_of_measurement=UnitOfTemperature.CELSIUS,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.disk_list[{disk_index}].temperature",
+                            path=f"data.result[{disk_index}].temperature",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
