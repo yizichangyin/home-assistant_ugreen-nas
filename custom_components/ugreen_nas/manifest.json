@@ -1,4 +1,6 @@
 {
+  "domain": "ugreen_nas",
+  "name": "UGREEN NAS",
   "codeowners": ["@Tom-Bom-badil", "@dobby5"],
   "config_flow": true,
   "dependencies": [],
