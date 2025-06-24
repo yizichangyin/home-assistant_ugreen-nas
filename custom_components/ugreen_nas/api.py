@@ -550,11 +550,27 @@ class UgreenApiClient:
                         ),
                 ])
 
-                for disk_index, _ in enumerate(pool.get("disks", [])):
+                # Load all disks
+                if not hasattr(self, "_ugreen_disks_cache"):
+                    disk_response = await self.get(session, "/ugreen/v2/storage/disk/list")
+                    disks_global = disk_response.get("data", {}).get("result", [])
+                    # Mapping through unique identifier: dev_name (e.g. /dev/sda)
+                    self._ugreen_disks_cache = {
+                        disk["dev_name"]: (index, disk) for index, disk in enumerate(disks_global)
+                    }
+
+                for disk_index, disk_ref in enumerate(pool.get("disks", [])):
+                    dev_name = disk_ref.get("dev_name")
+                    match = self._ugreen_disks_cache.get(dev_name)
+
+                    if not match:
+                        _LOGGER.warning("[UGREEN NAS] Disk with dev_name %s not found in global disk list", dev_name)
+                        continue
+
+                    global_index, _ = match
                     prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
                     prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
-                    endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
-                    _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+                    endpoint_disk = "/ugreen/v2/storage/disk/list"
 
                     entities.extend([
                         UgreenEntity(
@@ -565,7 +581,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].model",
+                            path=f"data.result[{global_index}].model",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -575,7 +591,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].serial",
+                            path=f"data.result[{global_index}].serial",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -585,7 +601,7 @@ class UgreenApiClient:
                                 unit_of_measurement=UnitOfInformation.GIGABYTES,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].size",
+                            path=f"data.result[{global_index}].size",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -595,7 +611,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].name",
+                            path=f"data.result[{global_index}].name",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -605,7 +621,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].dev_name",
+                            path=f"data.result[{global_index}].dev_name",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -615,7 +631,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].slot",
+                            path=f"data.result[{global_index}].slot",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -625,7 +641,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].type",
+                            path=f"data.result[{global_index}].type",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -635,7 +651,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].interface_type",
+                            path=f"data.result[{global_index}].interface_type",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -645,7 +661,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].label",
+                            path=f"data.result[{global_index}].label",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -655,7 +671,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].used_for",
+                            path=f"data.result[{global_index}].used_for",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -665,7 +681,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].status",
+                            path=f"data.result[{global_index}].status",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -675,7 +691,7 @@ class UgreenApiClient:
                                 unit_of_measurement=UnitOfTemperature.CELSIUS,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].temperature",
+                            path=f"data.result[{global_index}].temperature",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -685,7 +701,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].power_on_hours",
+                            path=f"data.result[{global_index}].power_on_hours",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -695,7 +711,7 @@ class UgreenApiClient:
                                 unit_of_measurement=None,
                             ),
                             endpoint=endpoint_disk,
-                            path=f"data.result[{disk_index}].brand",
+                            path=f"data.result[{global_index}].brand",
                         ),
                     ])
 
