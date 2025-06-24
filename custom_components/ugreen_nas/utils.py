@@ -141,8 +141,9 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
             
         if "disk" in endpoint.description.key and not "interface" in endpoint.description.key and "type" in endpoint.description.key:
             return format_status_code(raw, {
-                1: "HDD",
-                2: "SSD",
+                0: "HDD",
+                1: "SSD",
+                2: "NVMe",
             })
             
         if "volume" in endpoint.description.key and "health" in endpoint.description.key:
