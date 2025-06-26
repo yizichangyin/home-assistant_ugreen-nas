@@ -25,8 +25,71 @@ class UgreenEntity:
     decimal_places: int = 2
 
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
+
+    # Device Info
+    UgreenEntity(
+        description=EntityDescription(
+            key="name",
+            name="Name",
+            icon="mdi:nas",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.nas_name",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="owner",
+            name="Owner",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.nas_owner",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="model",
+            name="Model",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.model",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="serial",
+            name="Serial",
+            icon="mdi:focus-field",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.serial",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="version",
+            name="Version",
+            icon="mdi:numeric",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.system_version",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="type",
+            name="Type",
+            icon="mdi:nas",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.type",
+    ),
+
     # Hardware Info
-  UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_model",
             name="CPU Model",
@@ -79,39 +142,9 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.mem[0].manufacturer",
     ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="ram_model",
-            name="RAM Model",
-            icon="mdi:memory",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/sysinfo/machine/common",
-        path="data.hardware.mem[0].model",
-    ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="ram_size",
-            name="RAM Size",
-            icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
-        ),
-        endpoint="/ugreen/v1/sysinfo/machine/common",
-        path="data.hardware.mem[0].size",
-    ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="ram_mhz",
-            name="RAM Speed",
-            icon="mdi:speedometer",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/sysinfo/machine/common",
-        path="data.hardware.mem[0].mhz",
-    ),
 
     # Device Monitoring
-     UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_usage",
             name="CPU Usage",
@@ -153,19 +186,19 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
 
     # System Status
-        UgreenEntity(
-        description=EntityDescription(
-            key="last_boot_date",
-            name="Last Boot",
-            icon="mdi:calendar",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
-        path="data.last_boot_date",
-    ),
+    # UgreenEntity( # duplicate and without year (useless); use last_boot_timestamp instead
+    #     description=EntityDescription(
+    #         key="last_boot_date",
+    #         name="Last Boot",
+    #         icon="mdi:calendar",
+    #         unit_of_measurement=None,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+    #     path="data.last_boot_date",
+    # ),
     UgreenEntity(
         description=EntityDescription(
-            key="last_boot_time",
+            key="last_boot_timestamp",
             name="Last Boot Timestamp",
             icon="mdi:clock",
             unit_of_measurement=None,
@@ -205,6 +238,36 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     UgreenEntity(
         description=EntityDescription(
+            key="last_turn_on_timestamp",
+            name="Last turn on timestamp",
+            icon="mdi:timer-outline",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.last_turn_on_time",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="repair_start_time",
+            name="Repair start time",
+            icon="mdi:timer-outline",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.repair_start_time",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="repair_end_time",
+            name="Repair end time",
+            icon="mdi:timer-outline",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.repair_end_time",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
             key="total_run_time",
             name="Total Runtime",
             icon="mdi:timer-outline",
@@ -213,19 +276,19 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.total_run_time",
     ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="device_name",
-            name="Device Name",
-            icon="mdi:nas",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
-        path="data.dev_name",
-    ),
+    # UgreenEntity( # duplicate, already as 'name' in 'common'
+    #     description=EntityDescription(
+    #         key="device_name",
+    #         name="Device Name",
+    #         icon="mdi:nas",
+    #         unit_of_measurement=None,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+    #     path="data.dev_name",
+    # ),
 
     # Temperature Monitoring
-     UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_temperature",
             name="CPU Temperature",
@@ -305,7 +368,6 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.fan_list[1].speed",
     ),
-
 ]
 
 UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
@@ -433,6 +495,83 @@ class UgreenApiClient:
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] POST request to %s failed: %s", endpoint, e)
             return {}
+
+
+    async def get_ram_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
+
+        endpoint = "/ugreen/v1/sysinfo/machine/common"
+        response = await self.get(session, endpoint)
+
+        mem_list = response.get("data", {}).get("hardware", {}).get("mem", [])
+        if not isinstance(mem_list, list):
+            _LOGGER.warning("[UGREEN NAS] RAM list is invalid or missing.")
+            return []
+
+        ram_count = len(mem_list)
+        entities: list[UgreenEntity] = []
+
+        if ram_count > 1:
+            _LOGGER.debug("[UGREEN NAS] Detected %d RAM modules – using dynamic keys", ram_count)
+        else:
+            _LOGGER.debug("[UGREEN NAS] Single RAM module – using static keys")
+
+        for index in range(ram_count):
+            if ram_count > 1:
+                # Multiple RAM modules
+                prefix = f"ram{index+1}"
+                name = f"RAM {index+1}"
+            else:
+                # Just 1 RAM module, using dobby's entity names
+                prefix = "ram"
+                name = "RAM"
+
+            entities.extend([
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_model",
+                        name=f"{name} Model",
+                        icon="mdi:memory",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.mem[{index}].model",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_manufacturer",
+                        name=f"{name} Manufacturer",
+                        icon="mdi:factory",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.mem[{index}].manufacturer",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_size",
+                        name=f"{name} Size",
+                        icon="mdi:memory",
+                        unit_of_measurement=UnitOfInformation.GIGABYTES,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.mem[{index}].size",
+                    decimal_places=0,
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_speed",
+                        name=f"{name} Speed",
+                        icon="mdi:speedometer",
+                        unit_of_measurement="MHz",
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.mem[{index}].mhz",
+                    decimal_places=0,
+                ),
+            ])
+
+        return entities
+
 
     async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic storage entities (unchanged logic)."""
