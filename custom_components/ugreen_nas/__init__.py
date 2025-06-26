@@ -48,6 +48,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             else:
                 _LOGGER.debug("[UGREEN NAS] No dynamic storage entities found.")
 
+            ram_entities = await api.get_ram_entities(session)
+            all_sensor_endpoints.extend(ram_entities)
+
             hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
             _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
 
