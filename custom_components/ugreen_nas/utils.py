@@ -1,7 +1,6 @@
 from typing import Optional, Tuple, Any, Union
 from datetime import datetime
 from decimal import Decimal
-
 from .api import UgreenEntity
 
 
@@ -97,6 +96,16 @@ def format_status_code(raw: Any, status_map: dict[int, str]) -> str:
     except (ValueError, TypeError):
         return f"Invalid value: {raw}"
 
+
+def format_frequency_mhz(raw: Any) -> Any:
+    """Convert a string like '4800 MHz' or '4800MHz' to an integer."""
+    if isinstance(raw, str) and "MHz" in raw:
+        cleaned = raw.replace("MHz", "").strip()
+        if cleaned.isdigit():
+            return int(cleaned)
+    return raw
+
+
 def convert_string_to_number(value: Union[str, int, float, Decimal], decimal_places: int) -> Union[int, float, Decimal, str]:
     """Convert a string to a number (int, float, or Decimal) if possible."""
     if isinstance(value, str):
@@ -114,6 +123,7 @@ def convert_string_to_number(value: Union[str, int, float, Decimal], decimal_pla
             except Exception:
                 return str(value) 
     return str(value)  
+
 
 def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
     """Format a raw value based on the endpoint definition."""
@@ -159,7 +169,21 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("MB/s", "KB/s", "GB/s"):
             return format_speed(raw)
-        
+
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "MHz":
+            return format_frequency_mhz(raw)
+
+        if endpoint.path == "_dummy_total_ram":
+            mem_list = raw.get("data", {}).get("hardware", {}).get("mem", [])
+            if isinstance(mem_list, list):
+                total_size_bytes = sum(
+                    module.get("size", 0)
+                    for module in mem_list
+                    if isinstance(module, dict)
+                )
+                return int(round(total_size_bytes / 1024 / 1024 / 1024))
+            return 0
+
         return convert_string_to_number(raw, endpoint.decimal_places)
 
     except Exception:
