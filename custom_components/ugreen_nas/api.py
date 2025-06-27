@@ -132,16 +132,6 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         path="data.hardware.cpu[0].thread",
         decimal_places=0
     ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="ram_manufacturer",
-            name="RAM Manufacturer",
-            icon="mdi:memory",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/sysinfo/machine/common",
-        path="data.hardware.mem[0].manufacturer",
-    ),
 
     # Device Monitoring
     UgreenEntity(
