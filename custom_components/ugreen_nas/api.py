@@ -498,7 +498,6 @@ class UgreenApiClient:
 
 
     async def get_ram_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
-
         endpoint = "/ugreen/v1/sysinfo/machine/common"
         response = await self.get(session, endpoint)
 
@@ -509,6 +508,7 @@ class UgreenApiClient:
 
         ram_count = len(mem_list)
         entities: list[UgreenEntity] = []
+        size_paths = []
 
         if ram_count > 1:
             _LOGGER.debug("[UGREEN NAS] Detected %d RAM modules – using dynamic keys", ram_count)
@@ -524,6 +524,8 @@ class UgreenApiClient:
                 # Just 1 RAM module, using dobby's entity names
                 prefix = "ram"
                 name = "RAM"
+
+            size_paths.append(f"data.hardware.mem[{index}].size")
 
             entities.extend([
                 UgreenEntity(
@@ -570,7 +572,24 @@ class UgreenApiClient:
                 ),
             ])
 
+        # Add a sensor for the total RAM size (sum of all modules)
+        if size_paths:
+            entities.append(
+                UgreenEntity(
+                    description=EntityDescription(
+                        key="ram_total_size",
+                        name="RAM Total Size",
+                        icon="mdi:memory",
+                        unit_of_measurement=UnitOfInformation.GIGABYTES,
+                    ),
+                    endpoint=endpoint,
+                    path=size_paths,  # This is a list of paths to sum
+                    decimal_places=0,
+                )
+            )
+
         return entities
+
 
 
     async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
