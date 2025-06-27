@@ -176,7 +176,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
 
     # System Status
-    # UgreenEntity( # duplicate and without year (useless); use last_boot_timestamp instead
+    # redundant and without year (=useless); use last_boot_timestamp instead; @dobby pls delete if accepted
+    # UgreenEntity(
     #     description=EntityDescription(
     #         key="last_boot_date",
     #         name="Last Boot",
@@ -266,7 +267,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.total_run_time",
     ),
-    # UgreenEntity( # duplicate, already as 'name' in 'common'
+    # redundant with 'name' in 'common'; @dobby pls delete if accepted
+    # UgreenEntity(
     #     description=EntityDescription(
     #         key="device_name",
     #         name="Device Name",
@@ -298,26 +300,27 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.cpu_status",
     ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="fan_speed",
-            name="Main Fan Speed",
-            icon="mdi:fan",
-            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
-        path="data.fan_speed",
-    ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="fan_status",
-            name="Fan Status",
-            icon="mdi:fan-alert",
-            unit_of_measurement=None,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
-        path="data.fan_status",
-    ),
+    # changed to dynamic fan count, not needed anymore; @dobby pls delete if accepted
+    # UgreenEntity(
+    #     description=EntityDescription(
+    #         key="fan_speed",
+    #         name="Main Fan Speed",
+    #         icon="mdi:fan",
+    #         unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+    #     path="data.fan_speed",
+    # ),
+    # UgreenEntity(
+    #     description=EntityDescription(
+    #         key="fan_status",
+    #         name="Fan Status",
+    #         icon="mdi:fan-alert",
+    #         unit_of_measurement=None,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+    #     path="data.fan_status",
+    # ),
     UgreenEntity(
         description=EntityDescription(
             key="temperature_message",
@@ -338,26 +341,27 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.status",
     ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="fan1_speed",
-            name="Fan 1 Speed",
-            icon="mdi:fan",
-            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
-        path="data.fan_list[0].speed",
-    ),
-    UgreenEntity(
-        description=EntityDescription(
-            key="fan2_speed",
-            name="Fan 2 Speed",
-            icon="mdi:fan",
-            unit_of_measurement=REVOLUTIONS_PER_MINUTE,
-        ),
-        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
-        path="data.fan_list[1].speed",
-    ),
+    # changed to dynamic fan count, not needed anymore; @dobby pls delete if accepted
+    # UgreenEntity(
+    #     description=EntityDescription(
+    #         key="fan1_speed",
+    #         name="Fan 1 Speed",
+    #         icon="mdi:fan",
+    #         unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+    #     path="data.fan_list[0].speed",
+    # ),
+    # UgreenEntity(
+    #     description=EntityDescription(
+    #         key="fan2_speed",
+    #         name="Fan 2 Speed",
+    #         icon="mdi:fan",
+    #         unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+    #     ),
+    #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
+    #     path="data.fan_list[1].speed",
+    # ),
 ]
 
 UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
@@ -497,11 +501,12 @@ class UgreenApiClient:
 
         ram_count = len(mem_list)
         entities: list[UgreenEntity] = []
-        size_paths = []
+        ram_size_paths = []
 
         _LOGGER.debug("[UGREEN NAS] Detected %d RAM module(s).", ram_count)
 
         for index in range(ram_count):
+
             if ram_count > 1:
                 # Multiple RAM modules
                 prefix = f"ram{index+1}"
@@ -511,7 +516,8 @@ class UgreenApiClient:
                 prefix = "ram"
                 name = "RAM"
 
-            size_paths.append(f"data.hardware.mem[{index}].size")
+            # for later total RAM calculation
+            ram_size_paths.append(f"data.hardware.mem[{index}].size")
 
             entities.extend([
                 UgreenEntity(
@@ -558,8 +564,8 @@ class UgreenApiClient:
                 ),
             ])
 
-        # Add a sensor for the total RAM size
-        if size_paths:
+        # add a sensor for the total RAM size
+        if ram_size_paths:
             entities.append(
                 UgreenEntity(
                     description=EntityDescription(
@@ -569,14 +575,63 @@ class UgreenApiClient:
                         unit_of_measurement=UnitOfInformation.GIGABYTES,
                     ),
                     endpoint=endpoint,
-                    path=size_paths,
+                    path=ram_size_paths,
                     decimal_places=0,
                 )
             )
 
         return entities
 
+    async def get_fan_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
+        endpoint = "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring"
+        response = await self.get(session, endpoint)
 
+        fan_list = response.get("data", {}).get("fan_list", [])
+        if not isinstance(fan_list, list):
+            _LOGGER.warning("[UGREEN NAS] Fan list is invalid or missing.")
+            return []
+
+        fan_count = len(fan_list)
+        entities: list[UgreenEntity] = []
+
+        _LOGGER.debug("[UGREEN NAS] Detected %d fan module(s).", fan_count)
+
+        for index in range(fan_count):
+
+            if fan_count > 1:
+                # Multiple fans
+                prefix = f"chassis_fan_{index+1}"
+                name = f"Chassis fan {index+1}"
+            else:
+                # Just 1 chassis fan
+                prefix = "chassis_fan"
+                name = "Chassis fan"
+
+            entities.extend([
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_speed",
+                        name=f"{name} Speed",
+                        icon="mdi:fan",
+                        unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.fan_list[{index}].speed",
+                    decimal_places=0,
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_status",
+                        name=f"{name} Status",
+                        icon="mdi:fan-alert",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.fan_list[{index}].status",
+                ),
+            ])
+
+        return entities
 
     async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic storage entities (unchanged logic)."""
