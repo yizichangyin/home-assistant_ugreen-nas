@@ -10,6 +10,7 @@ from homeassistant.helpers.device_registry import async_get as async_get_device_
 
 from .const import DOMAIN, PLATFORMS
 from .api import UGREEN_STATIC_BUTTON_ENDPOINTS, UgreenApiClient, UGREEN_STATIC_SENSOR_ENDPOINTS
+from .utils import extract_value
 
 _LOGGER = logging.getLogger(__name__)        
 
@@ -60,34 +61,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 response = await api.get(session, endpoint_str)
                 try:
                     if hasattr(endpoint, "path"):
-                        parts = endpoint.path.split(".")
+                        value = extract_value(response, endpoint.path)
                     else:
                         _LOGGER.warning("[UGREEN NAS] Endpoint %s does not have a 'path' attribute, skipping.", getattr(endpoint, "key", str(endpoint)))
                         data[getattr(endpoint, "key", str(endpoint))] = None
                         continue
-
-                    value: Any = response
-                    for part in parts:
-                        if "[" in part and "]" in part:
-                            part_name, index = part[:-1].split("[")
-                            if value is not None and isinstance(value, dict):
-                                value_dict: dict[str, Any] = value  # type: ignore
-                                value = value_dict.get(part_name, [])
-                            else:
-                                value = []
-                            try:
-                                if isinstance(value, list):
-                                    value = value[int(index)]  # type: ignore
-                                else:
-                                    value = None
-                            except (IndexError, ValueError, TypeError):
-                                value = None
-                        else:
-                            if value is not None and isinstance(value, dict):
-                                value_dict: dict[str, Any] = value  # type: ignore
-                                value = value_dict.get(part)
-                            else:
-                                value = None
                     data[endpoint.description.key] = value
                 except Exception as e:
                     _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", endpoint.description.key, e)

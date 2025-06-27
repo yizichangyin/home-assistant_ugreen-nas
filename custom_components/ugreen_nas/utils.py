@@ -188,3 +188,26 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
     except Exception:
         return Decimal(0)
+
+def get_by_path(data, path):
+    """Extract value from nested dict/list using a string path like 'a.b[0].c'."""
+    import re
+    keys = re.split(r'\.(?![^\[]*\])', path)
+    val = data
+    try:
+        for key in keys:
+            if '[' in key and ']' in key:
+                name, idx = re.match(r'([^\[]+)\[(\d+)\]', key).groups()
+                val = val[name][int(idx)]
+            else:
+                val = val[key]
+        return val
+    except Exception:
+        return None
+
+def extract_value(data, path):
+    """If path is a list, sum all values. Otherwise extract the single value."""
+    if isinstance(path, list):
+        return sum(get_by_path(data, p) or 0 for p in path)
+    else:
+        return get_by_path(data, path)
