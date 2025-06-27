@@ -161,6 +161,11 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
                 0: "Normal",
             })
 
+        if "usb_device_type" in endpoint.description.key:
+            return format_status_code(raw, {
+                0: "Generic USB Device",   # 0 = External HDD?
+            })
+
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "%":
             return format_percentage(raw)
 
@@ -172,6 +177,9 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "MHz":
             return format_frequency_mhz(raw)
+
+        if "fan" in endpoint.description.key and "status" in endpoint.description.key:
+            return format_status_code(raw, {0: "off", 1: "on"})
 
         if endpoint.path == "_dummy_total_ram":
             mem_list = raw.get("data", {}).get("hardware", {}).get("mem", [])
