@@ -24,6 +24,7 @@ class UgreenEntity:
     request_method: str = "GET"
     decimal_places: int = 2
 
+
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
 
     # Device Info
@@ -364,6 +365,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     # ),
 ]
 
+
 UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
     # System Actions
     UgreenEntity(
@@ -388,6 +390,7 @@ UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
     ),
 ]
 
+
 class UgreenApiClient:
     def __init__(
         self,
@@ -407,6 +410,7 @@ class UgreenApiClient:
         self.password = password
         self.token = token
         self.verify_ssl = verify_ssl
+
 
     async def authenticate(self, session: aiohttp.ClientSession) -> bool:
         """Login and fetch new token."""
@@ -436,6 +440,7 @@ class UgreenApiClient:
             _LOGGER.exception("[UGREEN NAS] Authentication request failed: %s", e)
             return False
 
+
     async def get(self, session: aiohttp.ClientSession, endpoint: str) -> dict[str, Any]:
         """Perform GET with retry on token expiration (code 1024)."""
         async def _do_get() -> dict[str, Any]:
@@ -461,6 +466,7 @@ class UgreenApiClient:
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] GET request to %s failed: %s", endpoint, e)
             return {}
+
 
     async def post(self, session: aiohttp.ClientSession, endpoint: str, payload: dict[str, Any] = {}) -> dict[str, Any]:
         """Perform POST request (formerly GET) with optional payload and retry on token expiration (code 1024)."""
@@ -489,6 +495,7 @@ class UgreenApiClient:
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] POST request to %s failed: %s", endpoint, e)
             return {}
+
 
     async def get_ram_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
         endpoint = "/ugreen/v1/sysinfo/machine/common"
@@ -582,6 +589,7 @@ class UgreenApiClient:
 
         return entities
 
+
     async def get_fan_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
         endpoint = "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring"
         response = await self.get(session, endpoint)
@@ -632,6 +640,109 @@ class UgreenApiClient:
             ])
 
         return entities
+
+
+    async def get_lan_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
+        endpoint = "/ugreen/v1/sysinfo/machine/common"
+        response = await self.get(session, endpoint)
+
+        net_list = response.get("data", {}).get("hardware", {}).get("net", [])
+        if not isinstance(net_list, list):
+            _LOGGER.warning("[UGREEN NAS] LAN/NIC list is invalid or missing.")
+            return []
+
+        lan_count = len(net_list)
+        entities: list[UgreenEntity] = []
+
+        _LOGGER.debug("[UGREEN NAS] Detected %d LAN connection(s).", lan_count)
+
+        for index in range(lan_count):
+
+            if lan_count > 1:
+                # Multiple LAN ports active (JSON provides only the active ones)
+                prefix = f"lan{index+1}"
+                name = f"LAN{index+1}"
+            else:
+                # Devices with just 1 LAN port, or only 1 port active
+                prefix = "lan"
+                name = "LAN"
+
+            entities.extend([
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_model",
+                        name=f"{name} Model",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].model",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_ip",
+                        name=f"{name} IP",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].ip",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_mac",
+                        name=f"{name} MAC",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].mac",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_speed",
+                        name=f"{name} Speed",
+                        icon="mdi:speedometer",
+                        unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].speed",
+                    decimal_places=0,
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_duplex",
+                        name=f"{name} Duplex",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].duplex",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_mtu",
+                        name=f"{name} MTU",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].mtu",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_netmask",
+                        name=f"{name} Netmask",
+                        icon="mdi:lan",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.net[{index}].mask",
+                ),
+            ])
+
+        return entities
+
 
     async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic storage entities (unchanged logic)."""
