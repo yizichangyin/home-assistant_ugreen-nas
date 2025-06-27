@@ -58,6 +58,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             lan_entities = await api.get_lan_entities(session)
             all_sensor_endpoints.extend(lan_entities)
 
+            usb_entities = await api.get_usb_entities(session)
+            all_sensor_endpoints.extend(usb_entities)
+
             hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
             _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
 
