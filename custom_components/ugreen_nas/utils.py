@@ -161,6 +161,9 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
                 0: "Normal",
             })
 
+        if "ram" in endpoint.description.key and "size" in endpoint.description.key:
+            return int(raw)
+
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "%":
             return format_percentage(raw)
 
