@@ -744,6 +744,64 @@ class UgreenApiClient:
         return entities
 
 
+    async def get_usb_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
+        endpoint = "/ugreen/v1/sysinfo/machine/common"
+        response = await self.get(session, endpoint)
+
+        usb_list = response.get("data", {}).get("hardware", {}).get("usb", [])
+        if not isinstance(usb_list, list):
+            _LOGGER.warning("[UGREEN NAS] USB list is invalid or missing.")
+            return []
+
+        usb_count = len(usb_list)
+        entities: list[UgreenEntity] = []
+
+        _LOGGER.debug("[UGREEN NAS] Detected %d USB device(s).", usb_count)
+
+        for index in range(usb_count):
+            if usb_count > 1:
+                prefix = f"usb{index+1}"
+                name = f"USB {index+1}"
+            else:
+                prefix = "usb"
+                name = "USB"
+
+            entities.extend([
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_model",
+                        name=f"{name} Model",
+                        icon="mdi:usb-port",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.usb[{index}].model",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_vendor",
+                        name=f"{name} Vendor",
+                        icon="mdi:usb-port",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.usb[{index}].vendor",
+                ),
+                UgreenEntity(
+                    description=EntityDescription(
+                        key=f"{prefix}_device_type",
+                        name=f"{name} Device Type",
+                        icon="mdi:usb-port",
+                        unit_of_measurement=None,
+                    ),
+                    endpoint=endpoint,
+                    path=f"data.hardware.usb[{index}].device_type",
+                ),
+            ])
+
+        return entities
+
+
     async def get_storage_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic storage entities (unchanged logic)."""
         endpoint = "/ugreen/v1/storage/pool/list"
