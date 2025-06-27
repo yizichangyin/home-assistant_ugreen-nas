@@ -363,6 +363,38 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     #     endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
     #     path="data.fan_list[1].speed",
     # ),
+
+    # UPS Entities
+    UgreenEntity(
+        description=EntityDescription(
+            key="ups_model",
+            name="UPS Model",
+            icon="mdi:power-plug-battery",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.ups[0].model",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ups_vendor",
+            name="UPS Vendor",
+            icon="mdi:power-plug-battery",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.ups[0].vendor",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ups_power_free",
+            name="UPS Power Remaining",
+            icon="mdi:power-plug-battery",
+            unit_of_measurement=PERCENTAGE,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.hardware.ups[0].power_free",
+    ),
 ]
 
 
