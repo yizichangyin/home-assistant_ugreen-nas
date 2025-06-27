@@ -441,7 +441,7 @@ class UgreenApiClient:
         except Exception as e:
             _LOGGER.exception("[UGREEN NAS] Authentication request failed: %s", e)
             return False
-        
+
     async def get(self, session: aiohttp.ClientSession, endpoint: str) -> dict[str, Any]:
         """Perform GET with retry on token expiration (code 1024)."""
         async def _do_get() -> dict[str, Any]:
@@ -467,7 +467,7 @@ class UgreenApiClient:
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] GET request to %s failed: %s", endpoint, e)
             return {}
-        
+
     async def post(self, session: aiohttp.ClientSession, endpoint: str, payload: dict[str, Any] = {}) -> dict[str, Any]:
         """Perform POST request (formerly GET) with optional payload and retry on token expiration (code 1024)."""
         async def _do_post() -> dict[str, Any]:
@@ -496,7 +496,6 @@ class UgreenApiClient:
             _LOGGER.error("[UGREEN NAS] POST request to %s failed: %s", endpoint, e)
             return {}
 
-
     async def get_ram_entities(self, session: aiohttp.ClientSession) -> list[UgreenEntity]:
         endpoint = "/ugreen/v1/sysinfo/machine/common"
         response = await self.get(session, endpoint)
@@ -510,10 +509,7 @@ class UgreenApiClient:
         entities: list[UgreenEntity] = []
         size_paths = []
 
-        if ram_count > 1:
-            _LOGGER.debug("[UGREEN NAS] Detected %d RAM modules – using dynamic keys", ram_count)
-        else:
-            _LOGGER.debug("[UGREEN NAS] Single RAM module – using static keys")
+        _LOGGER.debug("[UGREEN NAS] Detected %d RAM module(s).", ram_count)
 
         for index in range(ram_count):
             if ram_count > 1:
@@ -572,7 +568,7 @@ class UgreenApiClient:
                 ),
             ])
 
-        # Add a sensor for the total RAM size (sum of all modules)
+        # Add a sensor for the total RAM size
         if size_paths:
             entities.append(
                 UgreenEntity(
@@ -583,7 +579,7 @@ class UgreenApiClient:
                         unit_of_measurement=UnitOfInformation.GIGABYTES,
                     ),
                     endpoint=endpoint,
-                    path=size_paths,  # This is a list of paths to sum
+                    path=size_paths,
                     decimal_places=0,
                 )
             )
