@@ -684,7 +684,7 @@ class UgreenApiClient:
     
     async def get_usb_slot_entities(self, session: aiohttp.ClientSession) -> List[UgreenEntity]:
         """Fetch and build dynamic usb_slot entities."""
-        endpoint = "/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring"
+        endpoint = "/ugreen/v1/sysinfo/machine/common"
         _LOGGER.debug("[UGREEN NAS] Fetching dynamic usb_slot entities from %s", endpoint)
         data = await self.get(session, endpoint)
 
@@ -699,7 +699,7 @@ class UgreenApiClient:
 
         usb_slot_list = data.get("data", {}).get("hardware", {}).get("usb", [])
         if not usb_slot_list:
-            _LOGGER.warning("[UGREEN NAS] 'usb_slot_list' field is missing or empty in response from %s", endpoint)
+            _LOGGER.warning("[UGREEN NAS] 'usb' field is missing or empty in response from %s", endpoint)
             return []
 
         entities: List[UgreenEntity] = []
