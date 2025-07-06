@@ -68,7 +68,7 @@ class UgreenNasConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required(CONF_UGREEN_HOST): str,
-                vol.Required(CONF_UGREEN_PORT, default=9443): int,
+                vol.Required(CONF_UGREEN_PORT, default=9999): int,
                 vol.Required(CONF_AUTH_PORT, default=4115): int,
                 vol.Required(CONF_USERNAME): str,
                 vol.Required(CONF_PASSWORD): str,

@@ -1,5 +1,5 @@
 {
-  "domain": "ugreen_nas",
+  "domain": "ugreen",
   "name": "UGREEN NAS",
   "codeowners": ["@Tom-Bom-badil", "@dobby5"],
   "config_flow": true,

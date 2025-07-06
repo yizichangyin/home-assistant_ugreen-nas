@@ -41,12 +41,40 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.debug("[UGREEN NAS] Updating data from all endpoints...")
             data: dict[str, Any] = {}
 
-            dynamic_entities = await api.get_storage_entities(session)
-            if dynamic_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic storage entities", len(dynamic_entities))
-                all_sensor_endpoints.extend(dynamic_entities)
+            dynamic_storage_entities = await api.get_storage_entities(session)
+            if dynamic_storage_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic storage entities", len(dynamic_storage_entities))
+                all_sensor_endpoints.extend(dynamic_storage_entities)
             else:
                 _LOGGER.debug("[UGREEN NAS] No dynamic storage entities found.")
+                
+            dynamic_fan_entities = await api.get_fan_entities(session)
+            if dynamic_fan_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic fan entities", len(dynamic_fan_entities))
+                all_sensor_endpoints.extend(dynamic_fan_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic fan entities found.")
+                
+            dynamic_mem_entities = await api.get_mem_entities(session)
+            if dynamic_mem_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic mem entities", len(dynamic_mem_entities))
+                all_sensor_endpoints.extend(dynamic_mem_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic mem entities found.")
+                
+            dynamic_lan_entities = await api.get_lan_entities(session)
+            if dynamic_lan_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic lan entities", len(dynamic_lan_entities))
+                all_sensor_endpoints.extend(dynamic_lan_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic lan entities found.")
+                
+            dynamic_usb_slot_entities = await api.get_usb_slot_entities(session)
+            if dynamic_usb_slot_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic usb slot entities", len(dynamic_usb_slot_entities))
+                all_sensor_endpoints.extend(dynamic_usb_slot_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic usb slot entities found.")
 
             hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
             _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
