@@ -10,7 +10,6 @@ from homeassistant.helpers.device_registry import async_get as async_get_device_
 
 from .const import DOMAIN, PLATFORMS
 from .api import UGREEN_STATIC_BUTTON_ENDPOINTS, UgreenApiClient, UGREEN_STATIC_SENSOR_ENDPOINTS
-from .utils import extract_value
 
 _LOGGER = logging.getLogger(__name__)        
 
@@ -42,24 +41,40 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.debug("[UGREEN NAS] Updating data from all endpoints...")
             data: dict[str, Any] = {}
 
-            dynamic_entities = await api.get_storage_entities(session)
-            if dynamic_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic storage entities", len(dynamic_entities))
-                all_sensor_endpoints.extend(dynamic_entities)
+            dynamic_storage_entities = await api.get_storage_entities(session)
+            if dynamic_storage_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic storage entities", len(dynamic_storage_entities))
+                all_sensor_endpoints.extend(dynamic_storage_entities)
             else:
                 _LOGGER.debug("[UGREEN NAS] No dynamic storage entities found.")
-
-            ram_entities = await api.get_ram_entities(session)
-            all_sensor_endpoints.extend(ram_entities)
-
-            fan_entities = await api.get_fan_entities(session)
-            all_sensor_endpoints.extend(fan_entities)
-
-            lan_entities = await api.get_lan_entities(session)
-            all_sensor_endpoints.extend(lan_entities)
-
-            usb_entities = await api.get_usb_entities(session)
-            all_sensor_endpoints.extend(usb_entities)
+                
+            dynamic_fan_entities = await api.get_fan_entities(session)
+            if dynamic_fan_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic fan entities", len(dynamic_fan_entities))
+                all_sensor_endpoints.extend(dynamic_fan_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic fan entities found.")
+                
+            dynamic_mem_entities = await api.get_mem_entities(session)
+            if dynamic_mem_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic mem entities", len(dynamic_mem_entities))
+                all_sensor_endpoints.extend(dynamic_mem_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic mem entities found.")
+                
+            dynamic_lan_entities = await api.get_lan_entities(session)
+            if dynamic_lan_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic lan entities", len(dynamic_lan_entities))
+                all_sensor_endpoints.extend(dynamic_lan_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic lan entities found.")
+                
+            dynamic_usb_slot_entities = await api.get_usb_slot_entities(session)
+            if dynamic_usb_slot_entities:
+                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic usb slot entities", len(dynamic_usb_slot_entities))
+                all_sensor_endpoints.extend(dynamic_usb_slot_entities)
+            else:
+                _LOGGER.debug("[UGREEN NAS] No dynamic usb slot entities found.")
 
             hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
             _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
@@ -70,11 +85,34 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 response = await api.get(session, endpoint_str)
                 try:
                     if hasattr(endpoint, "path"):
-                        value = extract_value(response, endpoint.path)
+                        parts = endpoint.path.split(".")
                     else:
                         _LOGGER.warning("[UGREEN NAS] Endpoint %s does not have a 'path' attribute, skipping.", getattr(endpoint, "key", str(endpoint)))
                         data[getattr(endpoint, "key", str(endpoint))] = None
                         continue
+
+                    value: Any = response
+                    for part in parts:
+                        if "[" in part and "]" in part:
+                            part_name, index = part[:-1].split("[")
+                            if value is not None and isinstance(value, dict):
+                                value_dict: dict[str, Any] = value  # type: ignore
+                                value = value_dict.get(part_name, [])
+                            else:
+                                value = []
+                            try:
+                                if isinstance(value, list):
+                                    value = value[int(index)]  # type: ignore
+                                else:
+                                    value = None
+                            except (IndexError, ValueError, TypeError):
+                                value = None
+                        else:
+                            if value is not None and isinstance(value, dict):
+                                value_dict: dict[str, Any] = value  # type: ignore
+                                value = value_dict.get(part)
+                            else:
+                                value = None
                     data[endpoint.description.key] = value
                 except Exception as e:
                     _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", endpoint.description.key, e)
