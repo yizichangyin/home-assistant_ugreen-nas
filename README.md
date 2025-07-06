@@ -49,9 +49,9 @@ So I started building something myself — not beautiful, not plug-and-play — 
 
 ## ⚙️ Setup Instructions
 
-👉 [**Click here** for the step-by-step guide (Config) »](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup.md)
-
 👉 [**Click here** for the step-by-step guide (Plugin) »](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup_custom_components.md)
+
+👉 [**Click here** for the step-by-step guide (Config) »](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup.md) (deprecated)
 
 Before proceeding, check out the [**Known Problems & Limitations**](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) to avoid pitfalls.
 
