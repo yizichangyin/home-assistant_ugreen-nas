@@ -1,0 +1,50 @@
+{
+  "name": "UGREEN API Token Proxy",
+  "version": "0.1.0",
+  "slug": "ugreen-nas",
+  "description": "Starts the UGREEN API Token Proxy container that provides authentication for the UGREEN NAS Home Assistant integration.",
+  "uart": true,
+  "udev": true,
+  "url": "https://github.com/dobby5/home-assistant_ugreen-nas",
+  "startup": "application",
+  "hassio_api": true,
+  "arch": [
+    "aarch64",
+    "amd64",
+    "armhf",
+  ],
+  "boot": "auto",
+  "init": false,
+  "ingress": true,
+  "timeout": 30,
+  "panel_icon": "mdi:zigbee",
+  "map": [
+    {
+      "type": "share",
+      "read_only": false
+    },
+    {
+      "type": "homeassistant_config",
+      "read_only": false,
+      "path": "/config"
+    },
+    {
+      "type": "addon_config",
+      "read_only": false,
+      "path": "/addon_config"
+    }
+  ],
+  "ports": {
+    "4115/tcp": 4115
+  },
+  "ports_description": {
+    "4115/tcp": "ugreen-api-token",
+  },
+  "options": {
+    "ip": "ugreen nas ip",
+  },
+  "schema": {
+    "ip": "str",
+  },
+  "image": "ghcr.io/tom-bom-badil/ugreen-api-token"
+}

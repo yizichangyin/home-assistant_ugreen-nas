@@ -46,15 +46,17 @@ To allow Home Assistant to receive a valid authentication token, a small local t
 
 4. Open the **Compose Editor** and paste the content of this file  
 
-   [Docker compose](https://raw.githubusercontent.com/Tom-Bom-badil/home-assistant_ugreen-nas/refs/heads/main/docker/ugreen_api_token/docker-compose.yaml)
+   [Docker compose](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/blob/main/addons/docker-compose.yaml)
 
 5. Add your credentials under `environment` and make further changes if necessary:
 
    ```yaml
    environment:
-     - UGREEN_NAS_API_SCHEME: "https"
-     - UGREEN_NAS_API_PORT: "9443"
-     - UGREEN_NAS_API_VERIFY_SSL: "false"
+     UGREEN_NAS_API_SCHEME: "https"
+     UGREEN_NAS_API_PORT: "9443"
+     UGREEN_NAS_API_VERIFY_SSL: "false"
+     USERNAME: "your_admin_name"
+     PASSWORD: "your_password"
    ```
 
 6. Click **Deploy** and start Docker
