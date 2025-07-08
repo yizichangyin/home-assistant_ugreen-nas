@@ -1,21 +1,10 @@
-name: Build and Push to GHCR
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -30,11 +19,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set image tag
+        id: vars
+        run: |
+          if [ "${GITHUB_REF##*/}" = "main" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+          else
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            echo "IMAGE_TAG=develop-$SHORT_SHA" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v5
         with:
           context: ./addons
           file: ./addons/Dockerfile
           push: true
-          tags: ghcr.io/tom-bom-badil/ugreen-api-token:latest
+          tags: ghcr.io/tom-bom-badil/ugreen-api-token:${{ env.IMAGE_TAG }}
           platforms: linux/amd64,linux/arm64
