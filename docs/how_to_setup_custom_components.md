@@ -106,12 +106,15 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 
 ## 🛠️ Troubleshooting
 
-| Issue                   | Solution                                                              |
-|-------------------------|-----------------------------------------------------------------------|
-| `invalid_auth`          | Wrong username or password? Is the token server running?              |
-| `cannot_connect`        | Is your NAS reachable from Home Assistant?                            |
-| Token server not active | Is the Docker container running correctly? Check logs                 |
-| Component not detected  | Restart Home Assistant and check the paths                            |
+| Issue                       | Solution                                                              |
+|-----------------------------|-----------------------------------------------------------------------|
+| `invalid_auth`              | Wrong username or password? Is the token server running?              |
+| `500 Internal Server Error` | 2-factor-authentication (2FA) activated for the user? ¹               |
+| `cannot_connect`            | Is your NAS reachable from Home Assistant?                            |
+| Token server not active     | Is the Docker container running correctly? Check logs                 |
+| Component not detected      | Restart Home Assistant and check the paths                            |
+
+¹ If you need 2FA on your device for regular users, it is recommended to create a dedicated admin user for the integration with an extra long and complex password.
 
 ---
 
