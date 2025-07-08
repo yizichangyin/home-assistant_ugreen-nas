@@ -23,10 +23,11 @@ class UgreenEntity:
     path: str
     request_method: str = "GET"
     decimal_places: int = 2
+    entity_category: str = ""
 
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     # Hardware Info
-  UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_model",
             name="CPU Model",
@@ -35,6 +36,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].model",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -45,7 +47,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].ghz",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -56,7 +59,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].core",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -67,7 +71,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].thread",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     
     # UPS
@@ -80,6 +85,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].model",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -90,6 +96,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].vendor",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -100,6 +107,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].power_free",
+        entity_category="Hardware",
     ),
     
     # Device Monitoring
@@ -112,6 +120,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.cpu_usage_rate",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -122,6 +131,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.total",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -132,6 +142,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.free",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -142,6 +153,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.cache",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -152,6 +164,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.used",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -162,6 +175,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.ram_usage_rate",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -172,6 +186,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.upload_speed.value",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -182,6 +197,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.download_speed.value",
+        entity_category="Status",
     ),
 
     # System Status
@@ -194,6 +210,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.last_boot_date",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -204,6 +221,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.last_boot_time",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -214,6 +232,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.message",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -224,6 +243,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.server_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -234,6 +254,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -244,6 +265,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.total_run_time",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -254,6 +276,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.dev_name",
+        entity_category="Device",
     ),
 
     # Temperature Monitoring
@@ -266,6 +289,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.cpu_temperature",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -276,6 +300,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.cpu_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -286,6 +311,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.fan_speed",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -296,6 +322,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.fan_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -306,6 +333,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.message",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -316,6 +344,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.status",
+        entity_category="Status",
     ),
 ]
 
@@ -330,6 +359,7 @@ UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/shutdown",
         path="",
         request_method="POST",
+        entity_category="",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -340,6 +370,7 @@ UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/reboot",
         path="",
         request_method="POST",
+        entity_category="",
     ),
 ]
 
@@ -479,6 +510,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.fan_list[{fan_index}].speed",
                         decimal_places=0,
+                        entity_category="Status",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -489,6 +521,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.fan_list[{fan_index}].status",
+                        entity_category="Status",
                     ),
                 ])
                 
@@ -535,6 +568,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].model",
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -545,6 +579,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].manufacturer",
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -556,6 +591,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].size",
                         decimal_places=0,
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -567,6 +603,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].mhz",
                         decimal_places=0,
+                        entity_category="Hardware",
                     ),
                 ])
                 
@@ -613,6 +650,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].model",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -623,6 +661,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].ip",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -633,6 +672,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mac",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -644,6 +684,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].speed",
                         decimal_places=0,
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -654,6 +695,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].duplex",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -664,6 +706,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mtu",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -674,6 +717,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mask",
+                        entity_category="Network",
                     ),
                 ])
                 
@@ -720,6 +764,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].model",
+                        entity_category="USB",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -730,6 +775,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].vendor",
+                        entity_category="USB",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -740,6 +786,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].device_type",
+                        entity_category="USB",
                     ),
             ])
                 
@@ -781,6 +828,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].name",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -791,6 +839,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].label",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -801,6 +850,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].level",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -811,6 +861,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].status",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -821,6 +872,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].total",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -831,6 +883,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].used",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -841,6 +894,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].free",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -851,6 +905,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].available",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -861,6 +916,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].total_disk_num",
+                            entity_category="Pools",
                         ),
                 ])
 
@@ -880,6 +936,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].model",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -890,6 +947,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].serial",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -900,6 +958,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].size",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -910,6 +969,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].name",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -920,6 +980,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].dev_name",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -930,6 +991,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].slot",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -940,6 +1002,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].type",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -950,6 +1013,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].interface_type",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -960,6 +1024,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].label",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -970,6 +1035,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].used_for",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -980,6 +1046,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].status",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -990,6 +1057,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].temperature",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1000,6 +1068,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].power_on_hours",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1010,6 +1079,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].brand",
+                            entity_category="Disks",
                         ),
                     ])
 
@@ -1028,6 +1098,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].name",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1038,6 +1109,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].label",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1048,6 +1120,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].poolname",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1058,6 +1131,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].total",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1068,6 +1142,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].used",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1078,6 +1153,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].available",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1088,6 +1164,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].hascache",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1098,6 +1175,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].filesystem",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1108,6 +1186,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].health",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1118,6 +1197,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].status",
+                            entity_category="Volumes",
                         ),
                     ])
         except Exception as e:
