@@ -32,11 +32,11 @@ The setup process involves two steps:
 
 When migrating from my old QNAP to a UGreen DXP, I encountered a few issues.
 
-First, my virtual machines wouldn’t boot properly. After some digging, I solved the problem — [full details here](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) on Discord.
+First, my virtual machines wouldn’t boot properly. After some digging, I solved the problem - [full details here](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) on Discord.
 
 Then came the real issue: UGOS doesn’t expose system data like CPU or RAM usage through standard interfaces. Unlike QNAP (which has a built-in Home Assistant integration), I couldn’t find any plug-and-play option.
 
-So I started building something myself — not beautiful, not plug-and-play - but it worked. And it’s been a solid proof of concept for anyone wanting Home Assistant insights from a UGreen NAS.
+So I started building something myself - not beautiful, not plug-and-play - but it worked. And it’s been a solid proof of concept for anyone wanting Home Assistant insights from a UGreen NAS.
 
 Then @dobby5 jumped in and came up with a “real” integration - and that’s where we are today.
 
