@@ -1,50 +1,31 @@
 {
-  "name": "UGREEN API Token Proxy",
-  "version": "0.1.0",
-  "slug": "ugreen-nas",
-  "description": "Starts the UGREEN API Token Proxy container that provides authentication for the UGREEN NAS Home Assistant integration.",
-  "uart": true,
-  "udev": true,
-  "url": "https://github.com/dobby5/home-assistant_ugreen-nas",
-  "startup": "application",
-  "hassio_api": true,
+  "name": "Ugreen API Token Proxy (Experimental)",
+  "version": "latest",
+  "slug": "ugreen_api_token",
+  "description": "Runs the Ugreen API Token Proxy container that provides authentication for the UGREEN NAS Home Assistant integration.",
+  "webui": "http://[HOST]:[PORT:4115]",
+  "panel_icon": "mdi:nas",
   "arch": [
-    "aarch64",
     "amd64",
-    "armhf",
+    "aarch64"
   ],
-  "boot": "auto",
-  "init": false,
-  "ingress": true,
-  "timeout": 30,
-  "panel_icon": "mdi:zigbee",
+  "host_network": true,
+  "hassio_api": true,
+  "image": "ghcr.io/tom-bom-badil/ugreen-api-token",
   "map": [
-    {
-      "type": "share",
-      "read_only": false
-    },
-    {
-      "type": "homeassistant_config",
-      "read_only": false,
-      "path": "/config"
-    },
-    {
-      "type": "addon_config",
-      "read_only": false,
-      "path": "/addon_config"
-    }
+    "config:rw",
+    "share:rw"
   ],
-  "ports": {
-    "4115/tcp": 4115
-  },
-  "ports_description": {
-    "4115/tcp": "ugreen-api-token",
-  },
   "options": {
-    "ip": "ugreen nas ip",
+    "UGREEN_NAS_API_SCHEME": "https",
+    "UGREEN_NAS_API_IP": "",
+    "UGREEN_NAS_API_PORT": "9999",
+    "UGREEN_NAS_API_VERIFY_SSL": "false"
   },
   "schema": {
-    "ip": "str",
-  },
-  "image": "ghcr.io/tom-bom-badil/ugreen-api-token"
+    "UGREEN_NAS_API_SCHEME": "str",
+    "UGREEN_NAS_API_IP": "str",
+    "UGREEN_NAS_API_PORT": "str",
+    "UGREEN_NAS_API_VERIFY_SSL": "str"
+  }
 }
