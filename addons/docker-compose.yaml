@@ -6,7 +6,7 @@ services:
       - "4115:4115"
     environment:
       UGREEN_NAS_API_SCHEME: "https"
-      UGREEN_NAS_API_PORT: "9999"
+      UGREEN_NAS_API_PORT: "9443"
       UGREEN_NAS_API_VERIFY_SSL: "false"
     extra_hosts:
       - "host.docker.internal:host-gateway"
