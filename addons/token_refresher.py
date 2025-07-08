@@ -19,7 +19,7 @@ class TokenRefresher:
         self._password = password
         self._scheme = os.environ.get("UGREEN_NAS_API_SCHEME", "https")
         self._host = resolve_host()
-        self._port = os.environ.get("UGREEN_NAS_API_PORT","port")
+        self._port = int(os.environ.get("UGREEN_NAS_API_PORT") or "9999")
         self._verify = os.environ.get("UGREEN_NAS_API_VERIFY_SSL", "true").lower() == "true"
         self._token = None
 
