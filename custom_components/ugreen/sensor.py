@@ -61,7 +61,42 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity): # type: ignore
         """Return the formatted value of the sensor."""
         raw = self.coordinator.data.get(self._key)
         return format_sensor_value(raw, self._endpoint)
-    
+
+    # ----
+    @property
+    def extra_state_attributes(self):
+        base_attrs = super().extra_state_attributes or {}
+        base_attrs.update({
+            # for filtering purpose / multiple NAS: marker for all UGreen NAS sensors
+            "device_type": "UGreen NAS",
+            # reserved for later extension: marker for a specific UGreen NAS
+            "device_id": "",
+            # for filtering purpose: marker for similar sensors of the same 'group'
+            "entity_category": self._endpoint.entity_category,
+        })
+        return base_attrs
+
+    # pls delete before approval --------------------------------------------------------------
+    #
+    # @dobby: Above to be used for dashboard filtering (and more). The idea is to replace the fixed
+    # 'UGreen_NAS_' in each sensor name in the future with a unique id (which also can be found
+    # in "device_id"), which could be e.g. the device name or a user-defined string to be entered
+    # during config_flow. That way you can have as many NAS as you want in the integration,
+    # with the same 'core' sensor names, but still can distinguish in between them.
+    #
+    # With above attributes you can (mainly meant for visualization / Lovelace / auto_entities):
+    # - get all entities of ALL UGreen NAS in the network (filter for device_type attribute)
+    # - get all 'hardware' related entities of ANY NAS in the network
+    # - get all 'hardware' related entities of a specific NAS only
+    #
+    # Thanks for approving, I'm currently preparing a corresponding dashboard in parallel. :)
+    #
+    # p.s. We will also need to adjust workflow to use MAC or device_id instead of IP,
+    # because the current config_flow will not work in DHCP environments with flexible IP's
+    # (currently it's IP fixed - as soon as you get a new DHCP IP, you'll need add the NAS again).
+    #
+    # ------------------------------------------------------------------------------------------
+
     def _handle_coordinator_update(self) -> None:
         """Update the sensor value from the coordinator."""
         self._attr_native_value = self.native_value
