@@ -71,6 +71,8 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 
 ## 🔗 Setup in Home Assistant
 
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ugreen)
+
 1. Open Home Assistant → **Settings → Devices & Services → Add Integration**
 
 2. Search for **UGREEN NAS**

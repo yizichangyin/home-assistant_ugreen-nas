@@ -5,12 +5,20 @@ import socket
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
 _LOGGER = logging.getLogger(__name__)      
+
+def resolve_host():
+    """Try to resolve host.docker.internal, fallback to UGREEN_NAS_API_IP or localhost."""
+    try:
+        return socket.gethostbyname("host.docker.internal")
+    except socket.gaierror:
+        return os.getenv("UGREEN_NAS_API_IP", "127.0.0.1")
+        
 class TokenRefresher:
     def __init__(self, username: str, password: str):
         self._username = username
         self._password = password
         self._scheme = os.environ.get("UGREEN_NAS_API_SCHEME", "https")
-        self._host = socket.gethostbyname("host.docker.internal")
+        self._host = resolve_host()
         self._port = int(os.environ.get("UGREEN_NAS_API_PORT","port"))
         self._verify = os.environ.get("UGREEN_NAS_API_VERIFY_SSL", "true").lower() == "true"
         self._token = None
