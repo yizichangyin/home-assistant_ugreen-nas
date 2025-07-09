@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget gnupg ca-certificates fonts-liberation \
     libnss3 libatk-bridge2.0-0 libxss1 libasound2 \
     libxcomposite1 libxdamage1 libxrandr2 libgbm-dev \
-    libgtk-3-0 libdrm2 \
+    libgtk-3-0 libdrm2 jq dos2unix \
  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -15,8 +15,11 @@ RUN python -m pip install --no-cache-dir -r requirements.txt \
 
 COPY . .
 
-RUN chmod +x run.sh
+RUN dos2unix run.sh \
+ && chmod +x run.sh
+
+COPY config.json /app/config.json
 
 EXPOSE 4115
 
-CMD ["./run.sh"]
+ENTRYPOINT ["/bin/bash", "/app/run.sh"]

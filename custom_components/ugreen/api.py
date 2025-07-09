@@ -179,7 +179,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="ram_size_total",
             name="RAM Size (Total)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.total",
@@ -190,7 +190,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="ram_size_free",
             name="RAM Size (Free)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.free",
@@ -201,7 +201,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="ram_size_cache",
             name="RAM Size (Cache)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.cache",
@@ -212,7 +212,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="ram_size_used",
             name="RAM Size (Usage - Gigabytes)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.used",
@@ -234,7 +234,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="upload_speed",
             name="Upload Speed",
             icon="mdi:upload",
-            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.upload_speed.value",
@@ -245,7 +245,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
             key="download_speed",
             name="Download Speed",
             icon="mdi:download",
-            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.download_speed.value",
@@ -638,7 +638,7 @@ class UgreenApiClient:
                             key=f"{prefix_mem_key}_size",
                             name=f"{prefix_mem_name} Size",
                             icon="mdi:memory",
-                            unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            unit_of_measurement=UnitOfInformation.BYTES,
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].size",
@@ -731,7 +731,7 @@ class UgreenApiClient:
                             key=f"{prefix_lan_key}_speed",
                             name=f"{prefix_lan_name} Speed",
                             icon="mdi:speedometer",
-                            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+                            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].speed",
@@ -920,7 +920,7 @@ class UgreenApiClient:
                                 key=f"{prefix_pool_key}_total",
                                 name=f"{prefix_pool_name} Total Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].total",
@@ -931,7 +931,7 @@ class UgreenApiClient:
                                 key=f"{prefix_pool_key}_used",
                                 name=f"{prefix_pool_name} Used Size",
                                 icon="mdi:database-check",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].used",
@@ -942,7 +942,7 @@ class UgreenApiClient:
                                 key=f"{prefix_pool_key}_free",
                                 name=f"{prefix_pool_name} Free Size",
                                 icon="mdi:database-remove",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].free",
@@ -953,7 +953,7 @@ class UgreenApiClient:
                                 key=f"{prefix_pool_key}_available",
                                 name=f"{prefix_pool_name} Available Size",
                                 icon="mdi:database-plus",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].available",
@@ -971,7 +971,6 @@ class UgreenApiClient:
                             entity_category="Pools",
                         ),
                 ])
-
 
 #               @dobby: This is NOT working properly. The code assumes each pool's disks directly map to the
 #               same index in the global disk list, which is not true if all disks are in a shared flat list.
@@ -999,6 +998,9 @@ class UgreenApiClient:
                 for pool_disk_index, disk_ref in enumerate(pool.get("disks", [])):
                     dev_name = disk_ref.get("dev_name")
                     match = self._ugreen_disks_cache.get(dev_name)
+                    if match is None:
+                        _LOGGER.warning("[UGREEN NAS] Disk with dev_name '%s' not found in global disk list, skipping.", dev_name)
+                        continue
                     disk_index, _ = match
                     prefix_disk_key = f"disk{pool_disk_index+1}_pool{pool_index+1}"
                     prefix_disk_name = f"(Pool {pool_index+1} | Disk {pool_disk_index+1})"
@@ -1033,7 +1035,7 @@ class UgreenApiClient:
                                 key=f"{prefix_disk_key}_size",
                                 name=f"{prefix_disk_name} Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].size",
@@ -1206,7 +1208,7 @@ class UgreenApiClient:
                                 key=f"{prefix_volume_key}_total",
                                 name=f"{prefix_volume_name} Total Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].total",
@@ -1217,7 +1219,7 @@ class UgreenApiClient:
                                 key=f"{prefix_volume_key}_used",
                                 name=f"{prefix_volume_name} Used Size",
                                 icon="mdi:database-check",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].used",
@@ -1228,7 +1230,7 @@ class UgreenApiClient:
                                 key=f"{prefix_volume_key}_available",
                                 name=f"{prefix_volume_name} Available Size",
                                 icon="mdi:database-plus",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].available",

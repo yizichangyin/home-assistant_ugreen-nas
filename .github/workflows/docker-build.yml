@@ -48,5 +48,5 @@ jobs:
           context: ./addons
           file: ./addons/Dockerfile
           push: true
-          tags: ghcr.io/tom-bom-badil/ugreen-api-token:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/tom-bom-badil/ugreen_api_token_proxy:${{ env.IMAGE_TAG }}
           platforms: linux/amd64,linux/arm64
