@@ -26,6 +26,58 @@ class UgreenEntity:
     entity_category: str = ""
 
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
+    # Device Info
+    UgreenEntity(
+        description=EntityDescription(
+            key="owner",
+            name="Owner",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.nas_owner",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="model",
+            name="Model",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.model",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="serial",
+            name="Serial",
+            icon="mdi:focus-field",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.serial",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="version",
+            name="Version",
+            icon="mdi:numeric",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.system_version",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="type",
+            name="Type",
+            icon="mdi:nas",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.type",
+    ),
+
     # Hardware Info
     UgreenEntity(
         description=EntityDescription(
