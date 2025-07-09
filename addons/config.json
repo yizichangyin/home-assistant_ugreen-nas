@@ -1,7 +1,7 @@
 {
   "name": "Ugreen API Token Proxy (Experimental)",
   "version": "latest",
-  "slug": "ugreen_api_token",
+  "slug": ""ugreen_api_token_proxy",
   "description": "Runs the Ugreen API Token Proxy container that provides authentication for the UGREEN NAS Home Assistant integration.",
   "webui": "http://[HOST]:[PORT:4115]",
   "panel_icon": "mdi:nas",
