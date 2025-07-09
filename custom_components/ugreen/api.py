@@ -972,12 +972,39 @@ class UgreenApiClient:
                         ),
                 ])
 
-                for disk_index, _ in enumerate(pool.get("disks", [])):
-                    prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
-                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
-                    endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
-                    _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
 
+#               @dobby: This is NOT working properly. The code assumes each pool's disks directly map to the
+#               same index in the global disk list, which is not true if all disks are in a shared flat list.
+#               Expected result for 4 disks in 2 pools (e.g. disk serial numbers):
+#               - serial1, serial2, serial3, serial4
+#               This code returns:
+#               - serial1, serial2, serial1, serial2
+#               (The same for all other entities of the disks)
+#                
+#               for disk_index, _ in enumerate(pool.get("disks", [])):
+#                   prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
+#                   prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
+#                   endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
+#                   _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+#
+#               Correction, tested / working well (pls merge):
+
+                if not hasattr(self, "_ugreen_disks_cache"):
+                    disk_response = await self.get(session, "/ugreen/v2/storage/disk/list")
+                    disks_global = disk_response.get("data", {}).get("result", [])
+                    self._ugreen_disks_cache = {
+                        disk["dev_name"]: (index, disk) for index, disk in enumerate(disks_global)
+                    }
+
+                for pool_disk_index, disk_ref in enumerate(pool.get("disks", [])):
+                    dev_name = disk_ref.get("dev_name")
+                    match = self._ugreen_disks_cache.get(dev_name)
+                    disk_index, _ = match
+                    prefix_disk_key = f"disk{pool_disk_index+1}_pool{pool_index+1}"
+                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {pool_disk_index+1})"
+                    endpoint_disk = "/ugreen/v2/storage/disk/list"
+                    _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+                
                     entities.extend([
                         UgreenEntity(
                             description=EntityDescription(
