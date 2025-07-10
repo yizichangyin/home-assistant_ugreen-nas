@@ -36,6 +36,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.common.nas_owner",
+        entity_category="Device",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -46,6 +47,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.common.model",
+        entity_category="Device",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -56,6 +58,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.common.serial",
+        entity_category="Device",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -66,6 +69,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.common.system_version",
+        entity_category="Device",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -76,6 +80,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.type",
+        entity_category="Device",
     ),
 
     # Hardware Info
