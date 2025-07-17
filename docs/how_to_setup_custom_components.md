@@ -1,29 +1,33 @@
-
 # 🧩 UGREEN NAS – Home Assistant Integration
 
 **⚠️ Beta Version**  
 This is an **experimental Home Assistant integration** for UGREEN NAS devices.  
-Development is active, and the API is undocumented.
+Development is active, and the API is currently undocumented.
 
 ---
 
 ## ℹ️ Background & Limitations
 
-- UGREEN currently does **not provide a long-lasting access token**.
-- This integration uses a **local Docker token server** running on the NAS.
-- **All data stays entirely within the local network.**
-- A release via **HACS** is currently not possible.
+- UGREEN currently does **not provide a long-term access token**.
+- This integration uses a **local Docker token server** running on your NAS.
+- **All data stays entirely within your local network.**
+- A release via **HACS** is not possible at this time.
 
 ---
 
-## 🔧 Installing
+## 🔧 Installation
 
-### 1. Adding and installing the Integration (Custom Component)
+### 1. Add the Integration (Custom Component)
+
+**Automatic:**
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tom-bom-badil&repository=home-assistant_ugreen-nas&category=Integration)
+
+**Manual:**
 
 1. In Home Assistant, open **HACS** from the sidebar.
-2. Click the **three dots (⋯)** in the top-right corner and choose  
-   **“Custom repositories”**.
-3. Click **“Add”**.
+2. Click the **three dots (⋯)** in the top-right corner and choose **“Custom repositories”**.
+3. Click **Add**.
 4. Enter the following details:
    - **Repository URL:**  
      `https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas`
@@ -32,36 +36,47 @@ Development is active, and the API is undocumented.
 
 ---
 
-## 🐳 Installing the Docker Token Server (on UGREEN NAS)
+## 🐳 Method 1: Run the Docker UGREEN API Token Proxy (on Home Assistant)
 
-To allow Home Assistant to receive a valid authentication token, a small local token server must be running:
+[![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FTom-Bom-badil%2Fhome-assistant_ugreen-nas)
+
+⚠️ **Note:** Installation may take up to 10 minutes.
+
+1. Open and add the addon.
+2. Install the addon.
+1. Go to the configuration.
+2. Make the necessary changes (e.g., add the IP address of your NAS).
+3. Save and start the add-on.
+
+## 🐳 Method 2: Run the Docker UGREEN API Token Proxy (on UGREEN NAS)
+
+To let Home Assistant receive a valid authentication token, you need to run a small local token server.
 
 ### Steps
 
-1. Log into your UGREEN NAS.
+1. Log in to your UGREEN NAS.
 
 2. Install and open **Docker** (if not already installed).
 
 3. Create a new project, e.g., `ugreen-access-token`.
 
-4. Open the **Compose Editor** and paste the content of this file  
+4. Open the **Compose Editor** and paste the contents of this file:  
+   [docker-compose.yaml](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/blob/main/addons/docker-compose.yaml)
 
-   [Docker compose](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/blob/main/addons/docker-compose.yaml)
-
-5. Add your credentials under `environment` and make further changes if necessary:
+5. Add your credentials under `environment` and adjust other settings if needed:
 
    ```yaml
    environment:
      UGREEN_NAS_API_SCHEME: "https"
-     UGREEN_NAS_API_PORT: "9443"
+     UGREEN_NAS_API_PORT: "9999"
      UGREEN_NAS_API_VERIFY_SSL: "false"
      USERNAME: "your_admin_name"
      PASSWORD: "your_password"
    ```
 
-6. Click **Deploy** and start Docker
+6. Click **Deploy** and start the container.
 
-✅ If everything works, you should see the following in the **Logs tab**:
+✅ If everything works correctly, you should see the following in the **Logs tab**:
 
 ```
 Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
@@ -69,30 +84,36 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 
 ---
 
-## 🔗 Setup in Home Assistant
+## 🔗 Set Up in Home Assistant
+
+**Automatic:**
 
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ugreen)
 
-1. Open Home Assistant → **Settings → Devices & Services → Add Integration**
+**Manual:**
 
-2. Search for **UGREEN NAS**
+1. In Home Assistant, go to **Settings → Devices & Services → Add Integration**.
 
-3. Enter your connection details:
-   - API port (default: `9443`)
+2. Search for **UGREEN NAS**.
+
+## Configuration:
+
+Enter your connection details:  
+   - API port (default: `9999`)
    - Token port (default: `4115`)
    - Username & password
-   - Optional: Enable HTTPS and certificate validation
+   - Optional: Enable HTTPS and SSL certificate validation
 
-> As mentioned, your data stays on the NAS and is only retrieved by Home Assistant via an HTTP request.
+> As mentioned, your data stays on your NAS and is only retrieved by Home Assistant via an HTTP request.
 
- Example token call:  
+Example token call:  
 > `http://<NAS-IP>:<NAS-API-PORT>/token?username=your_username&password=your_password`
 
 4. Click **Submit** – done!
 
 ---
 
-## 🧠 What Does This Integration Offer?
+## 🧠 What Does This Integration Provide?
 
 - **Sensors for:**
   - CPU & RAM (usage, frequency, model, temperature)
@@ -108,25 +129,23 @@ Uvicorn running on http://0.0.0.0:4115 (Press CTRL+C to quit)
 
 ## 🛠️ Troubleshooting
 
-| Issue                       | Solution                                                              |
-|-----------------------------|-----------------------------------------------------------------------|
-| `invalid_auth`              | Wrong username or password? Is the token server running?              |
-| `500 Internal Server Error` | 2-factor-authentication (2FA) activated for the user? ¹               |
-| `cannot_connect`            | Is your NAS reachable from Home Assistant?                            |
-| Token server not active     | Is the Docker container running correctly? Check logs                 |
-| Component not detected      | Restart Home Assistant and check the paths                            |
+| Issue                      | Possible Solution                                                     |
+|----------------------------|------------------------------------------------------------------------|
+| `invalid_auth`             | Wrong username/password? Is the token server running?                 |
+| `500 Internal Server Error`| Is two-factor authentication (2FA) enabled for this user?¹            |
+| `cannot_connect`           | Is your NAS reachable from Home Assistant?                            |
+| Token server not active    | Is the Docker container running correctly? Check the logs.            |
+| Component not detected     | Restart Home Assistant and double-check your paths.                   |
 
-¹ If you need 2FA on your device for regular users, it is recommended to create a dedicated admin user for the integration with an extra long and complex password.
+¹ If you need 2FA for regular users, it’s recommended to create a dedicated admin user for this integration with a long, complex password.
 
 ---
 
 ## 🗣️ Feedback, Bugs & Ideas
 
 Help us improve this integration!  
-👉 [Report an Issue on GitHub](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/issues)
+👉 [Open an issue on GitHub](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/issues)
 
 ---
 
-## ❤️ Thank You & Have Fun
-
-> Plugin Version: v0.8.0
+## ❤️ Thank You & Have Fun!

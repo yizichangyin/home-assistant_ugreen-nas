@@ -11,7 +11,7 @@ from decimal import Decimal
 from .device_info import build_device_info
 from .const import DOMAIN
 from .api import UgreenEntity
-from .utils import format_sensor_value
+from .utils import determine_unit, format_sensor_value
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -44,8 +44,7 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity): # type: ignore
         self._attr_name = f"UGREEN NAS {endpoint.description.name}"
         self._attr_unique_id = f"{entry_id}_{endpoint.description.key}"
         self._attr_icon = endpoint.description.icon
-        self._attr_native_unit_of_measurement = endpoint.description.unit_of_measurement
-
+        
         base_device_info = build_device_info(self._key, nas_model)
 
         if "disk" in self._key and "brand" in self._key:
@@ -61,8 +60,35 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity): # type: ignore
         """Return the formatted value of the sensor."""
         raw = self.coordinator.data.get(self._key)
         return format_sensor_value(raw, self._endpoint)
+
+    @property
+    def extra_state_attributes(self):
+        base_attrs = super().extra_state_attributes or {}
+        base_attrs.update({
+            # for filtering purpose / multiple NAS: marker for all UGreen NAS sensors
+            "device_type": "UGreen NAS",
+            # reserved for later extension: marker for a specific UGreen NAS
+            "device_id": "",
+            # for filtering purpose: marker for similar sensors of the same 'group'
+            "entity_category": self._endpoint.entity_category,
+        })
+        return base_attrs
+    
+    @property
+    def native_unit_of_measurement(self) -> str | None: # type: ignore
+        """Return the unit, dynamically determined."""
+        raw = self.coordinator.data.get(self._key)
+        unit = self._endpoint.description.unit_of_measurement or ""
+        
+        if self._endpoint.description.unit_of_measurement in ("B/s", "KB/s", "MB/s", "GB/s", "TB/s", "PB/s"):
+            return determine_unit(raw, unit, True)           
+        elif self._endpoint.description.unit_of_measurement in ("B", "KB", "MB", "GB", "TB", "PB"):
+            return determine_unit(raw, unit, False)
+        
+        return self._endpoint.description.unit_of_measurement
     
     def _handle_coordinator_update(self) -> None:
         """Update the sensor value from the coordinator."""
         self._attr_native_value = self.native_value
+        self._attr_native_unit_of_measurement = self.native_unit_of_measurement
         super()._handle_coordinator_update()

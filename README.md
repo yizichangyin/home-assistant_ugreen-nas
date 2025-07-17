@@ -2,9 +2,8 @@
 
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-%2341BDF5.svg)](https://www.home-assistant.io)
 [![Custom integration](https://img.shields.io/badge/Custom%20Integration-%2341BDF5.svg)](https://www.home-assistant.io/getting-started/concepts-terminology)
-[![HACS Listing](https://img.shields.io/badge/HACS%20Listing-intended-orange.svg)](https://github.com/hacs)
-[![HACS Install](https://img.shields.io/badge/HACS%20Custom%20Install-verified-green.svg)](https://github.com/hacs)
-[![Version](https://img.shields.io/badge/Version-v2025.05.1-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/releases)
+[![HACS Listing](https://img.shields.io/badge/HACS%20Listing-default-green.svg)](https://github.com/hacs)
+[![Version](https://img.shields.io/badge/Version-v2025.07.2-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/releases)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/graphs/commit-activity)
 
 ---

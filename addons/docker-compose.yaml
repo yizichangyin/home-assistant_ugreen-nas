@@ -1,12 +1,13 @@
+version: "3.8"
 services:
   token-api:
-    image: ghcr.io/tom-bom-badil/ugreen-api-token:latest
-    container_name: ugreen-api-token
+    image: ghcr.io/tom-bom-badil/ugreen_api_token_proxy:latest
+    container_name: ugreen_api_token_proxy
     ports:
       - "4115:4115"
     environment:
       UGREEN_NAS_API_SCHEME: "https"
-      UGREEN_NAS_API_PORT: "9443"
+      UGREEN_NAS_API_PORT: "9999"
       UGREEN_NAS_API_VERIFY_SSL: "false"
     extra_hosts:
       - "host.docker.internal:host-gateway"

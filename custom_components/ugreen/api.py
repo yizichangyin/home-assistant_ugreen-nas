@@ -23,10 +23,68 @@ class UgreenEntity:
     path: str
     request_method: str = "GET"
     decimal_places: int = 2
+    entity_category: str = ""
 
 UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
+    # Device Info
+    UgreenEntity(
+        description=EntityDescription(
+            key="owner",
+            name="Owner",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.nas_owner",
+        entity_category="Device",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="model",
+            name="Model",
+            icon="mdi:account",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.model",
+        entity_category="Device",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="serial",
+            name="Serial",
+            icon="mdi:focus-field",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.serial",
+        entity_category="Device",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="version",
+            name="Version",
+            icon="mdi:numeric",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/sysinfo/machine/common",
+        path="data.common.system_version",
+        entity_category="Device",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="type",
+            name="Type",
+            icon="mdi:nas",
+            unit_of_measurement=None,
+        ),
+        endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
+        path="data.type",
+        entity_category="Device",
+    ),
+
     # Hardware Info
-  UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_model",
             name="CPU Model",
@@ -35,6 +93,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].model",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -45,7 +104,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].ghz",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -56,7 +116,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].core",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -67,7 +128,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.cpu[0].thread",
-        decimal_places=0
+        decimal_places=0,
+        entity_category="Hardware",
     ),
     
     # UPS
@@ -80,6 +142,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].model",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -90,6 +153,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].vendor",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -100,6 +164,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/sysinfo/machine/common",
         path="data.hardware.ups[0].power_free",
+        entity_category="Hardware",
     ),
     
     # Device Monitoring
@@ -112,46 +177,51 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.cpu_usage_rate",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="ram_size_total",
             name="RAM Size (Total)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.total",
+        entity_category="Hardware",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="ram_size_free",
             name="RAM Size (Free)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.free",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="ram_size_cache",
             name="RAM Size (Cache)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.cache",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="ram_size_used",
             name="RAM Size (Usage - Gigabytes)",
             icon="mdi:memory",
-            unit_of_measurement=UnitOfInformation.GIGABYTES,
+            unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.used",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -162,26 +232,29 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.ram_usage_rate",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="upload_speed",
             name="Upload Speed",
             icon="mdi:upload",
-            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.upload_speed.value",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
             key="download_speed",
             name="Download Speed",
             icon="mdi:download",
-            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.DeviceMonitoring",
         path="data.download_speed.value",
+        entity_category="Status",
     ),
 
     # System Status
@@ -194,6 +267,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.last_boot_date",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -204,6 +278,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.last_boot_time",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -214,6 +289,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.message",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -224,6 +300,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.server_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -234,6 +311,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -244,6 +322,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.total_run_time",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -254,6 +333,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.SystemStatus",
         path="data.dev_name",
+        entity_category="Device",
     ),
 
     # Temperature Monitoring
@@ -266,6 +346,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.cpu_temperature",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -276,6 +357,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.cpu_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -286,6 +368,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.fan_speed",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -296,6 +379,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.fan_status",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -306,6 +390,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.message",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -316,6 +401,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
         ),
         endpoint="/ugreen/v1/desktop/components/data?id=desktop.component.TemperatureMonitoring",
         path="data.status",
+        entity_category="Status",
     ),
 ]
 
@@ -330,6 +416,7 @@ UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/shutdown",
         path="",
         request_method="POST",
+        entity_category="",
     ),
     UgreenEntity(
         description=EntityDescription(
@@ -340,6 +427,7 @@ UGREEN_STATIC_BUTTON_ENDPOINTS: List[UgreenEntity] = [
         endpoint="/ugreen/v1/desktop/reboot",
         path="",
         request_method="POST",
+        entity_category="",
     ),
 ]
 
@@ -479,6 +567,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.fan_list[{fan_index}].speed",
                         decimal_places=0,
+                        entity_category="Status",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -489,6 +578,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.fan_list[{fan_index}].status",
+                        entity_category="Status",
                     ),
                 ])
                 
@@ -535,6 +625,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].model",
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -545,17 +636,19 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].manufacturer",
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
                             key=f"{prefix_mem_key}_size",
                             name=f"{prefix_mem_name} Size",
                             icon="mdi:memory",
-                            unit_of_measurement=UnitOfInformation.GIGABYTES,
+                            unit_of_measurement=UnitOfInformation.BYTES,
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].size",
                         decimal_places=0,
+                        entity_category="Hardware",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -567,6 +660,7 @@ class UgreenApiClient:
                         endpoint=endpoint,
                         path=f"data.hardware.mem[{mem_index}].mhz",
                         decimal_places=0,
+                        entity_category="Hardware",
                     ),
                 ])
                 
@@ -613,6 +707,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].model",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -623,6 +718,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].ip",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -633,17 +729,19 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mac",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
                             key=f"{prefix_lan_key}_speed",
                             name=f"{prefix_lan_name} Speed",
                             icon="mdi:speedometer",
-                            unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+                            unit_of_measurement=UnitOfDataRate.BYTES_PER_SECOND,
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].speed",
                         decimal_places=0,
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -654,6 +752,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].duplex",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -664,6 +763,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mtu",
+                        entity_category="Network",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -674,6 +774,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.net[{lan_index}].mask",
+                        entity_category="Network",
                     ),
                 ])
                 
@@ -720,6 +821,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].model",
+                        entity_category="USB",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -730,6 +832,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].vendor",
+                        entity_category="USB",
                     ),
                     UgreenEntity(
                         description=EntityDescription(
@@ -740,6 +843,7 @@ class UgreenApiClient:
                         ),
                         endpoint=endpoint,
                         path=f"data.hardware.usb[{usb_slot_index}].device_type",
+                        entity_category="USB",
                     ),
             ])
                 
@@ -781,6 +885,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].name",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -791,6 +896,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].label",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -801,6 +907,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].level",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -811,46 +918,51 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].status",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_pool_key}_total",
                                 name=f"{prefix_pool_name} Total Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].total",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_pool_key}_used",
                                 name=f"{prefix_pool_name} Used Size",
                                 icon="mdi:database-check",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].used",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_pool_key}_free",
                                 name=f"{prefix_pool_name} Free Size",
                                 icon="mdi:database-remove",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].free",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_pool_key}_available",
                                 name=f"{prefix_pool_name} Available Size",
                                 icon="mdi:database-plus",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].available",
+                            entity_category="Pools",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -861,15 +973,45 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].total_disk_num",
+                            entity_category="Pools",
                         ),
                 ])
 
-                for disk_index, _ in enumerate(pool.get("disks", [])):
-                    prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
-                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
-                    endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
-                    _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+#               @dobby: This is NOT working properly. The code assumes each pool's disks directly map to the
+#               same index in the global disk list, which is not true if all disks are in a shared flat list.
+#               Expected result for 4 disks in 2 pools (e.g. disk serial numbers):
+#               - serial1, serial2, serial3, serial4
+#               This code returns:
+#               - serial1, serial2, serial1, serial2
+#               (The same for all other entities of the disks)
+#                
+#               for disk_index, _ in enumerate(pool.get("disks", [])):
+#                   prefix_disk_key = f"disk{disk_index+1}_pool{pool_index+1}"
+#                   prefix_disk_name = f"(Pool {pool_index+1} | Disk {disk_index+1})"
+#                   endpoint_disk = f"/ugreen/v2/storage/disk/list"                    
+#                   _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+#
+#               Correction, tested / working well (pls merge):
 
+                if not hasattr(self, "_ugreen_disks_cache"):
+                    disk_response = await self.get(session, "/ugreen/v2/storage/disk/list")
+                    disks_global = disk_response.get("data", {}).get("result", [])
+                    self._ugreen_disks_cache = {
+                        disk["dev_name"]: (index, disk) for index, disk in enumerate(disks_global)
+                    }
+
+                for pool_disk_index, disk_ref in enumerate(pool.get("disks", [])):
+                    dev_name = disk_ref.get("dev_name")
+                    match = self._ugreen_disks_cache.get(dev_name)
+                    if match is None:
+                        _LOGGER.warning("[UGREEN NAS] Disk with dev_name '%s' not found in global disk list, skipping.", dev_name)
+                        continue
+                    disk_index, _ = match
+                    prefix_disk_key = f"disk{pool_disk_index+1}_pool{pool_index+1}"
+                    prefix_disk_name = f"(Pool {pool_index+1} | Disk {pool_disk_index+1})"
+                    endpoint_disk = "/ugreen/v2/storage/disk/list"
+                    _LOGGER.debug("[UGREEN NAS] Processing disk entity: %s", prefix_disk_key)
+                
                     entities.extend([
                         UgreenEntity(
                             description=EntityDescription(
@@ -880,6 +1022,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].model",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -890,16 +1033,18 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].serial",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_disk_key}_size",
                                 name=f"{prefix_disk_name} Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].size",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -910,6 +1055,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].name",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -920,6 +1066,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].dev_name",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -930,6 +1077,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].slot",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -940,6 +1088,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].type",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -950,6 +1099,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].interface_type",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -960,6 +1110,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].label",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -970,6 +1121,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].used_for",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -980,6 +1132,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].status",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -990,6 +1143,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].temperature",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1000,6 +1154,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].power_on_hours",
+                            entity_category="Disks",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1010,6 +1165,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint_disk,
                             path=f"data.result[{disk_index}].brand",
+                            entity_category="Disks",
                         ),
                     ])
 
@@ -1028,6 +1184,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].name",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1038,6 +1195,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].label",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1048,36 +1206,40 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].poolname",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_volume_key}_total",
                                 name=f"{prefix_volume_name} Total Size",
                                 icon="mdi:database",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].total",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_volume_key}_used",
                                 name=f"{prefix_volume_name} Used Size",
                                 icon="mdi:database-check",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].used",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
                                 key=f"{prefix_volume_key}_available",
                                 name=f"{prefix_volume_name} Available Size",
                                 icon="mdi:database-plus",
-                                unit_of_measurement=UnitOfInformation.GIGABYTES,
+                                unit_of_measurement=UnitOfInformation.BYTES,
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].available",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1088,6 +1250,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].hascache",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1098,6 +1261,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].filesystem",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1108,6 +1272,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].health",
+                            entity_category="Volumes",
                         ),
                         UgreenEntity(
                             description=EntityDescription(
@@ -1118,6 +1283,7 @@ class UgreenApiClient:
                             ),
                             endpoint=endpoint,
                             path=f"data.result[{pool_index}].volumes[{volume_index}].status",
+                            entity_category="Volumes",
                         ),
                     ])
         except Exception as e:
