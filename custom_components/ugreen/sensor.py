@@ -60,6 +60,19 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity): # type: ignore
         """Return the formatted value of the sensor."""
         raw = self.coordinator.data.get(self._key)
         return format_sensor_value(raw, self._endpoint)
+
+    @property
+    def extra_state_attributes(self):
+        base_attrs = super().extra_state_attributes or {}
+        base_attrs.update({
+            # for filtering purpose / multiple NAS: marker for all UGreen NAS sensors
+            "device_type": "UGreen NAS",
+            # reserved for later extension: marker for a specific UGreen NAS
+            "device_id": "",
+            # for filtering purpose: marker for similar sensors of the same 'group'
+            "entity_category": self._endpoint.entity_category,
+        })
+        return base_attrs
     
     @property
     def native_unit_of_measurement(self) -> str | None: # type: ignore
