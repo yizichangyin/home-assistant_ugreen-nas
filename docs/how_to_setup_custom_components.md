@@ -56,7 +56,7 @@ To let Home Assistant receive a valid authentication token, you need to run a lo
    ```yaml
    environment:
      UGREEN_NAS_API_SCHEME: "https"
-     UGREEN_NAS_API_PORT: "9999"
+     UGREEN_NAS_API_PORT: "9443"
      UGREEN_NAS_API_VERIFY_SSL: "false"
    ```
 
