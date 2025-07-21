@@ -3,69 +3,40 @@
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-%2341BDF5.svg)](https://www.home-assistant.io)
 [![Custom integration](https://img.shields.io/badge/Custom%20Integration-%2341BDF5.svg)](https://www.home-assistant.io/getting-started/concepts-terminology)
 [![HACS Listing](https://img.shields.io/badge/HACS%20Listing-default-green.svg)](https://github.com/hacs)
-[![Version](https://img.shields.io/badge/Version-v2025.07.2-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/releases)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_helios-vallox/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/graphs/commit-activity)
+[![Version](https://img.shields.io/badge/Version-v2025.07.3-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/releases)
 
 ---
 
 ## 🚀 Quick Overview
 
-This project enables **Home Assistant** to monitor system data from a **UGOS-based UGreen NAS** – *without modifying the NAS in any way*. No extra tools or scripts are installed; we simply use what UGOS already provides.
+👉 This project enables **Home Assistant** to monitor data of a **UGOS based UGreen NAS** - *without modifying its operating system in any way*. No extra tools/scripts are installed in UGOS, no ssh access with cryptic shell commands is needed; we simply use what UGOS already provides.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/2f3053ac-35a0-42af-af59-087d0ec2134a" alt="System View" width="600"/>
 </p>
 
-The setup process involves two steps:
-
-1. **Token retrieval** – once tricky, now simplified.  
-2. **Home Assistant configuration** – done via the standard REST integration.
-
-> ⏱️ Total setup time: *~10 minutes* (if you’re familiar with HA basics)
-
----
-
-## 📖 Background
-
-<details>
-  <summary>Click to expand</summary>
-
-When migrating from my old QNAP to a UGreen DXP, I encountered a few issues.
-
-First, my virtual machines wouldn’t boot properly. After some digging, I solved the problem — [full details here](https://discord.com/channels/1208438687168335913/1270855790147797104/1318333164455723070) on Discord.
-
-Then came the real issue: UGOS doesn’t expose system data like CPU or RAM usage through standard interfaces. Unlike QNAP (which has a built-in Home Assistant integration), I couldn’t find any plug-and-play option.
-
-So I started building something myself — not beautiful, not plug-and-play — but it works. And it’s a solid proof-of-concept for anyone wanting Home Assistant insights from a UGreen NAS.
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/37f5f5d5-9998-4879-bdfa-8fa4d5590ef0" alt="HA Dashboard Example" width="600"/>
-</p>
-
-</details>
+The integration has two parts: A Token Server running as a Docker container. It retrieves and renews access authorization tokens. And a Home-Assistant custom integration. It uses the tokens to read data from the NAS by utilizing an UGOS-builtin API, and updates your HA sensors.
 
 ---
 
 ## ⚙️ Setup Instructions
 
-👉 [**Click here** for the step-by-step guide (Plugin) »](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup_custom_components.md)
-
-👉 [**Click here** for the step-by-step guide (Config) »](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup.md) (deprecated)
-
-Before proceeding, check out the [**Known Problems & Limitations**](https://github.com/Tom-Bom-badil/ugreen_nas/discussions/2) to avoid pitfalls.
+👉 [**Click here**](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup_custom_components.md) for the step-by-step installation guide on the project Wiki.
+> ⏱️ Total setup time: *~10..15 minutes*
 
 ---
 
 ## 📝 Notes & Feedback
 
-- This setup was developed using a **UGreen DXP 4800+**. Other models might require adapting disk references or sensor templates.
-- Sensor templates were written with flexibility in mind, but some adjustments may be necessary for your specific configuration.
+👉 This integration was developed using a **UGreen DXP 4800+** and a **UGreen DXP 480T**. Other models and special setups (like GPU usage in the larger models) might not fully be covered. If you want to help us further developing the integration towards your specific setup, please contribute to the project by posting the API response of your NAS in the [Model Collenction](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/discussions/43).
 
-**Contributions welcome!**  
+**Contributions welcome!**
+
 💬 [Start a discussion](https://github.com/Tom-Bom-badil/ugreen_nas/discussions) if you run into issues.  
-✅ If it works for you, please let me know — it's great to hear success stories.  
+✅ If it works for you, please let us know - it's great to hear success stories.  
 📬 Pull requests and improvements are always appreciated!
 
 ---
 
-*Thanks for using this integration! 😊*
+*Thanks for using this integration and your feedback! 😊*
