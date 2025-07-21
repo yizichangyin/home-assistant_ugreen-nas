@@ -799,8 +799,7 @@ class UgreenApiClient:
             return []
 
         usb_slot_list = data.get("data", {}).get("hardware", {}).get("usb", [])
-        if not usb_slot_list:
-            _LOGGER.warning("[UGREEN NAS] 'usb' field is missing or empty in response from %s", endpoint)
+        if not usb_slot_list: # _LOGGER.warning removed; list is not avail if no USB device is attached (=no error)
             return []
 
         entities: List[UgreenEntity] = []
