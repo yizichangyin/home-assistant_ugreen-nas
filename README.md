@@ -22,7 +22,7 @@ The integration has two parts: A Token Server running as a Docker container. It 
 
 ## ⚙️ Setup Instructions
 
-👉 [**Click here**](https://github.com/Tom-Bom-badil/ugreen_nas/blob/main/docs/how_to_setup_custom_components.md) for the step-by-step installation guide on the project Wiki.
+👉 [**Click here**](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/wiki/03-%E2%80%90-Installation) for the step-by-step installation guide on the project Wiki.
 > ⏱️ Total setup time: *~10..15 minutes*
 
 ---
