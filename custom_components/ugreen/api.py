@@ -168,7 +168,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     
     # Device Monitoring
-     UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_usage",
             name="CPU Usage",
@@ -181,19 +181,19 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     UgreenEntity(
         description=EntityDescription(
-            key="ram_size_total",
-            name="RAM Size (Total)",
+            key="ram_usage_total_usable",
+            name="RAM Usage (Usable RAM)",
             icon="mdi:memory",
             unit_of_measurement=UnitOfInformation.BYTES,
         ),
         endpoint="/ugreen/v1/taskmgr/stat/get_all",
         path="data.mem.structure.total",
-        entity_category="Hardware",
+        entity_category="Status",
     ),
     UgreenEntity(
         description=EntityDescription(
-            key="ram_size_free",
-            name="RAM Size (Free)",
+            key="ram_usage_free",
+            name="RAM Usage (Free RAM)",
             icon="mdi:memory",
             unit_of_measurement=UnitOfInformation.BYTES,
         ),
@@ -203,8 +203,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     UgreenEntity(
         description=EntityDescription(
-            key="ram_size_cache",
-            name="RAM Size (Cache)",
+            key="ram_usage_cache",
+            name="RAM Usage (Cache)",
             icon="mdi:memory",
             unit_of_measurement=UnitOfInformation.BYTES,
         ),
@@ -214,8 +214,19 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     UgreenEntity(
         description=EntityDescription(
-            key="ram_size_used",
-            name="RAM Size (Usage - Gigabytes)",
+            key="ram_usage_shared",
+            name="RAM Usage (Shared Memory)",
+            icon="mdi:memory",
+            unit_of_measurement=UnitOfInformation.BYTES,
+        ),
+        endpoint="/ugreen/v1/taskmgr/stat/get_all",
+        path="data.mem.structure.share",
+        entity_category="Status",
+    ),
+    UgreenEntity(
+        description=EntityDescription(
+            key="ram_usage_used_gb",
+            name="RAM Usage (Used GB)",
             icon="mdi:memory",
             unit_of_measurement=UnitOfInformation.BYTES,
         ),
@@ -225,8 +236,8 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
     UgreenEntity(
         description=EntityDescription(
-            key="ram_usage",
-            name="RAM Size (Usage - Percentage)",
+            key="ram_usage_used_percent",
+            name="RAM Usage (Used %)",
             icon="mdi:memory",
             unit_of_measurement=PERCENTAGE,
         ),
@@ -337,7 +348,7 @@ UGREEN_STATIC_SENSOR_ENDPOINTS: List[UgreenEntity] = [
     ),
 
     # Temperature Monitoring
-     UgreenEntity(
+    UgreenEntity(
         description=EntityDescription(
             key="cpu_temperature",
             name="CPU Temperature",
@@ -608,12 +619,17 @@ class UgreenApiClient:
             return []
 
         entities: List[UgreenEntity] = []
+        total_ram_size = 0  # add variable for summing up RAM module sizes
 
         try:
-            for mem_index, _ in enumerate(mem_list):
-                prefix_mem_key = f"RAM{"" if len(mem_list) <= 1 else mem_index + 1}"
-                prefix_mem_name = f"RAM" if len(mem_list) <= 1 else f"RAM {mem_index + 1}"
+            for mem_index, mem_module in enumerate(mem_list):
+                prefix_mem_key = f"RAM{'' if len(mem_list) <= 1 else mem_index + 1}"
+                prefix_mem_name = f"RAM Module" if len(mem_list) <= 1 else f"RAM Module {mem_index + 1}"
                 _LOGGER.debug("[UGREEN NAS] Processing mem entity: %s", prefix_mem_key)
+
+                module_size = mem_module.get("size", 0)
+                if isinstance(module_size, (int, float)) and module_size > 0:
+                    total_ram_size += module_size
 
                 entities.extend([
                     UgreenEntity(
@@ -663,6 +679,23 @@ class UgreenApiClient:
                         entity_category="Hardware",
                     ),
                 ])
+
+            # add new entity for total mem size, based on size of single modules
+            entities.append(
+                UgreenEntity(
+                    description=EntityDescription(
+                        key="ram_total_size",
+                        name="RAM Total Size",
+                        icon="mdi:memory",
+                        unit_of_measurement=UnitOfInformation.BYTES,
+                    ),
+                    endpoint=endpoint,
+                    path="calculated:ram_total_size",  # new 'virtual' path
+                    decimal_places=0,
+                    entity_category="Hardware",
+                )
+            )
+            _LOGGER.debug("[UGREEN NAS] Calculated total RAM size: %d bytes", total_ram_size)
                 
         except Exception as e:
             _LOGGER.error("[UGREEN NAS] Error while building dynamic mem entities: %s", e)
