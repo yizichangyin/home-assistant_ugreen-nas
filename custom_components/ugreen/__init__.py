@@ -94,36 +94,44 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 response = await api.get(session, endpoint_str)
                 for entity in entities:
                     try:
-                        if hasattr(entity, "path"):
+                        if hasattr(entity, "path") and entity.path.startswith("calculated"):
+                            # new: handle calculated values
+                            if entity.path == "calculated:ram_total_size":
+                                value = sum(
+                                    data.get(f"RAM{index}_size", 0)
+                                    for index in range(len(dynamic_mem_entities or []))
+                                )
+                            else:
+                                value = None  # Placeholder for other calculated paths
+                            data[entity.description.key] = value
+                        elif hasattr(entity, "path"):
                             parts = entity.path.split(".")
+                            value: Any = response
+                            for part in parts:
+                                if "[" in part and "]" in part:
+                                    part_name, index = part[:-1].split("[")
+                                    if value is not None and isinstance(value, dict):
+                                        value_dict: dict[str, Any] = value  # type: ignore
+                                        value = value_dict.get(part_name, [])
+                                    else:
+                                        value = []
+                                    try:
+                                        if isinstance(value, list):
+                                            value = value[int(index)]  # type: ignore
+                                        else:
+                                            value = None
+                                    except (IndexError, ValueError, TypeError):
+                                        value = None
+                                else:
+                                    if value is not None and isinstance(value, dict):
+                                        value_dict: dict[str, Any] = value  # type: ignore
+                                        value = value_dict.get(part)
+                                    else:
+                                        value = None
+                            data[entity.description.key] = value
                         else:
                             _LOGGER.warning("[UGREEN NAS] Entity %s does not have a 'path' attribute, skipping.", getattr(entity, "key", str(entity)))
                             data[getattr(entity, "key", str(entity))] = None
-                            continue
-
-                        value: Any = response
-                        for part in parts:
-                            if "[" in part and "]" in part:
-                                part_name, index = part[:-1].split("[")
-                                if value is not None and isinstance(value, dict):
-                                    value_dict: dict[str, Any] = value  # type: ignore
-                                    value = value_dict.get(part_name, [])
-                                else:
-                                    value = []
-                                try:
-                                    if isinstance(value, list):
-                                        value = value[int(index)]  # type: ignore
-                                    else:
-                                        value = None
-                                except (IndexError, ValueError, TypeError):
-                                    value = None
-                            else:
-                                if value is not None and isinstance(value, dict):
-                                    value_dict: dict[str, Any] = value  # type: ignore
-                                    value = value_dict.get(part)
-                                else:
-                                    value = None
-                        data[entity.description.key] = value
                     except Exception as e:
                         _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", entity.description.key, e)
                         data[entity.description.key] = None
