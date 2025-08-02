@@ -10,11 +10,20 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.helpers.device_registry import async_get as async_get_device_registry
 
 from .const import DOMAIN, PLATFORMS
-from .api import UGREEN_STATIC_BUTTON_ENDPOINTS, UgreenApiClient, UGREEN_STATIC_SENSOR_ENDPOINTS
+from .utils import extract_value_from_path, scale_bytes_per_second
+from .api import (
+    UgreenApiClient,
+    UGREEN_STATIC_BUTTON_ENDPOINTS,
+    UGREEN_STATIC_CONFIGURATION_ENDPOINTS,
+    UGREEN_STATIC_STATUS_ENDPOINTS,
+)
 
 _LOGGER = logging.getLogger(__name__)
+_ENTITY_COUNTS: dict[str, Any] = {}
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+
     _LOGGER.info("[UGREEN NAS] Setting up config entry: %s", entry.entry_id)
     hass.data.setdefault(DOMAIN, {})
 
@@ -30,129 +39,133 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         verify_ssl=entry.data.get("verify_ssl", False),
     )
 
-    _LOGGER.debug("[UGREEN NAS] Attempting initial authentication...")
     if not await api.authenticate(session):
         _LOGGER.error("[UGREEN NAS] Initial login failed. Aborting setup.")
         return False
 
-    all_sensor_endpoints = list(UGREEN_STATIC_SENSOR_ENDPOINTS)
+    ### Build the list of configuration entities
+    all_configuration_endpoints = list(UGREEN_STATIC_CONFIGURATION_ENDPOINTS)
+    all_configuration_endpoints += (await api.get_configuration_storage_entities(session)) or []
+    all_configuration_endpoints += (await api.get_configuration_fan_entities(session)) or []
+    all_configuration_endpoints += (await api.get_configuration_lan_entities(session)) or []
+    all_configuration_endpoints += (await api.get_configuration_usb_entities(session)) or []
+    dynamic_mem_entities = (await api.get_configuration_mem_entities(session)) or []
+    _ENTITY_COUNTS["ram_count"] = len(dynamic_mem_entities)
+    all_configuration_endpoints += dynamic_mem_entities
+    # Group endpoints to make sure only one request per request type per minute
+    endpoint_to_configuration_entities = defaultdict(list)
+    for entity in all_configuration_endpoints:
+        endpoint_to_configuration_entities[entity.endpoint].append(entity)
+    _LOGGER.debug("[UGREEN NAS] Configuration endpoints ready.")
 
-    async def async_update_data() -> dict[str, Any]:
-        try:
-            _LOGGER.debug("[UGREEN NAS] Updating data from all endpoints...")
-            data: dict[str, Any] = {}
+    ### Build the list of status entities
+    all_status_endpoints = list(UGREEN_STATIC_STATUS_ENDPOINTS)
+    all_status_endpoints += (await api.get_disk_status_entities()) or []
+    # Group endpoints to make sure only one request per request type every 5 seconds
+    endpoint_to_status_entities = defaultdict(list)
+    for entity in all_status_endpoints:
+        endpoint_to_status_entities[entity.endpoint].append(entity)
+    _LOGGER.debug("[UGREEN NAS] Status endpoints ready.")
 
-            # Build the list of entities (dynamic + static)
-            all_sensor_endpoints = list(UGREEN_STATIC_SENSOR_ENDPOINTS)
 
-            dynamic_storage_entities = await api.get_storage_entities(session)
-            if dynamic_storage_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic storage entities", len(dynamic_storage_entities))
-                all_sensor_endpoints.extend(dynamic_storage_entities)
-            else:
-                _LOGGER.debug("[UGREEN NAS] No dynamic storage entities found.")
+    ### Helper function to fetch data from endpoints and extract values, used by update_xx_data
+    async def collect_entity_values(api, session, endpoint_to_entities):
+        data: dict[str, Any] = {}
 
-            dynamic_fan_entities = await api.get_fan_entities(session)
-            if dynamic_fan_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic fan entities", len(dynamic_fan_entities))
-                all_sensor_endpoints.extend(dynamic_fan_entities)
-            else:
-                _LOGGER.debug("[UGREEN NAS] No dynamic fan entities found.")
-
-            dynamic_mem_entities = await api.get_mem_entities(session)
-            if dynamic_mem_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic mem entities", len(dynamic_mem_entities))
-                all_sensor_endpoints.extend(dynamic_mem_entities)
-            else:
-                _LOGGER.debug("[UGREEN NAS] No dynamic mem entities found.")
-
-            dynamic_lan_entities = await api.get_lan_entities(session)
-            if dynamic_lan_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic lan entities", len(dynamic_lan_entities))
-                all_sensor_endpoints.extend(dynamic_lan_entities)
-            else:
-                _LOGGER.debug("[UGREEN NAS] No dynamic lan entities found.")
-
-            dynamic_usb_slot_entities = await api.get_usb_slot_entities(session)
-            if dynamic_usb_slot_entities:
-                _LOGGER.debug("[UGREEN NAS] Retrieved %d dynamic usb slot entities", len(dynamic_usb_slot_entities))
-                all_sensor_endpoints.extend(dynamic_usb_slot_entities)
-            else:
-                _LOGGER.debug("[UGREEN NAS] No dynamic usb slot entities found.")
-
-            hass.data[DOMAIN][entry.entry_id]["sensor_endpoints"] = all_sensor_endpoints
-            _LOGGER.debug("[UGREEN NAS] Total endpoints to query: %d", len(all_sensor_endpoints))
-
-            # Group entities by endpoint to optimize API calls
-            endpoint_to_entities = defaultdict(list)
-
-            for entity in all_sensor_endpoints:
-                endpoint_to_entities[entity.endpoint].append(entity)
-
-            for endpoint_str, entities in endpoint_to_entities.items():
-                _LOGGER.debug("[UGREEN NAS] Querying endpoint: %s", endpoint_str)
+        for endpoint_str, entities in endpoint_to_entities.items():
+            try:
                 response = await api.get(session, endpoint_str)
+            except Exception as e:
+                _LOGGER.warning("[UGREEN NAS] Failed to fetch '%s': %s", endpoint_str, e)
                 for entity in entities:
-                    try:
-                        if hasattr(entity, "path"):
-                            parts = entity.path.split(".")
+                    data[entity.description.key] = None
+                continue
+
+            for entity in entities:
+                try:
+                    path = getattr(entity, "path", None)
+                    if isinstance(path, str) and not path.startswith("calculated:"):
+                        value = extract_value_from_path(response, path)
+                    elif isinstance(path, str):
+                        if path.startswith("calculated:ram_total_size"):
+                            ram_count = _ENTITY_COUNTS.get("ram_count", 0)
+                            value = sum(data.get(f"RAM{index}_size", 0) for index in range(ram_count))
+                        elif path.startswith("calculated:scale_bytes_per_second:"):
+                            key_to_scale = path.split(":", 2)[2]
+                            raw = extract_value_from_path(response, key_to_scale)
+                            value = scale_bytes_per_second(raw)
                         else:
-                            _LOGGER.warning("[UGREEN NAS] Entity %s does not have a 'path' attribute, skipping.", getattr(entity, "key", str(entity)))
-                            data[getattr(entity, "key", str(entity))] = None
-                            continue
+                            value = None
+                    data[entity.description.key] = value
 
-                        value: Any = response
-                        for part in parts:
-                            if "[" in part and "]" in part:
-                                part_name, index = part[:-1].split("[")
-                                if value is not None and isinstance(value, dict):
-                                    value_dict: dict[str, Any] = value  # type: ignore
-                                    value = value_dict.get(part_name, [])
-                                else:
-                                    value = []
-                                try:
-                                    if isinstance(value, list):
-                                        value = value[int(index)]  # type: ignore
-                                    else:
-                                        value = None
-                                except (IndexError, ValueError, TypeError):
-                                    value = None
-                            else:
-                                if value is not None and isinstance(value, dict):
-                                    value_dict: dict[str, Any] = value  # type: ignore
-                                    value = value_dict.get(part)
-                                else:
-                                    value = None
-                        data[entity.description.key] = value
-                    except Exception as e:
-                        _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", entity.description.key, e)
-                        data[entity.description.key] = None
+                except Exception as e:
+                    _LOGGER.warning("[UGREEN NAS] Failed to extract '%s': %s", entity.description.key, e)
+                    data[entity.description.key] = None
 
+        return data
+
+    ### The actual update function for configuration entities (called every 60s by the coordinator).
+    ### It utilizes collect_entity_values above to avoid redundant code.
+    async def update_configuration_data() -> dict[str, Any]:
+        try:
+            _LOGGER.debug("[UGREEN NAS] Updating configuration data...")
+            data: dict[str, Any] = {}
+            configuration_endpoints = hass.data[DOMAIN][entry.entry_id]["configuration_endpoints"]
+            endpoint_to_entities = hass.data[DOMAIN][entry.entry_id]["endpoint_to_configuration_entities"]
+            data = await collect_entity_values(api, session, endpoint_to_entities)
             return data
-
         except Exception as err:
-            _LOGGER.exception("[UGREEN NAS] Exception during data update: %s", err)
-            raise UpdateFailed(f"Error communicating with UGREEN NAS: {err}") from err
+            raise UpdateFailed(f"[UGREEN NAS] Configuration entities update error: {err}") from err
 
-    coordinator = DataUpdateCoordinator(
+    ### The actual update function for status entities (called every 5s by the coordinator).
+    ### It utilizes collect_entity_values above to avoid redundant code.
+    async def update_status_data() -> dict[str, Any]:
+        try:
+            _LOGGER.debug("[UGREEN NAS] Updating status data...")
+            data: dict[str, Any] = {}
+            all_status_endpoints = hass.data[DOMAIN][entry.entry_id]["status_endpoints"]
+            endpoint_to_entities = hass.data[DOMAIN][entry.entry_id]["endpoint_to_status_entities"]
+            data = await collect_entity_values(api, session, endpoint_to_entities)
+            return data
+        except Exception as err:
+            raise UpdateFailed(f"[UGREEN NAS] Status entities update error: {err}") from err
+
+    ### The coordinator for the configuration entities.
+    configuration_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="ugreen_nas",
-        update_method=async_update_data,
+        name="ugreen_configuration",
+        update_method=update_configuration_data,
         update_interval=timedelta(seconds=60),
     )
 
+    ### The coordinator for the status entities.
+    status_coordinator = DataUpdateCoordinator(
+        hass,
+        _LOGGER,
+        name="ugreen_status",
+        update_method=update_status_data,
+        update_interval=timedelta(seconds=entry.options.get("status_interval", 5)),
+    )
+
+    ### Hand over all runtime objects to HA's data container.
     hass.data[DOMAIN][entry.entry_id] = {
-        "coordinator": coordinator,
-        "sensor_endpoints": all_sensor_endpoints, 
+        "configuration_coordinator": configuration_coordinator,
+        "configuration_endpoints": all_configuration_endpoints,
+        "endpoint_to_configuration_entities": endpoint_to_configuration_entities,
+        "status_coordinator": status_coordinator,
+        "status_endpoints": all_status_endpoints,
+        "endpoint_to_status_entities": endpoint_to_status_entities,
         "button_endpoints": UGREEN_STATIC_BUTTON_ENDPOINTS,
         "api": api
     }
 
-    await coordinator.async_config_entry_first_refresh()
+    ### Initial refresh.
+    await configuration_coordinator.async_config_entry_first_refresh()
+    await status_coordinator.async_config_entry_first_refresh()
 
+    ### Device registration.
     try:
-        _LOGGER.debug("[UGREEN NAS] Registering device in registry...")
         dev_reg = async_get_device_registry(hass)
         sys_info = await api.get(session, "/ugreen/v1/sysinfo/machine/common")
 
@@ -172,19 +185,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.info("[UGREEN NAS] Device registered: Model=%s, Version=%s", model, version)
 
     except Exception as e:
-        _LOGGER.warning("[UGREEN NAS] Could not register device info: %s", e)
+        _LOGGER.warning("[UGREEN NAS] Device registration failed: %s", e)
 
-    _LOGGER.debug("[UGREEN NAS] Forwarding entry setups to platforms...")
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    _LOGGER.debug("[UGREEN NAS] Forwarded entry setups to platforms - setup complete.")
 
-    _LOGGER.info("[UGREEN NAS] Setup complete.")
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    _LOGGER.info("[UGREEN NAS] Unloading config entry: %s", entry.entry_id)
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
-        _LOGGER.debug("[UGREEN NAS] Entry data removed from hass.data")
     return unload_ok

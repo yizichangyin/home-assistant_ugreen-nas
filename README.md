@@ -4,7 +4,7 @@
 [![Custom integration](https://img.shields.io/badge/Custom%20Integration-%2341BDF5.svg)](https://www.home-assistant.io/getting-started/concepts-terminology)
 [![HACS Listing](https://img.shields.io/badge/HACS%20Listing-default-green.svg)](https://github.com/hacs)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/graphs/commit-activity)
-[![Version](https://img.shields.io/badge/Version-v2025.07--3-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/releases)
+[![Version](https://img.shields.io/badge/Version-v2025.08--1-green.svg)](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/releases)
 
 ---
 
@@ -29,7 +29,7 @@ The integration has two parts: A Token Server running as a Docker container. It 
 
 ## 📝 Notes & Feedback
 
-👉 This integration was developed using a **UGreen DXP 4800+** and a **UGreen DXP 480T**. Other models and special setups (like GPU usage in the larger models) might not fully be covered. If you want to help us further developing the integration towards your specific setup, please contribute to the project by posting the API response of your NAS in the [Model Collenction](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/discussions/43).
+👉 This integration was developed using a **UGreen DXP 4800+** and a **UGreen DXP 480T**. Other models and special setups (like GPU usage in the larger models) might not fully be covered. If you want to help us further developing the integration towards your specific setup, please contribute to the project by posting the API response of your NAS in the [Model Collection](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/discussions/43).
 
 **Contributions welcome!**
 
