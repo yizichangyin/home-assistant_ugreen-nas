@@ -2,7 +2,6 @@ from typing import Optional, Any, Union
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any, Optional
-
 from .api import UgreenEntity
 
 def format_dynamic_size(
@@ -32,7 +31,7 @@ def format_dynamic_size(
 
     except Exception:
         return None
-    
+
 def determine_unit(
     raw: Any,
     input_unit: str = 'B',
@@ -62,7 +61,6 @@ def determine_unit(
     unit_str = f"{units[unit_index]}/s" if per_second else units[unit_index]
     return unit_str
 
-
 def format_duration(seconds: float) -> str:
     """Format seconds into a human-readable duration."""
     try:
@@ -83,10 +81,11 @@ def format_temperature(raw: Any) -> Decimal:
     if raw is None:
         return Decimal(0)
     try:
-        return Decimal(str(round(float(raw), 1)))
+        # return Decimal(str(round(float(raw), 1)))
+        # changed, temps are reported in full °C
+        return int(round(float(raw)))
     except Exception:
         return Decimal(0)
-
 
 def format_percentage(raw: Any) -> Decimal:
     """Format a raw percentage value to a Decimal representation."""
@@ -106,7 +105,6 @@ def format_timestamp(raw: Any) -> str:
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     except Exception:
         return "Invalid timestamp"
-
 
 def format_status_code(raw: Any, status_map: dict[int, str]) -> str:
     """Format a raw status code to a human-readable string."""
@@ -188,9 +186,9 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "°C":
             return format_temperature(raw)
 
-        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("MB/s", "KB/s", "GB/s"):
+        if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement in ("KB/s", "MB/s", "GB/s"):
             return format_dynamic_size(raw, endpoint.description.unit_of_measurement, endpoint.decimal_places)
-        
+
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "MHz":
             return format_frequency_mhz(raw)
 
@@ -201,3 +199,42 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
     except Exception:
         return Decimal(0)
+
+#########
+
+def scale_bytes_per_second(raw: Any) -> Optional[str]:
+    # Convert raw Bps value to a human-readable string like '316.45 MB/s'.
+    # Normally, transfer speeds are specified in bps / bits per second, e.g. 10Gbps.
+    # However, the UGOS API is actually reporting in *Bytes* per second.
+    # This has been tested/verified in Windows Explorer by copying huge files.
+    # Also, the UGOS web interface displays values in **BYTES** ("B", not "b") per second.
+    try:
+        if raw is None:
+            return None
+        bytes_per_second = Decimal(str(raw).replace(",", "."))
+        units = ["B/s", "kB/s", "MB/s", "GB/s", "TB/s"]
+        unit_index = 0
+        while bytes_per_second >= 1024 and unit_index < len(units) - 1:
+            bytes_per_second /= 1024
+            unit_index += 1
+        value = int(bytes_per_second.to_integral_value(rounding=ROUND_HALF_UP))
+        return f"{value} {units[unit_index]}"
+    except Exception:
+        return None
+
+
+def extract_value_from_path(data: dict, path: str) -> Any:
+    # Extract a value from nested dictionary/list structure using dot and index notation.
+    try:
+        parts = path.split(".")
+        value: Any = data
+        for part in parts:
+            if "[" in part and "]" in part:
+                part_name, index = part[:-1].split("[")
+                value = value.get(part_name, []) if isinstance(value, dict) else []
+                value = value[int(index)] if isinstance(value, list) else None
+            else:
+                value = value.get(part) if isinstance(value, dict) else None
+        return value
+    except Exception:
+        return None
