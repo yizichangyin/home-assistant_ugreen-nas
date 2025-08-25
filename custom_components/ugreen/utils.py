@@ -137,7 +137,8 @@ def convert_string_to_number(value: Union[str, int, float, Decimal], decimal_pla
                 return round(Decimal(value), decimal_places)
             except Exception:
                 return str(value) 
-    return str(value)  
+#    return str(value)
+    return value
 
 def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
     """Format a raw value based on the endpoint definition."""
@@ -158,16 +159,23 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
                 1: "Normal",
             })
             
-        if "status" in endpoint.description.key:
+
+        if "fan" in endpoint.description.key and "overall" in endpoint.description.key:
             return format_status_code(raw, {
                 0: "Normal",
             })
-            
+
+        if "fan" in endpoint.description.key and "status" in endpoint.description.key:
+            return format_status_code(raw, {
+                0: "ERROR!",
+                1: "Normal",
+            })
+
         if "disk" in endpoint.description.key and not "interface" in endpoint.description.key and "type" in endpoint.description.key:
             return format_status_code(raw, {
                 0: "HDD",
                 1: "SSD",
-                2: "NVMe",
+                2: "M.2",
             })
             
         if "volume" in endpoint.description.key and "health" in endpoint.description.key:
@@ -180,6 +188,11 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
                 0: "Generic USB Device",   # 0 = External HDD?
             })
 
+        # if "status" in endpoint.description.key:
+        #     return format_status_code(raw, {
+        #         0: "Normal",
+        #     })
+
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "%":
             return format_percentage(raw)
 
@@ -191,9 +204,6 @@ def format_sensor_value(raw: Any, endpoint: UgreenEntity) -> Any:
 
         if endpoint.description.unit_of_measurement is not None and endpoint.description.unit_of_measurement == "MHz":
             return format_frequency_mhz(raw)
-
-        if "fan" in endpoint.description.key and "status" in endpoint.description.key:
-            return format_status_code(raw, {0: "off", 1: "on"})
         
         return convert_string_to_number(raw, endpoint.decimal_places)
 

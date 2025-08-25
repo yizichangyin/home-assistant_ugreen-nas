@@ -18,17 +18,18 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up UGREEN NAS buttons based on a config entry."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]["configuration_coordinator"]
-    endpoints: list[UgreenEntity] = hass.data[DOMAIN][entry.entry_id]["button_endpoints"]
+    coordinator = hass.data[DOMAIN][entry.entry_id]["config_coordinator"]
+    entities: list[UgreenEntity] = hass.data[DOMAIN][entry.entry_id]["button_entities"]
     api = hass.data[DOMAIN][entry.entry_id]["api"]
 
     nas_model = hass.data[DOMAIN][entry.entry_id].get("nas_model")
-    entities = [
-        UgreenNasButton(entry.entry_id, coordinator, endpoint, api, nas_model)
-        for endpoint in endpoints
+
+    button_entities = [
+        UgreenNasButton(entry.entry_id, coordinator, entity, api, nas_model)
+        for entity in entities
     ]
 
-    async_add_entities(entities)
+    async_add_entities(button_entities)
 
 class UgreenNasButton(CoordinatorEntity, ButtonEntity): # type: ignore
     """Representation of a UGREEN NAS button."""

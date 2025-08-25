@@ -22,27 +22,25 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up UGREEN NAS sensors based on a config entry."""
-    configuration_coordinator = hass.data[DOMAIN][entry.entry_id]["configuration_coordinator"]
+    config_coordinator = hass.data[DOMAIN][entry.entry_id]["config_coordinator"]
+    config_entities = hass.data[DOMAIN][entry.entry_id]["config_entities"]
     status_coordinator = hass.data[DOMAIN][entry.entry_id]["status_coordinator"]
-
-    configuration_endpoints = hass.data[DOMAIN][entry.entry_id]["configuration_endpoints"]
-    status_endpoints = hass.data[DOMAIN][entry.entry_id]["status_endpoints"]
-
+    status_entities = hass.data[DOMAIN][entry.entry_id]["status_entities"]
     nas_model = hass.data[DOMAIN][entry.entry_id].get("nas_model")
 
     # Configuration sensors (60s)
-    config_entities = [
-        UgreenNasSensor(entry.entry_id, configuration_coordinator, endpoint, nas_model)
-        for endpoint in configuration_endpoints
+    config_sensors = [
+        UgreenNasSensor(entry.entry_id, config_coordinator, entity, nas_model)
+        for entity in config_entities
     ]
 
     # Status sensors (5s)
-    status_entities = [
-        UgreenNasSensor(entry.entry_id, status_coordinator, endpoint, nas_model)
-        for endpoint in status_endpoints
+    status_sensors = [
+        UgreenNasSensor(entry.entry_id, status_coordinator, entity, nas_model)
+        for entity in status_entities
     ]
 
-    async_add_entities(config_entities + status_entities)
+    async_add_entities(config_sensors + status_sensors)
 
 class UgreenNasSensor(CoordinatorEntity, SensorEntity):  # type: ignore
     """Representation of a UGREEN NAS sensor."""
@@ -77,9 +75,9 @@ class UgreenNasSensor(CoordinatorEntity, SensorEntity):  # type: ignore
     def extra_state_attributes(self):
         base_attrs = super().extra_state_attributes or {}
         base_attrs.update({
-            "device_type": "UGreen NAS",
-            "device_id": "",
-            "entity_category": self._endpoint.entity_category,
+            "nas_device_type": "UGreen NAS",
+            "nas_device_id": "",
+            "nas_part_category": self._endpoint.nas_part_category,
         })
         return base_attrs
 

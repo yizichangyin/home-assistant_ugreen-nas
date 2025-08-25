@@ -87,19 +87,19 @@ class UgreenNasConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class UgreenNasOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle UGREEN NAS options."""
     def __init__(self, config_entry: config_entries.ConfigEntry):
-        self.config_entry = config_entry
+        self._entry = config_entry
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
         if user_input is not None:
             _LOGGER.info("[UGREEN NAS] Options updated: %s", user_input)
             return self.async_create_entry(title="", data=user_input)
 
-        current = self.config_entry.options
+        current = self._entry.options
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
                 vol.Optional(CONF_UGREEN_HOST, default=current.get(CONF_UGREEN_HOST, "")): str,
-                vol.Optional(CONF_UGREEN_PORT, default=current.get(CONF_UGREEN_PORT, 9443)): int,
+                vol.Optional(CONF_UGREEN_PORT, default=current.get(CONF_UGREEN_PORT, 9999)): int,
                 vol.Optional(CONF_AUTH_PORT, default=current.get(CONF_AUTH_PORT, 4115)): int,
                 vol.Optional(CONF_USERNAME, default=current.get(CONF_USERNAME, "")): str,
                 vol.Optional(CONF_PASSWORD, default=current.get(CONF_PASSWORD, "")): str,
