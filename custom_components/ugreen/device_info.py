@@ -1,5 +1,4 @@
 from homeassistant.helpers.device_registry import DeviceInfo
-
 from .const import DOMAIN
 
 def build_device_info(key: str, model: str | None = None) -> DeviceInfo:
