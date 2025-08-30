@@ -1,5 +1,5 @@
 {
-  "name": "Ugreen API Token Proxy (Experimental)",
+  "name": "Ugreen API Token Proxy",
   "version": "latest",
   "slug": ""ugreen_api_token_proxy",
   "description": "Runs the Ugreen API Token Proxy container that provides authentication for the UGREEN NAS Home Assistant integration.",
