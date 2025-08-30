@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   token-api:
     image: ghcr.io/tom-bom-badil/ugreen_api_token_proxy:latest
