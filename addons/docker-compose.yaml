@@ -1,6 +1,6 @@
 services:
   token-api:
-    image: ghcr.io/tom-bom-badil/ugreen_api_token_proxy:latest
+    image: docker.1ms.run/tom-bom-badil/ugreen_api_token_proxy:latest
     container_name: ugreen_api_token_proxy
     ports:
       - "4115:4115"
