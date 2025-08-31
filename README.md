@@ -27,5 +27,7 @@ The integration has two parts: A Token Server running as a Docker container. It 
 👉 This integration was developed using a **UGreen DXP 4800+** and a **UGreen DXP 480T**. Other models and special setups (like GPU usage in the larger models) might not fully be covered. If you want to help us further developing the integration towards your specific setup, please contribute to the project by posting the API response of your NAS in the [Model Collection](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/discussions/43).
 
 使用原仓库(https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas)
+  
   修改取消Docker容器获取NAS Token
+  
   有疑问可以联系邮箱：2445990463@qq.com (QQ同号)
