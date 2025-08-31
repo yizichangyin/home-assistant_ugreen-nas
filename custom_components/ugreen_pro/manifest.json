@@ -9,5 +9,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/yizichangyin/home-assistant_ugreen_pro-nas/issues",
   "requirements": ["crypto"],
-  "version": "v2025.08.3"
+  "version": "v2025.08.31"
 }
