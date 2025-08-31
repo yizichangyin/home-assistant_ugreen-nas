@@ -11,7 +11,7 @@
   ],
   "host_network": true,
   "hassio_api": true,
-  "image": "ghcr.io/tom-bom-badil/ugreen-api-token",
+  "image": "docker.1ms.run/tom-bom-badil/ugreen-api-token",
   "map": [
     "config:rw",
     "share:rw"
