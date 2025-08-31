@@ -28,3 +28,4 @@ The integration has two parts: A Token Server running as a Docker container. It 
 
 使用原仓库(https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas)
 修改取消Docker容器获取NAS Token
+有疑问可以联系邮箱：2445990463@qq.com (QQ同号)
