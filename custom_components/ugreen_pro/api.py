@@ -511,7 +511,7 @@ class UgreenApiClient:
         self,
         ugreen_nas_host: str,
         ugreen_nas_port: int,
-        auth_port: int,
+        # auth_port: int,
         username: str = "",
         password: str = "",
         token: str = "",
