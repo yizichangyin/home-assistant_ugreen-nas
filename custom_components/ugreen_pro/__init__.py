@@ -26,7 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api = UgreenApiClient(
         ugreen_nas_host=entry.data["ugreen_host"],
         ugreen_nas_port=int(entry.data["ugreen_port"]),
-        auth_port=int(entry.data["auth_port"]),
+        # auth_port=int(entry.data["auth_port"]),
         username=entry.data["username"],
         password=entry.data["password"],
         use_https=entry.data.get("use_https", False),
