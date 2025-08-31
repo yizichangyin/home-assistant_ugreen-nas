@@ -40,5 +40,5 @@ def build_device_info(key: str, model: str | None = None) -> DeviceInfo:
     return DeviceInfo(
         identifiers={(DOMAIN, "ugreen_nas")},
         manufacturer="UGREEN",
-        name="UGREEN NAS",
+        name="UGREENPRO NAS",
     )
