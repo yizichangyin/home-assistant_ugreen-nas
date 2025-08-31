@@ -599,7 +599,7 @@ class UgreenApiClient:
 
 
     async def authenticate(self, session: aiohttp.ClientSession) -> bool:
-        return self.login(session)
+        return await self.login(session)
         """Login and fetch new token."""
         """url = f"{self.token_url}/token?username={self.username}&password={self.password}"
         
