@@ -69,7 +69,7 @@ class UgreenNasConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_UGREEN_HOST): str,
                 vol.Required(CONF_UGREEN_PORT, default=9999): int,
-                vol.Required(CONF_AUTH_PORT, default=4115): int,
+                # vol.Required(CONF_AUTH_PORT, default=4115): int,
                 vol.Required(CONF_USERNAME): str,
                 vol.Required(CONF_PASSWORD): str,
                 vol.Optional(CONF_USE_HTTPS, default=False): bool,
@@ -100,7 +100,7 @@ class UgreenNasOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema({
                 vol.Optional(CONF_UGREEN_HOST, default=current.get(CONF_UGREEN_HOST, "")): str,
                 vol.Optional(CONF_UGREEN_PORT, default=current.get(CONF_UGREEN_PORT, 9999)): int,
-                vol.Optional(CONF_AUTH_PORT, default=current.get(CONF_AUTH_PORT, 4115)): int,
+                # vol.Optional(CONF_AUTH_PORT, default=current.get(CONF_AUTH_PORT, 4115)): int,
                 vol.Optional(CONF_USERNAME, default=current.get(CONF_USERNAME, "")): str,
                 vol.Optional(CONF_PASSWORD, default=current.get(CONF_PASSWORD, "")): str,
                 vol.Optional(CONF_USE_HTTPS, default=current.get(CONF_USE_HTTPS, False)): bool,
