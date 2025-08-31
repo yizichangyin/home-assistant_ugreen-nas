@@ -1,13 +1,13 @@
 {
   "domain": "ugreen",
-  "name": "UGREEN NAS",
+  "name": "UGREEN PRO NAS",
   "codeowners": ["@Tom-Bom-badil", "@dobby5"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas",
+  "documentation": "https://github.com/yizichangyin/home-assistant_ugreen_pro-nas",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas/issues",
+  "issue_tracker": "https://github.com/yizichangyin/home-assistant_ugreen_pro-nas/issues",
   "requirements": [],
   "version": "v2025.08.3"
 }
