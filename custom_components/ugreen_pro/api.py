@@ -564,7 +564,7 @@ class UgreenApiClient:
 
     async def login(self, session: aiohttp.ClientSession) -> str:
         url = f"{self.base_url}/ugreen/v1/verify/login"
-        key = self._get_public_key()
+        key = await self._get_public_key(session)
         password = self.encrypt_password(self.password, key)
         payload_json = {
             "is_simple": True,
