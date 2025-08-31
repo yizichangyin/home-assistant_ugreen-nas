@@ -1,4 +1,5 @@
 import logging, aiohttp, async_timeout, asyncio
+import base64
 from dataclasses import dataclass
 from typing import List, Any
 from homeassistant.helpers.entity import EntityDescription
@@ -529,11 +530,78 @@ class UgreenApiClient:
 
 
     ################################################ CORE API FUNCTIONS ########
+    def encrypt_password(self, password, public_key):
+        from Crypto.Cipher import PKCS1_v1_5
+        from Crypto.PublicKey import RSA
+        public_key = RSA.import_key(public_key)
+        encrypted_password = PKCS1_v1_5.new(public_key).encrypt(password.encode())
+        encrypted_base64 = base64.b64encode(encrypted_password).decode('utf-8')
+        return encrypted_base64
+
+    async def _get_public_key(self, session: aiohttp.ClientSession) -> str:
+        url = f'{self.base_url}/ugreen/v1/verify/check?token='
+        # print("get_public_key",url)
+        payload = {
+            "username": self.username
+        }
+        _LOGGER.debug("[UGREEN NAS] Sending _get_public_key POST to: %s", url)
+        try:
+            async with session.post(url, json=payload, ssl=self.verify_ssl) as resp:
+                resp.raise_for_status()
+                # data = await resp.json()
+                # _LOGGER.debug("[UGREENPRO NAS] _get_public_key response: %s", data)
+
+                x_rsa_token = resp.headers.get("x-rsa-token", "")
+                x_rsa_token_bytes = x_rsa_token.encode('utf-8')
+                dd = base64.b64decode(x_rsa_token_bytes)
+                return dd
+        except Exception as e:
+            _LOGGER.exception("[UGREENPRO NAS] _get_public_key request failed: %s", e)
+            return False
+
+        pass
+
+
+    async def login(self, session: aiohttp.ClientSession) -> str:
+        url = f"{self.base_url}/ugreen/v1/verify/login"
+        key = self._get_public_key()
+        password = self.encrypt_password(self.password, key)
+        payload_json = {
+            "is_simple": True,
+            'keepalive': True,
+            'otp': True,
+            "username": self.username,
+            "password": password
+        }
+        _LOGGER.debug("[UGREENPRO NAS] Sending login POST to: %s", url)
+        try:
+            async with session.post(url, json=payload_json, ssl=self.verify_ssl) as resp:
+                resp.raise_for_status()
+                data = await resp.json()
+                _LOGGER.debug("[UGREENPRO NAS] Login response: %s", data)
+
+                if data.get("code") != 200:
+                    _LOGGER.warning("[UGREENPRO NAS] Login failed with code: %s", data.get("code"))
+                    return False
+
+                token = data.get("data", {}).get("token")
+                if not token:
+                    _LOGGER.error("[UGREENPRO NAS] Login succeeded but token not found in response")
+                    return False
+
+                self.token = token
+                _LOGGER.info("[UGREENPRO NAS] Token received and stored token: %s", token)
+                return True
+        except Exception as e:
+            _LOGGER.exception("[UGREENPRO NAS] Login request failed: %s", e)
+            return False
+
 
 
     async def authenticate(self, session: aiohttp.ClientSession) -> bool:
+        return self.login()
         """Login and fetch new token."""
-        url = f"{self.token_url}/token?username={self.username}&password={self.password}"
+        """url = f"{self.token_url}/token?username={self.username}&password={self.password}"
         
         _LOGGER.debug("[UGREEN NAS] Sending authentication GET to: %s", url)
         try:
@@ -557,7 +625,7 @@ class UgreenApiClient:
 
         except Exception as e:
             _LOGGER.exception("[UGREEN NAS] Authentication request failed: %s", e)
-            return False
+            return False"""
 
 
     async def get(self, session: aiohttp.ClientSession, endpoint: str) -> dict[str, Any]:
