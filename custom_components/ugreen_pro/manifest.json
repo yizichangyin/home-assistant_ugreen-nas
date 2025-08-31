@@ -1,7 +1,7 @@
 {
   "domain": "ugreen_pro",
   "name": "UGREEN PRO NAS",
-  "codeowners": ["@Tom-Bom-badil", "@dobby5"],
+  "codeowners": ["@yizichangyin"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/yizichangyin/home-assistant_ugreen_pro-nas",
