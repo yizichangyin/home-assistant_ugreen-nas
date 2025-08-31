@@ -1,4 +1,4 @@
-DOMAIN = "ugreen"
+DOMAIN = "ugreen_pro"
 PLATFORMS = ["sensor", "button"]
 
 CONF_UGREEN_HOST = "ugreen_host"
