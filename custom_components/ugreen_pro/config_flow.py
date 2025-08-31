@@ -9,7 +9,7 @@ from .const import (
     DOMAIN,
     CONF_UGREEN_HOST,
     CONF_UGREEN_PORT,
-    CONF_AUTH_PORT,
+    # CONF_AUTH_PORT,
     CONF_USERNAME,
     CONF_PASSWORD,
     CONF_USE_HTTPS,
@@ -37,7 +37,7 @@ class UgreenNasConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 api = UgreenApiClient(
                     ugreen_nas_host=user_input[CONF_UGREEN_HOST],
                     ugreen_nas_port=int(user_input[CONF_UGREEN_PORT]),
-                    auth_port=int(user_input[CONF_AUTH_PORT]),
+                    # auth_port=int(user_input[CONF_AUTH_PORT]),
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
                     use_https=user_input.get(CONF_USE_HTTPS, False),
@@ -53,7 +53,7 @@ class UgreenNasConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         return self.async_create_entry(title="UGREEN NAS", data={
                             CONF_UGREEN_HOST: user_input[CONF_UGREEN_HOST],
                             CONF_UGREEN_PORT: user_input[CONF_UGREEN_PORT],
-                            CONF_AUTH_PORT: user_input[CONF_AUTH_PORT],
+                            # CONF_AUTH_PORT: user_input[CONF_AUTH_PORT],
                             CONF_USERNAME: user_input[CONF_USERNAME],
                             CONF_PASSWORD: user_input[CONF_PASSWORD],
                             CONF_USE_HTTPS: user_input.get(CONF_USE_HTTPS, False),
