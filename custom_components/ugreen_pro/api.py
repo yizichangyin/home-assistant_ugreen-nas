@@ -520,7 +520,7 @@ class UgreenApiClient:
     ):
         protocol = "https" if use_https else "http"
         self.base_url = f"{protocol}://{ugreen_nas_host}:{ugreen_nas_port}"
-        self.token_url = f"http://{ugreen_nas_host}:{auth_port}"
+        # self.token_url = f"http://{ugreen_nas_host}:{auth_port}"
         self.username = username
         self.password = password
         self.token = token
